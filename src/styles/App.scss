@@ -1,0 +1,11 @@
+@import "./Theme.scss";
+
+body{
+    margin:0;
+}
+.App{
+    background-color: $background;
+    width: 100vw;
+    height: 100vh;
+   
+}
