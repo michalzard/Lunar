@@ -1,0 +1,39 @@
+@import "../../Theme.scss";
+
+.navbar{
+display:flex;
+color:white;
+border-top: 3px solid $surface;
+justify-content: space-around;
+
+svg{
+    width:30px;
+    height:30px;
+    margin:15px;
+    
+}
+:hover{
+cursor: pointer;
+}
+}
+
+$fabsize:50px;
+.fab{
+    display:flex;
+    justify-content: flex-end;
+    margin:20px;
+    margin-right:$fabsize - 15;
+button{
+    color:white;
+    background-color: $primary;
+    width:$fabsize;
+    height:$fabsize;
+    svg{
+        width:$fabsize/2;
+        height:$fabsize/2;
+    }
+}
+button:hover{
+    background-color: $primary;
+}
+}
