@@ -2,11 +2,16 @@ import React from 'react';
 import "../styles/components/Content.scss";
 import {Typography} from "@mui/material";
 
-function Content() {
+import UserProfile from './UserProfile';
+
+
+function Content({display,setDisplay}) {
   return (
     <div className='content'>
-    <Typography variant='h3' color='white'>Content</Typography>  
-    
+    {display === 'Home' ? <Typography variant='body1' color='white'>Content</Typography> : null }
+    {display === 'User Profile' ? <UserProfile setDisplay={setDisplay}/> : null}  
+
+
     </div>
   )
 }

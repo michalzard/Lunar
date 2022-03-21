@@ -1,7 +1,6 @@
 .content{
     display:flex;
     flex-direction: column;
-    flex:1;
-    min-height: 85vh;
+    flex-grow: 1;
     overflow-y: scroll;
 }
