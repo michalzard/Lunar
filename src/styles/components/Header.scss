@@ -1,14 +1,27 @@
+@import '../Theme.scss';
 .header{
     display:flex;
     align-items: center;
-    padding:30px;
+    padding:15px;
+    padding-bottom: 0px;
 
-    .MuiAvatar-root{
-        width: 100px;
-        height: 100px;
-    }
-    h3{
+    h5,h6{
         font-weight: bold;
-        margin-left:50px;
+        margin-left:20px;
+    }
+    svg{
+        color:$on_background;
+    }
+    .info > span{
+        display:flex;
+        flex-direction: column;
+        color:$on_surface;
+        margin-left:20px;
+    }
+    .edit_profile{
+        display:flex;
+        width: 100%;
+        justify-content: space-between;
+        .edit_button{background-color: $secondary;}
     }
 }
