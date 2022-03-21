@@ -2,15 +2,15 @@ import "./styles/App.scss";
 import { useState } from "react";
 import Header from "./components/Header";
 import Content from "./components/Content";
-import Navbar from "./components/mobile-comps/Navbar";
+import Navbar from "./components/mobile/Navbar";
 
 function App() {
-  // const [display,setDisplay] = useState('Home');
+  const [display,setDisplay] = useState('Home');
   return (
     <div className="App">
-    <Header/>
-    <Content/>
-    <Navbar/>
+    <Header display={display} setDisplay={setDisplay}/>
+    <Content display={display} setDisplay={setDisplay}/>
+    <Navbar setDisplay={setDisplay}/>
     </div>
   );
 }
