@@ -12,7 +12,8 @@ function Header({display,setDisplay}) {
     {
       display==='Home' ?
       <Avatar alt='User Avatar' onClick={()=>{setOpen(true);}}/>
-      : <span onClick={()=>{setDisplay('Home');}}><ArrowBackIcon/></span>
+      : <span onClick={()=>{display ==='Edit Profile' ? setDisplay('User Profile') 
+      : setDisplay('Home');}}><ArrowBackIcon/></span>
     }
 
   {

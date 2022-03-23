@@ -1,0 +1,16 @@
+@import '../Theme.scss';
+.profile_edit{
+    display:flex;
+    flex-direction: column;
+    padding:10px;
+    .photo{
+        width: 60px;
+        height: 60px;
+    }
+    p{color:white;}
+    div{
+        input{
+            color:white;
+        }
+    }
+}

@@ -10,7 +10,9 @@ function App() {
     <div className="App">
     <Header display={display} setDisplay={setDisplay}/>
     <Content display={display} setDisplay={setDisplay}/>
-    <Navbar setDisplay={setDisplay}/>
+    {
+      display==='Edit Profile' ? null :  <Navbar setDisplay={setDisplay}/> 
+    }
     </div>
   );
 }
