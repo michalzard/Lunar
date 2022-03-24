@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import "../styles/components/Header.scss";
 import { Avatar,Button,Typography } from '@mui/material';
-import ProfileDrawer from './mobile/ProfileDrawer';
+import ProfileDrawer from './ProfileDrawer';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 

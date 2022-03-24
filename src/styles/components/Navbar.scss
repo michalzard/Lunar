@@ -1,4 +1,4 @@
-@import "../../Theme.scss";
+@import "../Theme.scss";
 
 .navbar{
 display:flex;
@@ -17,20 +17,20 @@ cursor: pointer;
 }
 }
 
-$fabsize:50px;
+$fabsize:50;
 .fab{
     display:flex;
     justify-content: flex-end;
     margin:20px;
-    margin-right:$fabsize - 15;
+    margin-right:calc($fabsize - 15)px;
 button{
     color:white;
     background-color: $primary;
-    width:$fabsize;
-    height:$fabsize;
+    width:$fabsize+px;
+    height:$fabsize+px;
     svg{
-        width:$fabsize/2;
-        height:$fabsize/2;
+        width:calc($fabsize/2)px;
+        height:calc($fabsize/2)px;
     }
 }
 button:hover{

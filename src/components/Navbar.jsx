@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "../../styles/components/mobile/Navbar.scss";
+import "../styles/components/Navbar.scss";
 
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import HomeIcon from "@mui/icons-material/Home";

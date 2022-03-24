@@ -1,4 +1,4 @@
-@import '../../Theme.scss';
+@import '../Theme.scss';
 
 .ProfileDrawer{
     
@@ -20,6 +20,7 @@
     .user_info{
         display: flex;
         padding:10px;
+        color:white;
         .user_i{
             margin-left:10px;
             .tag{

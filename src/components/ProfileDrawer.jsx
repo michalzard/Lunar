@@ -1,6 +1,6 @@
 import React from 'react'
-import {Drawer, Typography,Avatar,Button} from '@mui/material';
-import "../../styles/components/mobile/ProfileDrawer.scss";
+import {Drawer, Typography,Avatar} from '@mui/material';
+import "../styles/components/ProfileDrawer.scss";
 import CloseIcon from '@mui/icons-material/Close';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';

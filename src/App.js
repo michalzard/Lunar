@@ -2,7 +2,7 @@ import "./styles/App.scss";
 import { useState } from "react";
 import Header from "./components/Header";
 import Content from "./components/Content";
-import Navbar from "./components/mobile/Navbar";
+import Navbar from "./components/Navbar";
 
 function App() {
   const [display,setDisplay] = useState('Home');
