@@ -1,16 +1,52 @@
 @import '../Theme.scss';
-.profile_edit{
-    display:flex;
+
+.profile_edit {
+    display: flex;
     flex-direction: column;
-    padding:10px;
-    .photo{
+    padding: 10px;
+
+    .photo {
         width: 60px;
         height: 60px;
     }
-    p{color:white;}
-    div{
-        input{
-            color:white;
+
+    p {
+        color: white;
+    }
+
+    div {
+        input {
+            color: white;
         }
     }
+
+    .fields {
+        padding-top: 20px;
+
+        .birthday {
+            padding-top: 20px;
+        }
+    }
+}
+/*
+* change colors 
+*/
+
+div[role='presentation']{
+   .MuiPaper-root{
+    color:$on_surface;
+    background-color: $surface;
+    span{color:$on_surface;}
+    svg{color:$on_surface;}
+    .MuiDialogActions-root{
+        button{color:$on_surface;}
+    }
+    .MuiOutlinedInput-root{
+        color:$on_surface;
+    }   
+    .Mui-selected{
+        background-color: $secondary;
+    }
+}
+   
 }
