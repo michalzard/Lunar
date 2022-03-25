@@ -22,8 +22,11 @@ function ProfileEdit() {
 
   return (
     <div className='profile_edit'>
-      <Avatar className='photo'/>
       
+      <span onClick={()=>{console.log('avatar clicked')}}>
+      <Avatar className='photo'/>
+      </span>
+
       <div className='fields'>
       <div className='name'>
       <Typography variant='body1'>Name</Typography>

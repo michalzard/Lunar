@@ -24,4 +24,9 @@
         justify-content: space-between;
         .edit_button{background-color: $primary;}
     }
+    .searchbar{
+    input{
+        color:white;
+    }
+    }
 }

@@ -15,7 +15,9 @@ function UserProfile({setDisplay}) {
     <div className='user_profile'>
     <div className='user_info'>
     <div className='photo'>
+    
     <Avatar/>
+
     <Button variant='outlined' onClick={()=>{setDisplay('Edit Profile')}}>Edit profile</Button>
     </div>
     <div className='info'>

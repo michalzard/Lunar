@@ -1,19 +1,24 @@
 import React, { useState } from 'react'
 import "../styles/components/Header.scss";
-import { Avatar,Button,Typography } from '@mui/material';
+import { Avatar,Button,TextField,Typography } from '@mui/material';
 import ProfileDrawer from './ProfileDrawer';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
+import SearchIcon from '@mui/icons-material/Search';
 
 function Header({display,setDisplay}) {
   const [opened,setOpen] = useState(false);
   return (
     <div className='header'>
     {
-      display==='Home' ?
+      display==='Home'  ?
       <Avatar alt='User Avatar' onClick={()=>{setOpen(true);}}/>
-      : <span onClick={()=>{display ==='Edit Profile' ? setDisplay('User Profile') 
-      : setDisplay('Home');}}><ArrowBackIcon/></span>
+      : 
+      <>
+      { display!=='Search' ? 
+      <span onClick={()=>{
+      display ==='Edit Profile' ? setDisplay('User Profile') : setDisplay('Home');}}><ArrowBackIcon/></span>
+      : null}
+      </>
     }
 
   {
@@ -29,7 +34,17 @@ function Header({display,setDisplay}) {
     <Typography variant='h5' color='white'>{display}</Typography>
     <Button variant='contained' className='edit_button'>Save</Button> 
     </div> 
-    : <Typography variant='h5' color='white'>{display}</Typography>}
+    : 
+    <>
+      {
+        display === 'Search' ? <>
+        <SearchIcon/>
+        <TextField variant='outlined' placeholder='Search Lunar' className='searchbar'  fullWidth />
+        </>
+        : <Typography variant='h5' color='white'>{display}</Typography>
+      }
+    </>  
+    }
     </>
   }
     <ProfileDrawer

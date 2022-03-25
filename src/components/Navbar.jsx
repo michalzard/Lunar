@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import "../styles/components/Navbar.scss";
 
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -13,8 +13,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import {Fab} from '@mui/material';
 
-function Navbar({setDisplay}) {
-  const [btn,setBtn]=useState('home');
+function Navbar({display,setDisplay}) {
   const highlightColor='#bb86fc';
   return (
     <>
@@ -24,16 +23,16 @@ function Navbar({setDisplay}) {
 
     <div className='navbar'>
     {
-      btn === 'home' ? <HomeIcon style={{color:highlightColor}}/> 
-      : <HomeOutlinedIcon onClick={()=>{setBtn('home');setDisplay('Home');}}/>
+      display === 'Home' ? <HomeIcon style={{color:highlightColor}}/> 
+      : <HomeOutlinedIcon onClick={()=>{setDisplay('Home');}}/>
     }
     {
-      btn === 'search' ? <SearchIcon style={{color:highlightColor}}/> 
-      : <SearchOutlinedIcon onClick={()=>{setBtn('search');setDisplay('Search')}}/>
+      display === 'Search' ? <SearchIcon style={{color:highlightColor}}/> 
+      : <SearchOutlinedIcon onClick={()=>{setDisplay('Search')}}/>
     }
     {
-      btn === 'notifications' ? <NotificationsIcon style={{color:highlightColor}}/> 
-      : <NotificationsNoneIcon onClick={()=>{setBtn('notifications');setDisplay('Notifications');}}/>
+      display === 'Notifications' ? <NotificationsIcon style={{color:highlightColor}}/> 
+      : <NotificationsNoneIcon onClick={()=>{setDisplay('Notifications');}}/>
     }
     </div>
     </>
