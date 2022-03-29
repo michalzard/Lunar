@@ -11,7 +11,7 @@ function App() {
     <Header display={display} setDisplay={setDisplay}/>
     <Content display={display} setDisplay={setDisplay}/>
     {
-      display==='Edit Profile' ? null :  <Navbar display={display} setDisplay={setDisplay}/> 
+      display==='Edit Profile' || display==='Post Editor' ? null :  <Navbar display={display} setDisplay={setDisplay}/> 
     }
     </div>
   );

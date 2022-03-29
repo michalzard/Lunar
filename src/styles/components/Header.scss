@@ -29,4 +29,11 @@
         color:white;
     }
     }
+    .post_btn{
+        display:flex;
+        justify-content: flex-end;
+        align-items: center;        
+        button{color:$primary;}
+        button:last-child{background-color:$primary;color:$on_background;margin-left:5px;}
+    }
 }

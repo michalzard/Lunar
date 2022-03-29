@@ -29,10 +29,20 @@ function Header({display,setDisplay}) {
     </div>
     : 
     <> 
-    {display==='Edit Profile' ? 
+    {display==='Edit Profile' || display==='Post Editor' ? 
     <div className='edit_profile'>
     <Typography variant='h5' color='white'>{display}</Typography>
-    <Button variant='contained' className='edit_button'>Save</Button> 
+    {
+      display==='Post Editor' ? 
+      <>
+      <div className='post_btn'>
+      <Button variant='text'>Drafts</Button>
+      <Button variant='contained'>Post</Button>
+      </div>
+      </>
+      :
+      <Button variant='contained' className='edit_button'>Save</Button> 
+    }
     </div> 
     : 
     <>

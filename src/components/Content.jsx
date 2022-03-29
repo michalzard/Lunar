@@ -4,6 +4,7 @@ import {Typography} from "@mui/material";
 
 import UserProfile from './UserProfile';
 import ProfileEdit from './ProfileEdit';
+import PostEditor from './PostEditor';
 
 function Content({display,setDisplay}) {
   return (
@@ -11,7 +12,7 @@ function Content({display,setDisplay}) {
     {display === 'Home' ? <Typography variant='body1' color='white'>Content</Typography> : null }
     {display === 'User Profile' ? <UserProfile setDisplay={setDisplay}/> : null}  
     {display === 'Edit Profile' ? <ProfileEdit/> : null}
-
+    {display === 'Post Editor' ? <PostEditor/> : null}
     </div>
   )
 }

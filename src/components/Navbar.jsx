@@ -18,7 +18,7 @@ function Navbar({display,setDisplay}) {
   return (
     <>
     <div className='fab'>
-    <Fab disableRipple onClick={()=>{setDisplay('Post')}}> <HistoryEduIcon/> </Fab>
+    <Fab disableRipple onClick={()=>{setDisplay('Post Editor')}}> <HistoryEduIcon/> </Fab>
     </div>
 
     <div className='navbar'>
