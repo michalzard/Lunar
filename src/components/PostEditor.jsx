@@ -1,6 +1,6 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import "../styles/components/PostEditor.scss";
-import {TextField,Avatar,Tooltip,Divider,Menu,Typography,Button} from "@mui/material";
+import {TextField,Avatar,Tooltip,Divider,Menu,Typography,Button,ImageList,ImageListItem } from "@mui/material";
 import PhotoIcon from '@mui/icons-material/Photo';
 import GifIcon from '@mui/icons-material/Gif';
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -18,6 +18,9 @@ function PostEditor() {
   const handleGifMenuOpen=(e) => setGifEl(e.currentTarget);
   const handleGifMenuClose=(e) => setGifEl(null);
 
+  const [selectedGifs,selectGifs] = useState([]);
+
+
   return (
     <div className='posteditor_container'>
     <div className='editor'>
@@ -27,6 +30,14 @@ function PostEditor() {
     <TextField placeholder="What's happening" focused={false} variant='standard' minRows={4} maxRows={7} inputProps={{maxLength:200}} margin="normal" multiline fullWidth/>
     </div>
     <Divider/>
+    
+    <ImageList cols={2} rowHeight={180} >
+    {
+      selectedGifs.map((gif,i)=>{return (<ImageListItem key={i}><img src={gif.images.original.url} loading='lazy'></img></ImageListItem>)})
+    }
+   
+    </ImageList>
+
     <div className='action_btns'>
 
     <input
@@ -41,12 +52,11 @@ function PostEditor() {
     <PhotoIcon/>
     </Tooltip>
     </label>
-     
-   
+        
     <Tooltip enterTouchDelay={200} leaveTouchDelay={400} placement='top' title='Gif' onClick={handleGifMenuOpen}> 
     <GifIcon />
     </Tooltip>
-    <EditorGifMenu anchorEl={gifEl} openBool={gifMenuOpen} onClose={handleGifMenuClose}/>
+    <EditorGifMenu anchorEl={gifEl} openBool={gifMenuOpen} onClose={handleGifMenuClose} selectGifs={selectGifs}/>
       
 
     <Tooltip enterTouchDelay={200} leaveTouchDelay={400} placement='bottom' title='Poll'>
@@ -59,8 +69,7 @@ function PostEditor() {
     </div>
     </div>
 
-    {/* <Grid width={350} columns={3} fetchGifs={fetchGifs} onGifClick={(gif,e)=>{console.log(gif); e.preventDefault();}}/> */}
-    
+       
     </div>
   )
 }
@@ -68,20 +77,24 @@ function PostEditor() {
 export default PostEditor;
 
 
-function EditorGifMenu({anchorEl,openBool,onClose}){
+function EditorGifMenu({anchorEl,openBool,onClose,selectGifs}){
 
-  
   const gf=new GiphyFetch(process.env.REACT_APP_GIPHY_API_KEY);
   const fetchByTerm = (offset) => gf.search(searchTerm,{offset,limit:10});
-  
-
-  const [searchTerm,setSearchTerm] = useState('a');
+  const [searchTerm,setSearchTerm] = useState('trending');
+  const [currentSearch,setCurrentSearch] = useState('');
   const [showSearches,setShowSearches] = useState(false);
   const onSearchChange=(e) => {setSearchTerm(e.target.value);}
-  const updateGifs=()=>{setShowSearches(true);}
+  const updateGifs=()=>{setShowSearches(true);setCurrentSearch(searchTerm);}
   //handle resizing
   const [menuWidth,setMenuWidth] = useState(window.innerWidth);
-  
+  // window.addEventListener('resize',setMenuWidth(window.innerWidth));
+  useEffect(()=>{
+    function handleResize(){setMenuWidth(window.innerWidth);}
+    window.addEventListener('resize',handleResize);
+  },[]);
+
+
   return(
     <Menu
     id='gif-menu'
@@ -93,12 +106,11 @@ function EditorGifMenu({anchorEl,openBool,onClose}){
     <TextField placeholder='Search gifs...' fullWidth onChange={onSearchChange} className='searchfield'/>    
     <Button variant='contained' disabled={searchTerm.length< 2 ? true : false} onClick={updateGifs}><SearchIcon/></Button>
     </div>
-    <Typography variant='overline'>{showSearches ? `Search results for "${searchTerm}"` : 'Trending'}</Typography>
-    {
-    <Grid width={menuWidth} columns={3} fetchGifs={fetchByTerm} key={showSearches ? searchTerm : 'trending'} onGifClick={(gif,e)=>{console.log(gif,searchTerm); e.preventDefault();}}/>
+    <Typography variant='overline'>{showSearches ? `Search results for "${currentSearch}"` : 'Trending'}</Typography>
     
-
-    }
+    <Grid width={menuWidth} columns={3} fetchGifs={fetchByTerm} 
+     key={showSearches ? currentSearch : 'trending'} noLink onGifClick={(gif,e)=>{e.preventDefault(); selectGifs(prev=>[...prev,gif])}}/>
+       
     </Menu>
   )
 }
