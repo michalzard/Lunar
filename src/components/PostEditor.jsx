@@ -1,18 +1,22 @@
-import React from 'react'
+import React,{useState} from 'react'
 import "../styles/components/PostEditor.scss";
-import {TextField,Avatar,Tooltip,Divider} from "@mui/material";
+import {TextField,Avatar,Tooltip,Divider,Menu,Typography,Button} from "@mui/material";
 import PhotoIcon from '@mui/icons-material/Photo';
 import GifIcon from '@mui/icons-material/Gif';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import SearchIcon from '@mui/icons-material/Search';
 
 import {Grid} from '@giphy/react-components';
 import {GiphyFetch} from '@giphy/js-fetch-api';
 
 function PostEditor() {
 
-  const gf=new GiphyFetch(process.env.REACT_APP_GIPHY_API_KEY);
-  const fetchGifs = (offset) => gf.trending({offset,limit:10});
+  //Gif menu
+  const [gifEl,setGifEl] = useState(null);
+  const gifMenuOpen=Boolean(gifEl);
+  const handleGifMenuOpen=(e) => setGifEl(e.currentTarget);
+  const handleGifMenuClose=(e) => setGifEl(null);
 
   return (
     <div className='posteditor_container'>
@@ -38,9 +42,13 @@ function PostEditor() {
     </Tooltip>
     </label>
      
-    <Tooltip enterTouchDelay={200} leaveTouchDelay={400} placement='bottom' title='Gif'>
-    <GifIcon/>
+   
+    <Tooltip enterTouchDelay={200} leaveTouchDelay={400} placement='top' title='Gif' onClick={handleGifMenuOpen}> 
+    <GifIcon />
     </Tooltip>
+    <EditorGifMenu anchorEl={gifEl} openBool={gifMenuOpen} onClose={handleGifMenuClose}/>
+      
+
     <Tooltip enterTouchDelay={200} leaveTouchDelay={400} placement='bottom' title='Poll'>
     <BarChartIcon/>
     </Tooltip>
@@ -50,10 +58,47 @@ function PostEditor() {
     </Tooltip>
     </div>
     </div>
-    <Grid width={300} columns={3} fetchGifs={fetchGifs} onGifClick={(gif,e)=>{console.log('gif',gif); e.preventDefault();}}/>
+
+    {/* <Grid width={350} columns={3} fetchGifs={fetchGifs} onGifClick={(gif,e)=>{console.log(gif); e.preventDefault();}}/> */}
     
     </div>
   )
 }
 
 export default PostEditor;
+
+
+function EditorGifMenu({anchorEl,openBool,onClose}){
+
+  
+  const gf=new GiphyFetch(process.env.REACT_APP_GIPHY_API_KEY);
+  const fetchByTerm = (offset) => gf.search(searchTerm,{offset,limit:10});
+  
+
+  const [searchTerm,setSearchTerm] = useState('a');
+  const [showSearches,setShowSearches] = useState(false);
+  const onSearchChange=(e) => {setSearchTerm(e.target.value);}
+  const updateGifs=()=>{setShowSearches(true);}
+  //handle resizing
+  const [menuWidth,setMenuWidth] = useState(window.innerWidth);
+  
+  return(
+    <Menu
+    id='gif-menu'
+    anchorEl={anchorEl}
+    open={openBool}
+    onClose={onClose}
+    >
+    <div className='gifsearch'>
+    <TextField placeholder='Search gifs...' fullWidth onChange={onSearchChange} className='searchfield'/>    
+    <Button variant='contained' disabled={searchTerm.length< 2 ? true : false} onClick={updateGifs}><SearchIcon/></Button>
+    </div>
+    <Typography variant='overline'>{showSearches ? `Search results for "${searchTerm}"` : 'Trending'}</Typography>
+    {
+    <Grid width={menuWidth} columns={3} fetchGifs={fetchByTerm} key={showSearches ? searchTerm : 'trending'} onGifClick={(gif,e)=>{console.log(gif,searchTerm); e.preventDefault();}}/>
+    
+
+    }
+    </Menu>
+  )
+}

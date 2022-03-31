@@ -30,10 +30,12 @@
             display: flex;
 
         }
-        hr{
-            border-color:rgba(255,255,255,0.3);
-            margin:5px;
+
+        hr {
+            border-color: rgba(255, 255, 255, 0.3);
+            margin: 5px;
         }
+
         //needs to be in flex to have avatar nexto textfield
         .action_btns {
             color: $on_surface;
@@ -46,4 +48,20 @@
     }
 
     padding-bottom: 200px;
+
+}
+
+
+//GIF MENU
+
+#gif-menu {
+    padding-bottom: 200px;
+    height: 30vh;
+
+    .gifsearch {
+    display:flex;
+    align-items: center;
+    margin-bottom: 5px;
+    .MuiInputBase-root{ height: 50px;}
+    }
 }
