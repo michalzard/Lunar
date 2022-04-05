@@ -16,24 +16,3 @@ svg{
 cursor: pointer;
 }
 }
-
-$fabsize:50;
-.fab{
-    display:flex;
-    justify-content: flex-end;
-    margin:20px;
-    margin-right:calc($fabsize - 15)px;
-button{
-    color:white;
-    background-color: $primary;
-    width:$fabsize+px;
-    height:$fabsize+px;
-    svg{
-        width:calc($fabsize/2)px;
-        height:calc($fabsize/2)px;
-    }
-}
-button:hover{
-    background-color: $primary;
-}
-}

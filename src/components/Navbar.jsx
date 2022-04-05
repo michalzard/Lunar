@@ -10,17 +10,12 @@ import SearchIcon from '@mui/icons-material/Search';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
-import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
-import {Fab} from '@mui/material';
+// import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+// import {Fab} from '@mui/material';
 
 function Navbar({display,setDisplay}) {
   const highlightColor='#bb86fc';
   return (
-    <>
-    <div className='fab'>
-    <Fab disableRipple onClick={()=>{setDisplay('Post Editor')}}> <HistoryEduIcon/> </Fab>
-    </div>
-
     <div className='navbar'>
     {
       display === 'Home' ? <HomeIcon style={{color:highlightColor}}/> 
@@ -35,7 +30,6 @@ function Navbar({display,setDisplay}) {
       : <NotificationsNoneIcon onClick={()=>{setDisplay('Notifications');}}/>
     }
     </div>
-    </>
   )
 }
 
