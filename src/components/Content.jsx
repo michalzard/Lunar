@@ -14,15 +14,20 @@ function Content({display,setDisplay}) {
     {display === 'Home' ? 
     <div className='_content'>
     <Typography variant='body1' color='white'>Content</Typography>
-    
-    <div className='fab'>
-    <Fab disableRipple onClick={()=>{setDisplay('Post Editor')}}> <HistoryEduIcon/> </Fab>
-    </div>
     </div>
     : null }
     {display === 'User Profile' ? <UserProfile setDisplay={setDisplay}/> : null}  
     {display === 'Edit Profile' ? <ProfileEdit/> : null}
     {display === 'Post Editor' ? <PostEditor/> : null}
+    
+    {
+    display === 'Home' || display === 'User Profile' ?   
+    <div className='fab'>
+    <Fab disableRipple onClick={()=>{setDisplay('Post Editor')}}> <HistoryEduIcon/> </Fab>
+    </div>
+    : null 
+    }
+
     {
       display === 'Home' || display === 'Search' ?     <Navbar display={display} setDisplay={setDisplay}/> : null
     }
