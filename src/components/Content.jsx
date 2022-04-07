@@ -18,13 +18,14 @@ function Content({display,setDisplay}) {
     <div className='fab'>
     <Fab disableRipple onClick={()=>{setDisplay('Post Editor')}}> <HistoryEduIcon/> </Fab>
     </div>
-    <Navbar display={display} setDisplay={setDisplay}/> 
     </div>
     : null }
     {display === 'User Profile' ? <UserProfile setDisplay={setDisplay}/> : null}  
     {display === 'Edit Profile' ? <ProfileEdit/> : null}
     {display === 'Post Editor' ? <PostEditor/> : null}
-    
+    {
+      display === 'Home' || display === 'Search' ?     <Navbar display={display} setDisplay={setDisplay}/> : null
+    }
     </div>
   )
 }

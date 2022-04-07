@@ -1,11 +1,12 @@
 @import '../Theme.scss';
 
 .content{
-    position:relative;
     display:flex;
     flex-direction: column;
     flex-grow: 1;
-    overflow-y: scroll;
+    ._content{
+        flex-grow:1;
+    }
 }
 
 $fabsize:50;
