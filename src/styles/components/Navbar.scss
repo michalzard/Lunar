@@ -1,18 +1,21 @@
 @import "../Theme.scss";
 
-.navbar{
-display:flex;
-color:$on_background;
-border-top: 3px solid $surface;
-justify-content: space-around;
+.navbar {
+    position: relative;
+    display: flex;
+    overflow-y: scroll;
+    color: $on_background;
+    border-top: 3px solid $surface;
+    justify-content: space-around;
 
-svg{
-    width:30px;
-    height:30px;
-    margin:15px;
-    
-}
-:hover{
-cursor: pointer;
-}
+    svg {
+        width: 30px;
+        height: 30px;
+        margin: 15px;
+
+    }
+
+    :hover {
+        cursor: pointer;
+    }
 }
