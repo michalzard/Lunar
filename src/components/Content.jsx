@@ -12,21 +12,19 @@ function Content({display,setDisplay}) {
   return (
     <div className='content'>
     {display === 'Home' ? 
-    <div className='content'>
+    <div className='_content'>
     <Typography variant='body1' color='white'>Content</Typography>
     
     <div className='fab'>
     <Fab disableRipple onClick={()=>{setDisplay('Post Editor')}}> <HistoryEduIcon/> </Fab>
     </div>
-
+    <Navbar display={display} setDisplay={setDisplay}/> 
     </div>
     : null }
     {display === 'User Profile' ? <UserProfile setDisplay={setDisplay}/> : null}  
     {display === 'Edit Profile' ? <ProfileEdit/> : null}
     {display === 'Post Editor' ? <PostEditor/> : null}
-    {
-      display==='Edit Profile' || display==='Post Editor' ? null :  <Navbar display={display} setDisplay={setDisplay}/> 
-    }
+    
     </div>
   )
 }

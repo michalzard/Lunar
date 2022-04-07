@@ -1,13 +1,13 @@
 @import "../Theme.scss";
 
 .navbar {
-    position: relative;
+    position: absolute;
     display: flex;
-    overflow-y: scroll;
     color: $on_background;
     border-top: 3px solid $surface;
     justify-content: space-around;
-
+    width:100%;
+    bottom:0;
     svg {
         width: 30px;
         height: 30px;
