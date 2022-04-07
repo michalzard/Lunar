@@ -1,36 +1,38 @@
 @import '../Theme.scss';
 
-.content{
-    display:flex;
+.content {
+    display: flex;
     flex-direction: column;
     flex-grow: 1;
-    ._content{
-        flex-grow:1;
+
+    ._content {
+        flex-grow: 1;
     }
 }
 
 $fabsize:50;
 
-.fab{
-    display:flex;
-    position:absolute;
-    bottom:0;
-    right:0;
-    margin:20px;
-    margin-right:35px;
-    margin-bottom:70px;
+.fab {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin-bottom: 10vh;
+    margin-right: 5vh;
 
-button{
-    color:white;
-    background-color: $primary;
-    width:$fabsize+px;
-    height:$fabsize+px;
-    svg{
-        width:calc($fabsize/2)+'px';
-        height:calc($fabsize/2)+'px';
+    button {
+        color: white;
+        background-color: $primary;
+        width: $fabsize+px;
+        height: $fabsize+px;
+
+        svg {
+            width: calc($fabsize/2)+'px';
+            height: calc($fabsize/2)+'px';
+        }
     }
-}
-button:hover{
-    background-color: $primary;
-}
+
+    button:hover {
+        background-color: $primary;
+    }
 }
