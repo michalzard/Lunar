@@ -6,6 +6,7 @@ import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import UserProfile from './UserProfile';
 import ProfileEdit from './ProfileEdit';
 import PostEditor from './PostEditor';
+import Navbar from './Navbar';
 
 function Content({display,setDisplay}) {
   return (
@@ -23,6 +24,9 @@ function Content({display,setDisplay}) {
     {display === 'User Profile' ? <UserProfile setDisplay={setDisplay}/> : null}  
     {display === 'Edit Profile' ? <ProfileEdit/> : null}
     {display === 'Post Editor' ? <PostEditor/> : null}
+    {
+      display==='Edit Profile' || display==='Post Editor' ? null :  <Navbar display={display} setDisplay={setDisplay}/> 
+    }
     </div>
   )
 }
