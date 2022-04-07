@@ -6,7 +6,7 @@
     color: $on_background;
     border-top: 3px solid $surface;
     justify-content: space-around;
-    position: absolute;
+    position: fixed; //make navbar stick to bottom of screen , specifically for mobile viewport
     width:100%;
     top:auto;
     bottom:0;
