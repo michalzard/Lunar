@@ -1,39 +1,59 @@
 @import '../Theme.scss';
-.header{
-    display:flex;
+
+.header {
+    position: sticky;
+    top: 0;
+    display: flex;
     align-items: center;
-    padding:15px;
+    padding: 15px;
     padding-bottom: 0px;
 
-    h5,h6{
+    h5,
+    h6 {
         font-weight: bold;
-        margin-left:20px;
+        margin-left: 20px;
     }
-    svg{
-        color:$on_background;
+
+    svg {
+        color: $on_background;
     }
-    .info > span{
-        display:flex;
+
+    .info>span {
+        display: flex;
         flex-direction: column;
-        color:$on_surface;
-        margin-left:20px;
+        color: $on_surface;
+        margin-left: 20px;
     }
-    .edit_profile{
-        display:flex;
+
+    .edit_profile {
+        display: flex;
         width: 100%;
         justify-content: space-between;
-        .edit_button{background-color: $primary;}
+
+        .edit_button {
+            background-color: $primary;
+        }
     }
-    .searchbar{
-    input{
-        color:white;
+
+    .searchbar {
+        input {
+            color: white;
+        }
     }
-    }
-    .post_btn{
-        display:flex;
+
+    .post_btn {
+        display: flex;
         justify-content: flex-end;
-        align-items: center;        
-        button{color:$primary;}
-        button:last-child{background-color:$primary;color:$on_background;margin-left:5px;}
+        align-items: center;
+
+        button {
+            color: $primary;
+        }
+
+        button:last-child {
+            background-color: $primary;
+            color: $on_background;
+            margin-left: 5px;
+        }
     }
 }

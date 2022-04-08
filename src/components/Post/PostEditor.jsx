@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-import "../styles/components/PostEditor.scss";
+import "../../styles/components/Post/PostEditor.scss";
 import {TextField,Avatar,Tooltip,Divider,Menu,Typography,Button, MenuItem } from "@mui/material";
 import PhotoIcon from '@mui/icons-material/Photo';
 import GifIcon from '@mui/icons-material/Gif';
@@ -12,7 +12,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import {Grid} from '@giphy/react-components';
 import {GiphyFetch} from '@giphy/js-fetch-api';
 
-function PostEditor() {
+function PostEditor({setPostUnsaved}) {
   //Gif menu
   const [gifEl,setGifEl] = useState(null);
   const [filterEl,setFilterEl] = useState(null);
@@ -26,6 +26,13 @@ function PostEditor() {
   const [lastSelectedMedia,selectMedia] = useState({});
   const [nsfw,setNsfw] = useState(false);
   const [violent,setViolent] = useState(false);
+  
+  const [postText,setPostText] = useState('');
+  //everytime there's change in postText content,change boolean for if we can just go back or need to save post
+  useEffect(()=>{
+  if(postText.length>0) setPostUnsaved(true);
+  else setPostUnsaved(false);
+  },[postText]);
 
   return (
     <div className='posteditor_container'>
@@ -33,7 +40,8 @@ function PostEditor() {
     <div className='text'>
     <Avatar/>
     {/** focused stays false so that focus animation doesnt play */}
-    <TextField placeholder="What's happening" focused={false} variant='standard' minRows={4} maxRows={7} inputProps={{maxLength:200}} margin="normal" multiline fullWidth/>
+    <TextField placeholder="Share your thoughts" onChange={(e)=>{setPostText(e.target.value);}}
+    focused={false} variant='standard' minRows={4} maxRows={7} inputProps={{maxLength:200}} margin="normal" multiline fullWidth/>
     </div>
     <Divider/>
 
@@ -124,7 +132,7 @@ function EditorGifMenu({anchorEl,openBool,onClose,selectGifs,lastSelectedMedia})
 }
 
 function EditorFilterMenu({nsfw,setNsfw,violent,setViolent,anchorEl,openBool,onClose}){
-
+  
   return(
     <Menu
     id='filter-menu'
