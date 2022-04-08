@@ -5,23 +5,24 @@ import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 
 import UserProfile from './UserProfile';
 import ProfileEdit from './ProfileEdit';
-import PostEditor from './PostEditor';
+import PostEditor from './Post/PostEditor';
 import Navbar from './Navbar';
 
-function Content({display,setDisplay}) {
+function Content({display,setDisplay,isDisplay,setPostUnsaved}) {
   return (
     <div className='content'>
-    {display === 'Home' ? 
+    {isDisplay('home') ? 
     <div className='_content'>
     <Typography variant='body1' color='white'>Content</Typography>
+    
     </div>
     : null }
-    {display === 'User Profile' ? <UserProfile setDisplay={setDisplay}/> : null}  
-    {display === 'Edit Profile' ? <ProfileEdit/> : null}
-    {display === 'Post Editor' ? <PostEditor/> : null}
+    {isDisplay('user profile') ? <UserProfile setDisplay={setDisplay}/> : null}  
+    {isDisplay('edit profile') ? <ProfileEdit/> : null}
+    {isDisplay('post editor') ? <PostEditor setPostUnsaved={setPostUnsaved}/> : null}
     
     {
-    display === 'Home' || display === 'User Profile' ?   
+    isDisplay('home') ?
     <div className='fab'>
     <Fab disableRipple onClick={()=>{setDisplay('Post Editor')}}> <HistoryEduIcon/> </Fab>
     </div>
@@ -29,7 +30,7 @@ function Content({display,setDisplay}) {
     }
 
     {
-      display === 'Home' || display === 'Search' ?     <Navbar display={display} setDisplay={setDisplay}/> : null
+      isDisplay('home','search') ? <Navbar display={display} setDisplay={setDisplay}/> : null
     }
     </div>
   )
