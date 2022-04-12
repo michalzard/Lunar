@@ -12,6 +12,7 @@ function Header({display,setDisplay,isDisplay,isPostUnsaved}) {
 
   return (
     <div className='header'>
+       
     {
       isDisplay('home')  ?
       <Avatar alt='User Avatar' onClick={()=>{setOpen(true);}}/>
@@ -19,7 +20,9 @@ function Header({display,setDisplay,isDisplay,isPostUnsaved}) {
       <>
       { !isDisplay('search') ? 
       <span onClick={()=>{
-      // else back out to home
+      if(display.toLowerCase().includes('settings-')) setDisplay('Settings');
+      else setDisplay('Home');
+       // else back out to home
       if(isDisplay('edit profile')) setDisplay('User Profile');
       else if(isDisplay('post editor')){
         // logic if post unsaved -> discard dialog prompt
@@ -27,7 +30,6 @@ function Header({display,setDisplay,isDisplay,isPostUnsaved}) {
         // if nothing to save to drafts -> go back to home
         : setDisplay('Home'); 
       }
-      else setDisplay('Home');
       
       }}><ArrowBackIcon/></span>
       : null}
@@ -62,7 +64,7 @@ function Header({display,setDisplay,isDisplay,isPostUnsaved}) {
         <SearchIcon/>
         <TextField variant='outlined' placeholder='Search Lunar' className='searchbar'  fullWidth />
         </>
-        : <Typography variant='h5' color='white'>{display}</Typography>
+        : <Typography variant='h5' color='white'>{display.split('-')[1] ? display.split('-')[1] : display} </Typography>
       }
     </>  
     }
@@ -81,7 +83,7 @@ function Header({display,setDisplay,isDisplay,isPostUnsaved}) {
     open={discardOpen}
     handleClose={()=>{setDiscardOpen(false)}}
     onDiscard={()=>{setDiscardOpen(false);setDisplay('Home');}}
-    onSave={()=>{setDiscardOpen(false);setDisplay('Home');console.log('saved to drafts');}}
+    onSave={()=>{setDiscardOpen(false);setDisplay('Home');console.log('saved to drafts');}} //TODO DRAFTS VIEW
     />
     </div>
   )
