@@ -2,11 +2,15 @@ import React from 'react';
 import "../styles/components/Content.scss";
 import {Typography,Fab} from "@mui/material";
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
-
 import UserProfile from './UserProfile';
 import ProfileEdit from './ProfileEdit';
 import PostEditor from './Post/PostEditor';
 import Navbar from './Navbar';
+import SettingsMenu from './Settings/SettingsMenu';
+import AccountInformation from './Settings/AccountInformation';
+import Acessibility from "./Settings/Accessibility";
+
+
 
 function Content({display,setDisplay,isDisplay,setPostUnsaved}) {
   return (
@@ -28,10 +32,13 @@ function Content({display,setDisplay,isDisplay,setPostUnsaved}) {
     </div>
     : null 
     }
+    {isDisplay('home','search') ? <Navbar display={display} setDisplay={setDisplay}/> : null}
 
-    {
-      isDisplay('home','search') ? <Navbar display={display} setDisplay={setDisplay}/> : null
-    }
+    
+    {isDisplay('settings') ? <SettingsMenu display={display} setDisplay={setDisplay} /> : null}
+    {isDisplay('settings-account information') ?  <AccountInformation/>: null}
+    {isDisplay('settings-accessibility') ? <Acessibility/> : null}
+
     </div>
   )
 }
