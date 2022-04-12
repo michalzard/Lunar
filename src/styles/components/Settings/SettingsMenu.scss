@@ -1,0 +1,30 @@
+@import '../../Theme.scss';
+$svgsize:15px;
+
+.settings_menu {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+
+    .settingsButton {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        color: $on_surface;
+        cursor: pointer;
+
+        svg {
+            width: $svgsize;
+            height: $svgsize;
+            color: $on_surface;
+        }
+    }
+    //used for web view experience
+    .highlighted {
+        background-color: rgb(25, 25, 25); // added 7 to back to create highlight color for background
+        border-right: 3px solid $primary;
+    }
+}

@@ -1,0 +1,21 @@
+@import '../../Theme.scss';
+
+.account_information{  
+    color:$on_background;
+    margin:5px;
+    .MuiInputBase-root{
+        input{ color:$on_surface }
+    }
+    .title{
+        color:lightgray;
+        margin-left:10px;
+    }
+    .fields{
+        div{
+            margin-top:5px;
+        }
+    }
+    button{
+        margin:10px;
+    }
+}
