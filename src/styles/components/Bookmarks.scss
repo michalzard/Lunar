@@ -1,0 +1,91 @@
+@import '../Theme.scss';
+
+.bookmarks {
+    .createButton {
+        color: red;
+        margin: 5px;
+    }
+
+    hr {
+        background-color: rgb(230, 230, 230, .6);
+    }
+
+    width: 100vw;
+    height: 100vh;
+    overflow-y:scroll;
+}
+
+.bookmarkLists {
+    padding-bottom: 50px;
+}
+
+#create-lists {
+
+    .editor_header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 10px;
+
+        button {
+            background-color: $primary;
+        }
+    }
+
+    .fields {
+        margin: 10px;
+
+        div {
+            margin-top: 2px;
+        }
+    }
+
+    .toggle {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin-top: 10px !important;
+    }
+}
+
+.bookmark {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    margin: 15px;
+
+    svg {
+        width: 20px;
+        height: 20px;
+        margin-left: 10px;
+    }
+
+    .info {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        .name {
+            display: flex;
+            align-items: center;
+        }
+
+        .desc {
+            color: lightgray;
+        }
+    }
+}
+
+.bm_notfound {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    margin-top: 100px;
+    justify-content: center;
+    color: $on_background;
+
+    .warning {
+        margin-left: 10px;
+    }
+}
