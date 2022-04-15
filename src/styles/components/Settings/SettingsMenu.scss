@@ -21,10 +21,15 @@ $svgsize:15px;
             height: $svgsize;
             color: $on_surface;
         }
+        .info > span{
+            color:lightgray;
+            // text-overflow: ellipsis;
+        }
     }
     //used for web view experience
     .highlighted {
         background-color: rgb(25, 25, 25); // added 7 to back to create highlight color for background
         border-right: 3px solid $primary;
     }
+
 }
