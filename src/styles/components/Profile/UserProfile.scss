@@ -1,0 +1,46 @@
+@import '../../Theme.scss';
+
+$size:60px;
+
+.user_profile{
+    display:flex;
+    flex-direction: column;
+    color:white;
+    margin:10px;
+    .photo{
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+        .MuiAvatar-root{
+            width: $size;
+            height: $size;
+        }
+        button{
+            color:$on_surface;
+            border-color: $primary;
+            margin-right:5px;
+            height: $size - 25;
+
+        }
+    }
+    .user_name{
+        display:flex;
+        flex-direction: column;
+        .tag{
+            color:$on_background;
+        }
+    }
+    .description{
+        margin-top:2px;
+    }
+    .interests{
+        display:flex;
+        align-items: center;
+    }
+    .filter_buttons{
+        display:flex;
+        justify-content: space-around;
+        padding:10px;
+        padding-top:20px;
+    }
+}

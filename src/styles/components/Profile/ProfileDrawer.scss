@@ -1,0 +1,55 @@
+@import '../../Theme.scss';
+
+.ProfileDrawer{
+    
+    .MuiDrawer-paper{
+        display:flex;
+        background-color: $surface;
+        color:white;       
+        width: 70vw; 
+    }
+    .account_info{
+        display:flex;
+        align-items: center;
+        justify-content: space-between;
+        padding:10px;
+        p{
+            font-weight: bold;
+        }
+    }
+    .user_info{
+        display: flex;
+        padding:10px;
+        color:white;
+        .user_i{
+            margin-left:10px;
+            .tag{
+                color:$on_surface;
+            }
+        }
+    }
+    .followCount{
+        display:flex;
+        span{color:$on_surface}
+        .following{margin:10px;}
+        .followers{margin:10px;}
+    }
+    .action_buttons{
+        display:flex;
+        height: 100%;
+        justify-content: flex-start;
+        
+        flex-direction: column;
+        svg{color:white;margin:5px;}
+        p,span{
+            display:flex;
+            align-items: center;
+            padding:5px;
+            color:$on_surface;
+        }
+        p:last-child{
+        margin-left:15px;
+        color:$primary;
+        }
+    }
+}

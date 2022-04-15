@@ -2,16 +2,20 @@
 
 .accessibility {
     color: $on_background;
-
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
     .example_post {
         height: 200px;
     }
-
+    h6{
+        text-align: center; //title
+    }
     .pick_fontsize {
         display:flex;
         align-items: center;
         justify-content: center;
-        margin:20px;
+        margin:10px;
         .MuiSlider-root{
             color: $primary;
         }
@@ -26,6 +30,32 @@
         
     }
 
-    .pick_bgtheme {}
+    .pick_bgtheme {
+        display:flex;
+        align-items: center;
+        justify-content: space-around;
+        .theme_block{
+            margin:10px;
+            width: 40%;
+            border-radius: 10px;
+            height: 90px;
+            display:flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            .MuiRadio-root {
+                color:$secondary;
+            }
+        }
+        .dark{
+            background-color: $surface;
+            color:$on_surface;
+        }
+        .light{
+            background-color: $on_background;
+            color:$background;
+        }
+    }
+    button{margin:30px;background-color:$primary;}
 
 }

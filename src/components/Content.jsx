@@ -2,14 +2,14 @@ import React from 'react';
 import "../styles/components/Content.scss";
 import {Typography,Fab} from "@mui/material";
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
-import UserProfile from './UserProfile';
-import ProfileEdit from './ProfileEdit';
+import UserProfile from './Profile/UserProfile';
+import ProfileEdit from './Profile/ProfileEdit';
 import PostEditor from './Post/PostEditor';
 import Navbar from './Navbar';
 import SettingsMenu from './Settings/SettingsMenu';
 import AccountInformation from './Settings/AccountInformation';
 import Acessibility from "./Settings/Accessibility";
-
+import Bookmarks from './Bookmarks';
 
 
 function Content({display,setDisplay,isDisplay,setPostUnsaved}) {
@@ -38,6 +38,8 @@ function Content({display,setDisplay,isDisplay,setPostUnsaved}) {
     {isDisplay('settings') ? <SettingsMenu display={display} setDisplay={setDisplay} /> : null}
     {isDisplay('settings-account information') ?  <AccountInformation/>: null}
     {isDisplay('settings-accessibility') ? <Acessibility/> : null}
+
+    {isDisplay('bookmarks') ? <Bookmarks/> : null}
 
     </div>
   )

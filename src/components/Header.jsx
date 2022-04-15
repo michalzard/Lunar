@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import "../styles/components/Header.scss";
 import { Avatar,Button,TextField,Typography } from '@mui/material';
-import ProfileDrawer from './ProfileDrawer';
+import ProfileDrawer from './Profile/ProfileDrawer';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import DiscardDialog from './Post/DiscardDialog';
