@@ -11,8 +11,11 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import {Grid} from '@giphy/react-components';
 import {GiphyFetch} from '@giphy/js-fetch-api';
+// import { Navigate } from 'react-router-dom';
+
 
 function PostEditor({setPostUnsaved}) {
+
   //Gif menu
   const [gifEl,setGifEl] = useState(null);
   const [filterEl,setFilterEl] = useState(null);
@@ -32,7 +35,7 @@ function PostEditor({setPostUnsaved}) {
   useEffect(()=>{
   if(postText.length>0) setPostUnsaved(true);
   else setPostUnsaved(false);
-  },[postText]);
+  },[postText.length,setPostUnsaved]);
 
   return (
     <div className='posteditor_container'>

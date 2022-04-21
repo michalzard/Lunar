@@ -1,39 +1,74 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import "../../styles/components/Profile/UserProfile.scss";
 import {Avatar,Typography,Button} from '@mui/material';
-
+import LinearProgress from '@mui/material/LinearProgress';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import LinkIcon from '@mui/icons-material/Link';
 import InterestsIcon from '@mui/icons-material/Interests';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 
 
-function UserProfile({setDisplay}) {
+function UserProfile({setDisplay,user}) {
+  const {name} = useParams();
+  const [isLoading,setLoading]=useState(true);
+  const [profileNotFound,setProfileNotFound]=useState(false);  
+  const [fetchedUser,setFetchedUser] = useState({}); //State for if you need to fetch diff profile
+
+  //Everytime name changes in url params this fetches profile info to see if there's existing profile
+  useEffect(()=>{
+  if(user.name===name) {
+  setFetchedUser(user);
+  setProfileNotFound(false);
+  console.log('same name',fetchedUser);
+  setLoading(false);
+  }
+  else{
+    axios.get(`${process.env.REACT_APP_USER_ROUTE}/${name}`).then((data)=>{
+      const {user} = data.data;
+      if(!user) setProfileNotFound(true);
+      setFetchedUser(user);
+      setLoading(false);
+    })
+  }  
+  },[name]);
+
   const [filter,setFilter]=useState('Posts');
   const highlightColor='#bb86fc';
   return (
+    
+    
     <div className='user_profile'>
+    {
+    isLoading ? <LinearProgress color='secondary'/> 
+    : 
+    <>
+    {
+      profileNotFound ? <ProfileNotFound name={name}/> 
+      :
+    <>
     <div className='user_info'>
     <div className='photo'>
-    
     <Avatar/>
-
-    <Button variant='outlined' onClick={()=>{setDisplay('Edit Profile')}}>Edit profile</Button>
+    { user.name === name ? <Button variant='outlined' onClick={()=>{setDisplay('Edit Profile')}}>Edit profile</Button> : null }
     </div>
     <div className='info'>
     <div className='user_name'>
-    <Typography variant='body1' className='name'>Username</Typography> 
-    <Typography variant='caption' className='tag'>@Usertag</Typography>
+    
+    <Typography variant='body1' className='name'>{fetchedUser ? fetchedUser.name : 'Username'}</Typography> 
+    <Typography variant='caption' className='tag'>{fetchedUser ? `@${fetchedUser.name}` : '@Usertag'}</Typography>
     </div>
     </div>
     <div className='description'>
     <Typography variant='caption'>Bio</Typography>
     </div>
     <div className='interests'>
-    <InterestsIcon/> Interest
+    <InterestsIcon/>Interest
     <LocationOnIcon/>Location
     <LinkIcon/>Link
-    <CalendarMonthIcon/>20/03/2000
+    <CalendarMonthIcon/>{user ? new Date(fetchedUser.createdAt).toUTCString().substring(0,17) : '20/03/2000'}
     </div>
     </div>
     <div className='filter_buttons'>
@@ -53,8 +88,23 @@ function UserProfile({setDisplay}) {
     <div className='content'>
     content
     </div>
+    </>
+    }
+    
+    </>
+    }
+    
     </div>
   )
 }
+
+function ProfileNotFound({name}){
+  return(
+    <div className='profile_notfound'>
+      <SupervisedUserCircleIcon/> <Typography>{name ? name : 'Profile'} doesn't exist</Typography>
+    </div>
+  )
+}
+
 
 export default UserProfile;

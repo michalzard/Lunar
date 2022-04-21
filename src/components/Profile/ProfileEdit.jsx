@@ -6,14 +6,15 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
 import '../../styles/components/Profile/ProfileEdit.scss';
 
+import { useParams,Navigate } from 'react-router-dom';
 
-function ProfileEdit() {
-
-  const [username,setUsername] = useState('');
+function ProfileEdit({user}) {
+  const {name} = useParams();
+  const [username,setUsername] = useState(user ? user.name : '');
   const [bio,setBio] = useState('');
   const [location,setLocation] = useState('');
   const [web,setWeb] = useState('');
-  const [birthday,setBirthday] = useState(new Date());
+  const [birthday,setBirthday] = useState(user ? user.createdAt : new Date());
   const updateUsername=e=>setUsername(e.target.value);
   const updateBio=e=>setBio(e.target.value);
   const updateLocation=e=>setLocation(e.target.value);
@@ -22,8 +23,11 @@ function ProfileEdit() {
 
   return (
     <div className='profile_edit'>
-      
-      <span onClick={()=>{console.log('avatar clicked')}}>
+      {
+        user.name !== name ?  <Navigate to={`/u/${name}`}/> //redirects back one
+        : 
+        <>
+        <span onClick={()=>{console.log('avatar clicked')}}>
       <Avatar className='photo'/>
       </span>
 
@@ -57,7 +61,8 @@ function ProfileEdit() {
         /></LocalizationProvider>
       </div>
       </div>
-
+        </>
+      }
     </div>
   )
 }

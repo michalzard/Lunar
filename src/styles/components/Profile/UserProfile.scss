@@ -2,45 +2,72 @@
 
 $size:60px;
 
-.user_profile{
-    display:flex;
+.user_profile {
+    display: flex;
     flex-direction: column;
-    color:white;
-    margin:10px;
-    .photo{
-        display:flex;
+    color: white;
+    flex-grow: 1;
+    margin: 10px;
+
+    .photo {
+        display: flex;
         justify-content: space-between;
         align-items: center;
-        .MuiAvatar-root{
+
+        .MuiAvatar-root {
             width: $size;
             height: $size;
         }
-        button{
-            color:$on_surface;
+
+        button {
+            color: $on_surface;
             border-color: $primary;
-            margin-right:5px;
+            margin-right: 5px;
             height: $size - 25;
 
         }
     }
-    .user_name{
-        display:flex;
+
+    .user_name {
+        display: flex;
         flex-direction: column;
-        .tag{
-            color:$on_background;
+
+        .tag {
+            color: $on_background;
         }
     }
-    .description{
-        margin-top:2px;
+
+    .description {
+        margin-top: 2px;
     }
-    .interests{
-        display:flex;
+
+    .interests {
+        display: flex;
         align-items: center;
     }
-    .filter_buttons{
-        display:flex;
+
+    .filter_buttons {
+        display: flex;
         justify-content: space-around;
-        padding:10px;
-        padding-top:20px;
+        padding: 10px;
+        padding-top: 20px;
+    }
+}
+
+.profile_notfound {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80%;
+
+    svg {
+        width: 40px;
+        height: 40px;
+    }
+
+    p {
+        margin-left: 5px;
+        font-size: 20px;
+
     }
 }

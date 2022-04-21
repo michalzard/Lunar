@@ -6,7 +6,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import DiscardDialog from './Post/DiscardDialog';
 
-function Header({display,setDisplay,isDisplay,isPostUnsaved}) {
+function Header({display,setDisplay,isDisplay,isPostUnsaved,user,setUser}) {
   const [opened,setOpen] = useState(false);
   const [discardOpen,setDiscardOpen] = useState(false);
 
@@ -39,7 +39,7 @@ function Header({display,setDisplay,isDisplay,isPostUnsaved}) {
   {
     isDisplay('user profile') ? 
     <div className='info'>
-    <Typography variant='h6' color='white'>Username</Typography> 
+    <Typography variant='h6' color='white'>{user ? user.name : 'Username'}</Typography> 
     <Typography variant='caption'>0 Posts</Typography> 
     </div>
     : 
@@ -77,6 +77,8 @@ function Header({display,setDisplay,isDisplay,isPostUnsaved}) {
     open={opened}
     setOpen={setOpen}
     setDisplay={setDisplay}
+    user={user}
+    setUser={setUser}
     />
 
     <DiscardDialog

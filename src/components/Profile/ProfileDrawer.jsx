@@ -1,15 +1,30 @@
 import React from 'react'
-import {Drawer, Typography,Avatar} from '@mui/material';
+import {Drawer, Typography,Avatar,Link} from '@mui/material';
 import "../../styles/components/Profile/ProfileDrawer.scss";
 import CloseIcon from '@mui/icons-material/Close';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import axios from 'axios';
 
-function ProfileDrawer({anchor,open,setOpen,setDisplay}) {
-    const onDrawerClose=()=>{
+
+function ProfileDrawer({anchor,open,setOpen,user,setUser}) {
+  const onDrawerClose=()=>{
         setOpen(false);
+  }
+
+  const logoutRequest=()=>{
+    axios.post(`${process.env.REACT_APP_AUTH_ROUTE}/logout`,{
+      id:localStorage.getItem('sessionID')
+    }).then(data=>{
+      const {message}=data.data;
+    if(message.includes('User successfully logged out!')) {
+      setUser({});//remove user object since you logged out
+      if(localStorage.getItem('sessionID'))localStorage.removeItem('sessionID');
     }
+    });
+  }
+
   return (
     <Drawer
         anchor={anchor}
@@ -25,8 +40,8 @@ function ProfileDrawer({anchor,open,setOpen,setDisplay}) {
     <div className='user_info'>
     <Avatar/>
     <div className='user_i'>
-    <Typography variant='body2'>Username</Typography>
-    <Typography variant='body2' className='tag'>@Usertag</Typography>
+    <Typography variant='body2'>{user ? user.name : 'Username'}</Typography>
+    <Typography variant='body2' className='tag'>{user ? `@${user.name}` : '@Usertag'}</Typography>
     </div>
     </div>
 
@@ -36,10 +51,11 @@ function ProfileDrawer({anchor,open,setOpen,setDisplay}) {
     </div>
 
     <div className='action_buttons'>
-    <Typography variant='body1'><span onClick={()=>{setDisplay('User Profile');setOpen(false);}}><PersonIcon/> Profile</span></Typography>
-    <Typography variant='body1'><span onClick={()=>{setDisplay('Bookmarks');setOpen(false);}}><BookmarkIcon/>Bookmarks</span></Typography>
-    <Typography variant='body1'><span onClick={()=>{setDisplay('Settings');setOpen(false);}}><SettingsIcon/>Settings</span></Typography>
-    <Typography variant='body2'>Log out</Typography>
+    <Link href={`/u/${user.name}`} variant='body1'><PersonIcon/> Profile</Link>
+    <Link href={`/bookmarks`} variant='body1'><BookmarkIcon/>Bookmarks</Link>
+    <Link href={`/settings`} variant='body1' onClick={()=>{;setOpen(false);}}><SettingsIcon/>Setting</Link>
+
+    <Link href={`/login`} variant='body2'><span onClick={()=>{setOpen(false);logoutRequest();}}>Log out</span></Link>
   
     </div>
 

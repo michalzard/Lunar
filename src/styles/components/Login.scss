@@ -1,0 +1,48 @@
+@import '../Theme.scss';
+
+.login_page {
+    color: $on_background;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+
+    h4{
+        margin-left: 20px;
+    }
+
+    p{
+        text-align: center;
+        color: $secondary;
+        margin-top:10px;
+    }
+
+    .MuiTextField-root>div {
+        color: $on_background;
+    }
+
+    .fields {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 10px;
+    }
+
+    .btns {
+        display: flex;
+        flex-direction: column;
+        margin:10px;
+        button {
+            color:white;
+        }
+        .MuiButton-contained {
+            background-color: $primary;
+        }
+        //reg text
+        span{
+            color:$primary;
+            margin-left:5px;
+        }
+    }
+}
