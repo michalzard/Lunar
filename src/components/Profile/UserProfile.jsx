@@ -6,23 +6,22 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import LinkIcon from '@mui/icons-material/Link';
 import InterestsIcon from '@mui/icons-material/Interests';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 
 
-function UserProfile({setDisplay,user}) {
+function UserProfile({user}) {
   const {name} = useParams();
   const [isLoading,setLoading]=useState(true);
   const [profileNotFound,setProfileNotFound]=useState(false);  
   const [fetchedUser,setFetchedUser] = useState({}); //State for if you need to fetch diff profile
-
+  const navigate=useNavigate();
   //Everytime name changes in url params this fetches profile info to see if there's existing profile
   useEffect(()=>{
   if(user.name===name) {
   setFetchedUser(user);
   setProfileNotFound(false);
-  console.log('same name',fetchedUser);
   setLoading(false);
   }
   else{
@@ -33,7 +32,7 @@ function UserProfile({setDisplay,user}) {
       setLoading(false);
     })
   }  
-  },[name]);
+  },[name,user]);
 
   const [filter,setFilter]=useState('Posts');
   const highlightColor='#bb86fc';
@@ -46,13 +45,13 @@ function UserProfile({setDisplay,user}) {
     : 
     <>
     {
-      profileNotFound ? <ProfileNotFound name={name}/> 
-      :
+    profileNotFound ? <ProfileNotFound name={name}/> 
+    :
     <>
     <div className='user_info'>
     <div className='photo'>
     <Avatar/>
-    { user.name === name ? <Button variant='outlined' onClick={()=>{setDisplay('Edit Profile')}}>Edit profile</Button> : null }
+    { user.name === name ? <Button variant='outlined' onClick={()=>{navigate(`/u/${user.name}/edit`)}}>Edit profile</Button> : null }
     </div>
     <div className='info'>
     <div className='user_name'>
@@ -86,7 +85,7 @@ function UserProfile({setDisplay,user}) {
     </Typography>
     </div>
     <div className='content'>
-    content
+    profile content
     </div>
     </>
     }

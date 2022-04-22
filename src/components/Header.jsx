@@ -5,15 +5,64 @@ import ProfileDrawer from './Profile/ProfileDrawer';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import DiscardDialog from './Post/DiscardDialog';
+import {Routes,Route,useNavigate} from 'react-router-dom';
 
-function Header({display,setDisplay,isDisplay,isPostUnsaved,user,setUser}) {
+
+function Header({isPostUnsaved,user,setUser}) {
   const [opened,setOpen] = useState(false);
   const [discardOpen,setDiscardOpen] = useState(false);
-
+  const navigate=useNavigate();
+ 
+  // const location=useLocation();
+  // const formattedLocation=()=>{
+  //   return location.pathname.split('/')[1];
+  // }
+  // const capitalizeFirstLetter=(word)=>{
+  //   return word.charAt(0).toUpperCase()+word.substring(1,word.length);
+  // }
   return (
-    <div className='header'>
-       
-    {
+    //LOCALHOST:3000/nameoftheheader 
+
+    <div className='header'>  
+
+    <Routes>
+
+    <Route path='/home' element={<> <Avatar alt='User Avatar' onClick={()=>{setOpen(true);}}/> <Typography variant='h5' color='white'>Header</Typography></>} />
+
+    <Route path='/u/:name' element={<> <span onClick={()=>{navigate('/home')}}><ArrowBackIcon/></span> 
+    <div className='info'>
+    <Typography variant='h5' color='white'>{user ? user.name : null}</Typography>
+    <Typography variant='caption'> 0 Posts </Typography>
+    </div></>}/>
+
+    <Route path={`/u/${user.name}/edit`} element={<>
+    <span onClick={()=>{navigate(`/u/${user.name}`)}}><ArrowBackIcon/></span>
+    <div className='edit_profile'>
+    <Typography variant='h5' color='white'>Profile Edit</Typography>
+    <Button variant='contained'>Save</Button>
+    </div>
+    </>} />
+    
+
+    </Routes>
+
+    
+  
+{/*       
+      <Avatar alt='User Avatar' onClick={()=>{setOpen(true);}}/>
+      <Typography variant='h5' color='white'>{'Testing Header'} </Typography> */}
+      {/* <Navigate to='/home' replace/> */}
+    
+
+      {/* <Router>
+      <Routes>
+        <Route path='/home' element={<>
+          <Avatar alt='User Avatar' onClick={()=>{setOpen(true);}}/>
+          <Typography variant='h5' color='white'>{'/Home'} </Typography>
+        </>} />
+      </Routes>
+      </Router> */}
+    {/* {
       isDisplay('home')  ?
       <Avatar alt='User Avatar' onClick={()=>{setOpen(true);}}/>
       : 
@@ -34,9 +83,9 @@ function Header({display,setDisplay,isDisplay,isPostUnsaved,user,setUser}) {
       }}><ArrowBackIcon/></span>
       : null}
       </>
-    }
+    } */}
 
-  {
+  {/* {
     isDisplay('user profile') ? 
     <div className='info'>
     <Typography variant='h6' color='white'>{user ? user.name : 'Username'}</Typography> 
@@ -46,8 +95,8 @@ function Header({display,setDisplay,isDisplay,isPostUnsaved,user,setUser}) {
     <> 
     {isDisplay('user profile','post editor') ? 
     <div className='edit_profile'>
-    <Typography variant='h5' color='white'>{display}</Typography>
-    {
+    {/* <Typography variant='h5' color='white'>{display}</Typography> */}
+    {/* {
       isDisplay('post editor') ? 
       <div className='post_btn'>
       <Button variant='text'>Drafts</Button>
@@ -57,8 +106,8 @@ function Header({display,setDisplay,isDisplay,isPostUnsaved,user,setUser}) {
       <Button variant='contained' className='edit_button'>Save</Button> 
     }
     </div> 
-    : 
-    <>
+    :  */}
+    {/* <>
       {
         isDisplay('search') ? <>
         <SearchIcon/>
@@ -68,15 +117,15 @@ function Header({display,setDisplay,isDisplay,isPostUnsaved,user,setUser}) {
       }
     </>  
     }
-    </>
-  }
+    </> */}
+  {/* }  */}
 
   {/* ANY POPUPS OR DIALOGS TRIGGERED BY BUTTONS/ACTION FROM HEADER WILL BE HERE */}
     <ProfileDrawer
     anchor='left' 
     open={opened}
     setOpen={setOpen}
-    setDisplay={setDisplay}
+    // setDisplay={setDisplay}
     user={user}
     setUser={setUser}
     />
@@ -84,11 +133,12 @@ function Header({display,setDisplay,isDisplay,isPostUnsaved,user,setUser}) {
     <DiscardDialog
     open={discardOpen}
     handleClose={()=>{setDiscardOpen(false)}}
-    onDiscard={()=>{setDiscardOpen(false);setDisplay('Home');}}
-    onSave={()=>{setDiscardOpen(false);setDisplay('Home');console.log('saved to drafts');}} //TODO DRAFTS VIEW
+    onDiscard={()=>{setDiscardOpen(false);}}
+    onSave={()=>{setDiscardOpen(false);console.log('saved to drafts');}} //TODO DRAFTS VIEW
     />
     </div>
   )
 }
+
 
 export default Header;

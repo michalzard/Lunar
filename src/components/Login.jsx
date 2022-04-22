@@ -25,7 +25,7 @@ function Login({setUser}) {
           if(user)setUser(user);
         });
     }
-
+      
       setName(''); setPassword('');  
     })
     .catch(err=>{console.log(err);});

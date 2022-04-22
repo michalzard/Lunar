@@ -35,7 +35,7 @@ router.get('/:name/',async(req,res)=>{
     const {name} = req.params;
     try{
     if(!name) res.status(404).send({message:"Bad Request"});
-    const foundUser=await User.findOne({name});
+    const foundUser=await User.findOne({name},{password:0,__id:0,__v:0,_id:0});
     if(foundUser)res.status(200).send({message:"User found",user:foundUser});
     else res.status(200).send({message:"User not found"})
     }catch(err){
