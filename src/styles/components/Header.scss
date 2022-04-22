@@ -25,13 +25,13 @@
         margin-left: 20px;
     }
 
-    .edit_profile{
+    .container{
         display: flex;
         width: 100%;
         justify-content: space-between;
-
-        .edit_button {
-            background-color: $primary;
+        
+        .edit_btn{    
+            button{background-color: $primary;}
         }
     }
 

@@ -27,21 +27,43 @@ function Header({isPostUnsaved,user,setUser}) {
 
     <Routes>
 
-    <Route path='/home' element={<> <Avatar alt='User Avatar' onClick={()=>{setOpen(true);}}/> <Typography variant='h5' color='white'>Header</Typography></>} />
+    <Route path='/home' element={
+    <>
+    <Avatar alt='User Avatar' onClick={()=>{setOpen(true);}}/> 
+    <Typography variant='h5' color='white'>Home feed</Typography>
+    </> }/>
 
-    <Route path='/u/:name' element={<> <span onClick={()=>{navigate('/home')}}><ArrowBackIcon/></span> 
-    <div className='info'>
+    <Route path='/u/:name' element={
+    <HeaderWithBackArrow elements={<div className='info'>
     <Typography variant='h5' color='white'>{user ? user.name : null}</Typography>
     <Typography variant='caption'> 0 Posts </Typography>
-    </div></>}/>
+    </div>} location={'/home'}/>
+    }/>
 
-    <Route path={`/u/${user.name}/edit`} element={<>
-    <span onClick={()=>{navigate(`/u/${user.name}`)}}><ArrowBackIcon/></span>
-    <div className='edit_profile'>
+
+    <Route path={`/u/${user.name}/edit`} element={
+    <HeaderWithBackArrow elements={
+    <div className='container'>
     <Typography variant='h5' color='white'>Profile Edit</Typography>
+    <div className='edit_btn'>
     <Button variant='contained'>Save</Button>
     </div>
-    </>} />
+    </div>
+    } location={`/u/${user.name}`} />
+    }/>
+    
+    <Route path='/post' element={
+    <>
+    <span onClick={()=>{navigate(`/home`)}}><ArrowBackIcon/></span>
+    <div className='container'>
+    <Typography variant='h5' color='white'>Create post</Typography>
+    <div className='post_btn'>
+    <Button variant='text'>Drafts</Button>
+    <Button variant='contained'>Post</Button>
+    </div>
+    </div>
+    </>}/>
+
     
 
     </Routes>
@@ -137,6 +159,30 @@ function Header({isPostUnsaved,user,setUser}) {
     onSave={()=>{setDiscardOpen(false);console.log('saved to drafts');}} //TODO DRAFTS VIEW
     />
     </div>
+  )
+}
+
+/**
+ * 
+ * <HeaderWithBackArrow elements={
+    <div className='container'>
+    <Typography variant='h5' color='white'>Profile Edit</Typography>
+    <div className='edit_btn'>
+    <Button variant='contained'>Save</Button>
+    </div>
+    </div>
+    } location={`/u/${user.name}`} />
+    }/>
+ */
+function HeaderWithBackArrow({elements,location}){
+  const navigate=useNavigate();
+  return(
+    <>
+    <span onClick={()=>{navigate(location)}}><ArrowBackIcon/></span>
+    <div className='container'>
+    {elements}
+    </div>
+    </>
   )
 }
 
