@@ -12,25 +12,35 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 
 // import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 // import {Fab} from '@mui/material';
+import {Routes,Route,useNavigate, useParams} from 'react-router-dom';
+import { IconButton } from '@mui/material';
 
-function Navbar({display,setDisplay}) {
-  const highlightColor='#bb86fc';
+
+function Navbar() {
   return (
     <div className='navbar'>
-    {
-      display === 'Home' ? <HomeIcon style={{color:highlightColor}}/> 
-      : <HomeOutlinedIcon onClick={()=>{setDisplay('Home');}}/>
-    }
-    {
-      display === 'Search' ? <SearchIcon style={{color:highlightColor}}/> 
-      : <SearchOutlinedIcon onClick={()=>{setDisplay('Search')}}/>
-    }
-    {
-      display === 'Notifications' ? <NotificationsIcon style={{color:highlightColor}}/> 
-      : <NotificationsNoneIcon onClick={()=>{setDisplay('Notifications');}}/>
-    }
+    <Routes>
+    <Route path='/home' element={<NavbarControls/>} />
+      
+    </Routes>
+
+     
     </div>
   )
 }
+
+function NavbarControls(){
+  const highlightColor='#bb86fc';
+  const navigate=useNavigate();
+  return(
+    <>  
+    <IconButton onClick={()=>{navigate('/home');}}> <HomeIcon /> </IconButton>
+    <IconButton onClick={()=>{navigate('/search');}}> <SearchIcon/> </IconButton>
+    <IconButton onClick={()=>{navigate('/notifications');}}> <NotificationsIcon/> </IconButton>
+
+    </>
+  )
+}
+
 
 export default Navbar;

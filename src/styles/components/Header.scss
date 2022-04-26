@@ -28,14 +28,20 @@
     .container{
         display: flex;
         width: 100%;
-        justify-content: space-between;
-        
+        // justify-content: space-between; // will be manually assigned on specific component
+
+        .name{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;        
+        }
         .edit_btn{    
             button{background-color: $primary;}
         }
     }
-
+    .column{flex-direction:column;}
     .searchbar {
+        width: 100%;
         input {
             color: white;
         }

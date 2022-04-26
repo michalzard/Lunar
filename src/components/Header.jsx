@@ -5,21 +5,16 @@ import ProfileDrawer from './Profile/ProfileDrawer';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import DiscardDialog from './Post/DiscardDialog';
-import {Routes,Route,useNavigate} from 'react-router-dom';
+import {Routes,Route,useNavigate,useParams, Navigate} from 'react-router-dom';
 
 
 function Header({isPostUnsaved,user,setUser}) {
   const [opened,setOpen] = useState(false);
   const [discardOpen,setDiscardOpen] = useState(false);
   const navigate=useNavigate();
- 
-  // const location=useLocation();
-  // const formattedLocation=()=>{
-  //   return location.pathname.split('/')[1];
-  // }
-  // const capitalizeFirstLetter=(word)=>{
-  //   return word.charAt(0).toUpperCase()+word.substring(1,word.length);
-  // }
+
+  const capitalize=(word)=>{return word.charAt(0).toUpperCase() + word.substring(1,14) + (word.length>14 ? '...' : '')};
+  
   return (
     //LOCALHOST:3000/nameoftheheader 
 
@@ -34,113 +29,67 @@ function Header({isPostUnsaved,user,setUser}) {
     </> }/>
 
     <Route path='/u/:name' element={
-    <HeaderWithBackArrow elements={<div className='info'>
-    <Typography variant='h5' color='white'>{user ? user.name : null}</Typography>
+    <HeaderWithBackArrow flexDirection='column' elements={
+    <div className='info'>
     <Typography variant='caption'> 0 Posts </Typography>
-    </div>} location={'/home'}/>
+    </div>    
+    } location={'/home'}/>
     }/>
 
 
     <Route path={`/u/${user.name}/edit`} element={
-    <HeaderWithBackArrow elements={
-    <div className='container'>
+    <HeaderWithBackArrow justify='space-between' elements={<>
     <Typography variant='h5' color='white'>Profile Edit</Typography>
     <div className='edit_btn'>
     <Button variant='contained'>Save</Button>
-    </div>
-    </div>
+    </div></>
     } location={`/u/${user.name}`} />
     }/>
     
     <Route path='/post' element={
+    <HeaderWithBackArrow justify='space-between' elements={
     <>
+    <Typography variant='h5' color='white'>Create post</Typography>
+    <div className='post_btn'>
+    <Button variant='text' onClick={()=>{navigate('/drafts')}}>Drafts</Button>
+    <Button variant='contained'>Post</Button>
+    </div>
+    </>
+    }
+    location={'/home'}
+    />
+    }/>
+
+    {
+      /**
     <span onClick={()=>{navigate(`/home`)}}><ArrowBackIcon/></span>
-    <div className='container'>
     <Typography variant='h5' color='white'>Create post</Typography>
     <div className='post_btn'>
     <Button variant='text'>Drafts</Button>
     <Button variant='contained'>Post</Button>
     </div>
-    </div>
-    </>}/>
+       */
+    }
 
-    
+    {
+
+    ['/bookmarks','/settings'].map((paths,i)=>{
+    return <Route path={paths} key={i} element={
+      <HeaderWithBackArrow elements={<>
+        <Typography variant='h5' color='white'>{capitalize(paths.substring(1,paths.length))}</Typography>
+      </>
+      } location='/home'/>
+    }/>
+    })
+    }
+    <Route path='/search' element={
+      <HeaderWithBackArrow elements={
+      <div className='searchbar'> <TextField variant='outlined' placeholder='Search' fullWidth  /> </div>
+      } location='/home'/>
+    }/>
 
     </Routes>
 
-    
-  
-{/*       
-      <Avatar alt='User Avatar' onClick={()=>{setOpen(true);}}/>
-      <Typography variant='h5' color='white'>{'Testing Header'} </Typography> */}
-      {/* <Navigate to='/home' replace/> */}
-    
-
-      {/* <Router>
-      <Routes>
-        <Route path='/home' element={<>
-          <Avatar alt='User Avatar' onClick={()=>{setOpen(true);}}/>
-          <Typography variant='h5' color='white'>{'/Home'} </Typography>
-        </>} />
-      </Routes>
-      </Router> */}
-    {/* {
-      isDisplay('home')  ?
-      <Avatar alt='User Avatar' onClick={()=>{setOpen(true);}}/>
-      : 
-      <>
-      { !isDisplay('search') ? 
-      <span onClick={()=>{
-      if(display.toLowerCase().includes('settings-')) setDisplay('Settings');
-      else setDisplay('Home');
-       // else back out to home
-      if(isDisplay('edit profile')) setDisplay('User Profile');
-      else if(isDisplay('post editor')){
-        // logic if post unsaved -> discard dialog prompt
-        isPostUnsaved ? setDiscardOpen(true) 
-        // if nothing to save to drafts -> go back to home
-        : setDisplay('Home'); 
-      }
-      
-      }}><ArrowBackIcon/></span>
-      : null}
-      </>
-    } */}
-
-  {/* {
-    isDisplay('user profile') ? 
-    <div className='info'>
-    <Typography variant='h6' color='white'>{user ? user.name : 'Username'}</Typography> 
-    <Typography variant='caption'>0 Posts</Typography> 
-    </div>
-    : 
-    <> 
-    {isDisplay('user profile','post editor') ? 
-    <div className='edit_profile'>
-    {/* <Typography variant='h5' color='white'>{display}</Typography> */}
-    {/* {
-      isDisplay('post editor') ? 
-      <div className='post_btn'>
-      <Button variant='text'>Drafts</Button>
-      <Button variant='contained'>Post</Button>
-      </div>
-      :
-      <Button variant='contained' className='edit_button'>Save</Button> 
-    }
-    </div> 
-    :  */}
-    {/* <>
-      {
-        isDisplay('search') ? <>
-        <SearchIcon/>
-        <TextField variant='outlined' placeholder='Search Lunar' className='searchbar'  fullWidth />
-        </>
-        : <Typography variant='h5' color='white'>{display.split('-')[1] ? display.split('-')[1] : display} </Typography>
-      }
-    </>  
-    }
-    </> */}
-  {/* }  */}
 
   {/* ANY POPUPS OR DIALOGS TRIGGERED BY BUTTONS/ACTION FROM HEADER WILL BE HERE */}
     <ProfileDrawer
@@ -174,12 +123,17 @@ function Header({isPostUnsaved,user,setUser}) {
     } location={`/u/${user.name}`} />
     }/>
  */
-function HeaderWithBackArrow({elements,location}){
+function HeaderWithBackArrow({location,elements,flexDirection,justify}){
   const navigate=useNavigate();
+  const {name}=useParams();
+  
+  const capitalize=(word)=>{return word.charAt(0).toUpperCase() + word.substring(1,14) + (word.length>14 ? '...' : '')};
+
   return(
     <>
     <span onClick={()=>{navigate(location)}}><ArrowBackIcon/></span>
-    <div className='container'>
+    <div className={`container${flexDirection ? flexDirection : ''}`} style={{justifyContent:justify ? justify : null}}>
+    {name ? <div className='name'> <Typography variant='h5' color='white'>{capitalize(name)}'s Profile</Typography> </div> : null}
     {elements}
     </div>
     </>

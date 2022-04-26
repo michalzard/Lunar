@@ -1,7 +1,6 @@
 @import "../Theme.scss";
 
 .navbar {
-    
     display: flex;
     color: $on_background;
     border-top: 3px solid $surface;
@@ -10,14 +9,16 @@
     width:100%;
     top:auto;
     bottom:0;
-    svg {
-        width: 30px;
-        height: 30px;
-        margin: 15px;
-
+    button {
+        margin: 10px;
+        svg{
+            width: 30px;
+            height: 30px;
+            color:$on_surface;
+        }
     }
-
     :hover {
         cursor: pointer;
     }
+    
 }
