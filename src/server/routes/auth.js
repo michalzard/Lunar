@@ -18,7 +18,7 @@ router.post('/register',async (req,res)=>{
     try{
     const {email,name,password}=req.body;
     if(name && email){
-         const duplicates=await User.find({name,email});
+         const duplicates=await User.find({'$or':[{name},{email}]});
          if(duplicates.length>0) res.status(200).send({message:"Username or email already in use"});
          else{
             const hashedPw=await bcrypt.hash(password,12);
