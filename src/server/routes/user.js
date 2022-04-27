@@ -31,13 +31,51 @@ router.get('/session',async(req,res)=>{
     }
 });
 
-router.get('/:name/',async(req,res)=>{
+router.get('/:name',async(req,res)=>{
     const {name} = req.params;
     try{
     if(!name) res.status(404).send({message:"Bad Request"});
     const foundUser=await User.findOne({name},{password:0,__id:0,__v:0,_id:0});
     if(foundUser)res.status(200).send({message:"User found",user:foundUser});
     else res.status(200).send({message:"User not found"})
+    }catch(err){
+        console.log(err);
+    }
+});
+
+router.patch('/update',async(req,res)=>{
+    const {id,tag,bio,location,web,birthday} = req.body;
+    //CHECK SESSION WITH ID
+    //IF ACTIVE PULL UP USER OBJECT
+    //MAKE UPDATES,MAKE RESPONSE,DONE
+    //IF NOT ACTIVE,MAKE RESPONSE THAT YOU CANNOT UPDATE 
+
+    try{
+    if(!id) res.status(404).send({message:"Bad Request"});
+    const foundSession=await mongoose.connection.db.collection("sessions").findOne({_id:id});
+    if(foundSession){
+    const {user_id} = foundSession.session;
+    const updateData= {
+        ['profile.tag'] : tag,
+        ['profile.bio'] : bio,
+        ['profile.location'] : location,
+        ['profile.web'] : web,
+        ['profile.birthday'] : birthday,
+    };
+    const userUpdated=await User.findOneAndUpdate({_id:user_id.valueOf()},{'$set':updateData});
+    if(userUpdated){
+    userUpdated.save();
+    const {profile} = userUpdated;
+    res.status(200).send({message:"User updated",update:profile});
+    }
+    else res.status(200).send({message:'User update failed'});
+    }
+    else{
+        res.send({message:'Sign in to update'});
+    }
+    // const foundUser=await User.findOne({name},{password:0,__id:0,__v:0,_id:0});
+    // if(foundUser)res.status(200).send({message:"User found",user:foundUser});
+    // else res.status(200).send({message:"User not found"})
     }catch(err){
         console.log(err);
     }
