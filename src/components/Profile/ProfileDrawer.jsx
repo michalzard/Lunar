@@ -14,10 +14,8 @@ function ProfileDrawer({anchor,open,setOpen,user,setUser}) {
   }
 
   const logoutRequest=()=>{
-    axios.post(`${process.env.REACT_APP_AUTH_ROUTE}/logout`,{
-      id:localStorage.getItem('sessionID')
-    }).then(data=>{
-      const {message}=data.data;
+    axios.post(`${process.env.REACT_APP_AUTH_ROUTE}/logout`,{id:localStorage.getItem('sessionID')}).then(data=>{
+    const {message}=data.data;
     if(message.includes('User successfully logged out!')) {
       setUser({});//remove user object since you logged out
       if(localStorage.getItem('sessionID'))localStorage.removeItem('sessionID');
@@ -41,13 +39,13 @@ function ProfileDrawer({anchor,open,setOpen,user,setUser}) {
     <Avatar/>
     <div className='user_i'>
     <Typography variant='body2'>{user ? user.name : 'Username'}</Typography>
-    <Typography variant='body2' className='tag'>{user ? `@${user.name}` : '@Usertag'}</Typography>
+    <Typography variant='body2' className='tag'>{user ? `@${user.profile.tag}` : '@Usertag'}</Typography>
     </div>
     </div>
 
     <div className='followCount'>
-    <Typography variant='body2' className='following'>0 <span>following</span></Typography>
-    <Typography variant='body2' className='followers'>0 <span>followers</span></Typography>
+    <Typography variant='body2' className='following'>{user.profile ? user.profile.followers.followingCount : '0'} <span>following</span></Typography>
+    <Typography variant='body2' className='followers'>{user.profile ? user.profile.followers.followedByCount : '0'} <span>followers</span></Typography>
     </div>
 
     <div className='action_buttons'>

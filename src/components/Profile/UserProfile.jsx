@@ -38,7 +38,6 @@ function UserProfile({user}) {
   const highlightColor='#bb86fc';
   return (
     
-    
     <div className='user_profile'>
     {
     isLoading ? <LinearProgress color='secondary'/> 
@@ -61,13 +60,19 @@ function UserProfile({user}) {
     </div>
     </div>
     <div className='description'>
-    <Typography variant='caption'>Bio</Typography>
+    <Typography variant='caption'>{ fetchedUser.profile ? fetchedUser.profile.bio : 'Bio' }</Typography>
     </div>
     <div className='interests'>
-    <InterestsIcon/>Interest
-    <LocationOnIcon/>Location
-    <LinkIcon/>Link
-    <CalendarMonthIcon/>{user ? new Date(fetchedUser.createdAt).toUTCString().substring(0,17) : '20/03/2000'}
+    {
+      fetchedUser.profile ? <><LocationOnIcon/> {fetchedUser.profile.location}</> : null 
+    }
+    {
+      fetchedUser.profile ? <><LinkIcon/> {fetchedUser.profile.web}</> : null 
+    }
+    {
+      fetchedUser.profile ? <><CalendarMonthIcon/> {new Date(fetchedUser.profile.birthday).toUTCString().substring(0,17)}</> : null 
+    }
+
     </div>
     </div>
     <div className='filter_buttons'>

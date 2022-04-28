@@ -11,10 +11,10 @@ import { useParams,Navigate } from 'react-router-dom';
 function ProfileEdit({user}) {
   const {name} = useParams();
   const [username,setUsername] = useState(user ? user.name : '');
-  const [bio,setBio] = useState('');
-  const [location,setLocation] = useState('');
-  const [web,setWeb] = useState('');
-  const [birthday,setBirthday] = useState(user ? user.createdAt : new Date());
+  const [bio,setBio] = useState(user.profile ? user.profile.bio : '');
+  const [location,setLocation] = useState(user.profile ? user.profile.location : '');
+  const [web,setWeb] = useState(user.profile ? user.profile.web : '');
+  const [birthday,setBirthday] = useState(user.profile ? new Date(user.profile.birthday).toUTCString().substring(0,17) : new Date());
   const updateUsername=e=>setUsername(e.target.value);
   const updateBio=e=>setBio(e.target.value);
   const updateLocation=e=>setLocation(e.target.value);
