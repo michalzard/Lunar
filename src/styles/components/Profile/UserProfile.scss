@@ -1,73 +1,75 @@
-@import '../../Theme.scss';
+@import "../../Theme.scss";
 
-$size:60px;
+$size: 60px;
 
 .user_profile {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  flex-grow: 1;
+  margin: 10px;
+
+  .photo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .MuiAvatar-root {
+      width: $size;
+      height: $size;
+    }
+
+    button {
+      color: $on_surface;
+      border-color: $primary;
+      margin-right: 5px;
+      height: $size - 25;
+    }
+  }
+
+  .user_name {
     display: flex;
     flex-direction: column;
-    color: white;
-    flex-grow: 1;
-    margin: 10px;
 
-    .photo {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .MuiAvatar-root {
-            width: $size;
-            height: $size;
-        }
-
-        button {
-            color: $on_surface;
-            border-color: $primary;
-            margin-right: 5px;
-            height: $size - 25;
-
-        }
+    .tag {
+      color: $on_background;
     }
+  }
 
-    .user_name {
-        display: flex;
-        flex-direction: column;
+  .description {
+    margin-top: 2px;
+  }
 
-        .tag {
-            color: $on_background;
-        }
+  .interests {
+    display: flex;
+    flex-direction: column;
+    div {
+      display: flex;
+      align-items: center;
     }
+  }
 
-    .description {
-        margin-top: 2px;
-    }
-
-    .interests {
-        display: flex;
-        align-items: center;
-    }
-
-    .filter_buttons {
-        display: flex;
-        justify-content: space-around;
-        padding: 10px;
-        padding-top: 20px;
-    }
+  .filter_buttons {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    padding-top: 20px;
+  }
 }
 
 .profile_notfound {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80%;
 
-    svg {
-        width: 40px;
-        height: 40px;
-    }
+  svg {
+    width: 40px;
+    height: 40px;
+  }
 
-    p {
-        margin-left: 5px;
-        font-size: 20px;
-
-    }
+  p {
+    margin-left: 5px;
+    font-size: 20px;
+  }
 }
