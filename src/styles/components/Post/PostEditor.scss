@@ -1,91 +1,95 @@
-@import '../../Theme.scss';
+@import "../../Theme.scss";
 
 .posteditor_container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
 
-    .editor {
-        background-color: $surface;
-        color: $on_surface;
-        min-height: 30vh;
-        margin: 10px;
-        margin-top: 20px; //make space between top div and editor's div
-        border-radius: 10px;
+  .editor {
+    background-color: $surface;
+    color: $on_surface;
+    min-height: 30vh;
+    margin: 10px;
+    margin-top: 20px; //make space between top div and editor's div
+    border-radius: 10px;
 
-        .MuiAvatar-root {
-            margin: 10px;
-        }
-
-        textarea {
-            color: $on_surface;
-        }
-
-        .MuiFormControl-root {
-            margin-left: 5px;
-        }
-
-        .text {
-            display: flex;
-
-        }
-
-        hr {
-            border-color: rgba(255, 255, 255, 0.3);
-            margin: 5px;
-        }
-
-        //needs to be in flex to have avatar nexto textfield
-        .action_btns {
-            color: $on_surface;
-            margin:10px;
-            svg {
-                margin: 10px;
-                color: $primary
-            }
-        }
+    .MuiAvatar-root {
+      margin: 10px;
     }
 
-    padding-bottom: 200px;
+    textarea {
+      color: $on_surface;
+    }
 
+    .MuiFormControl-root {
+      margin-left: 5px;
+    }
+
+    .text {
+      display: flex;
+    }
+
+    hr {
+      border-color: rgba(255, 255, 255, 0.3);
+      margin: 5px;
+    }
+
+    //needs to be in flex to have avatar nexto textfield
+    .action_btns {
+      color: $on_surface;
+      margin: 10px;
+      svg {
+        margin: 10px;
+        color: $primary;
+      }
+    }
+  }
+
+  padding-bottom: 200px;
 }
-.selectedMedia{
-    object-fit: contain;
-    width:100%;
-    height: 150px;
-    margin-top:10px;
+.selectedMedia {
+  object-fit: contain;
+  width: 100%;
+  height: 150px;
+  margin-top: 10px;
 }
 
 //GIF MENU
 
 #gif-menu {
-    // padding-bottom: 10vh; done dynamically trough js
-    height: 30vh;
-    .gifsearch {
-    display:flex;
+  // padding-bottom: 10vh; done dynamically trough js
+  height: 30vh;
+  .gifsearch {
+    display: flex;
     align-items: center;
     margin-bottom: 5px;
-    .MuiInputBase-root{ height: 50px;}
+    .MuiInputBase-root {
+      height: 50px;
     }
+  }
 }
 
-#filter-menu{
-    li{
-        display:flex;
-        align-items: center;
-        justify-content: space-around;
-        margin-top:5px;
-        margin-bottom:5px;
-        padding:15px;
-        color:$on_surface;
-        svg{
-            width:20px;
-            height: 20px;
-        }
+#filter-menu {
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 15px;
+    color: $on_surface;
+    svg {
+      width: 20px;
+      height: 20px;
     }
-    .Mui-selected{
-        background-color: $primary;
-        border-radius: 5px;
-    }
+  }
+  .Mui-selected {
+    background-color: $primary;
+    border-radius: 5px;
+  }
+}
+.MuiAlert-standard {
+  background-color: $surface !important;
+  color: $on_surface !important;
 }
