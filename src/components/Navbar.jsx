@@ -1,13 +1,13 @@
 import React from 'react';
 import "../styles/components/Navbar.scss";
 
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+// import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import HomeIcon from "@mui/icons-material/Home";
 
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+// import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+// import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
 // import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
@@ -30,7 +30,7 @@ function Navbar() {
 }
 
 function NavbarControls(){
-  const highlightColor='#bb86fc';
+  // const highlightColor='#bb86fc';
   const navigate=useNavigate();
   return(
     <>  

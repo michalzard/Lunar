@@ -8,7 +8,7 @@ import DiscardDialog from './Post/DiscardDialog';
 import {Routes,Route,useNavigate,useParams, Navigate} from 'react-router-dom';
 
 
-function Header({isPostUnsaved,user,setUser}) {
+function Header({isPostUnsaved,user,setUser,submitPost}) {
   const [opened,setOpen] = useState(false);
   const [discardOpen,setDiscardOpen] = useState(false);
   const navigate=useNavigate();
@@ -51,8 +51,8 @@ function Header({isPostUnsaved,user,setUser}) {
     <>
     <Typography variant='h5' color='white'>Create post</Typography>
     <div className='post_btn'>
-    <Button variant='text' onClick={()=>{navigate('/drafts')}}>Drafts</Button>
-    <Button variant='contained'>Post</Button>
+    <Button variant='text' onClick={()=>{console.log("open drafts")}}>Drafts</Button>
+    <Button variant='contained' onClick={()=>{console.log("submitted post");submitPost();}}>Post</Button>
     </div>
     </>
     }

@@ -5,15 +5,14 @@ import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import UserProfile from './Profile/UserProfile';
 import ProfileEdit from './Profile/ProfileEdit';
 import PostEditor from './Post/PostEditor';
-import Navbar from './Navbar';
+
 import SettingsMenu from './Settings/SettingsMenu';
-import AccountInformation from './Settings/AccountInformation';
-import Acessibility from "./Settings/Accessibility";
+// import AccountInformation from './Settings/AccountInformation';
+// import Acessibility from "./Settings/Accessibility";
 import Bookmarks from './Bookmarks';
 import {Routes,Route, Navigate,useNavigate} from 'react-router-dom';
 
-function Content({setPostUnsaved,user}) {
-  // const [searchParams, setSearchParams] = useSearchParams();
+function Content({setPostUnsaved,user,filter,setFilter,lastSelectedMedia,setLastSelectedMedia,postText,setPostText,postAlert}) {
   const navigate=useNavigate();
   return (
     <div className='content'>
@@ -36,7 +35,8 @@ function Content({setPostUnsaved,user}) {
     <Route path='/u/:name/edit' element={<ProfileEdit user={user} />}/>
 
    
-    <Route path='/post' element={<PostEditor setPostUnsaved={setPostUnsaved}/>}/>
+    <Route path='/post' element={<PostEditor setPostUnsaved={setPostUnsaved} filter={filter} setFilter={setFilter} postAlert={postAlert}
+    lastSelectedMedia={lastSelectedMedia} setLastSelectedMedia={setLastSelectedMedia} postText={postText} setPostText={setPostText} />}/>
     <Route path='/settings' element={<SettingsMenu />}/>
     <Route path='/bookmarks' element={<Bookmarks/>}/>
 

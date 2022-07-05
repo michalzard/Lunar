@@ -14,7 +14,7 @@ import {GiphyFetch} from '@giphy/js-fetch-api';
 // import { Navigate } from 'react-router-dom';
 
 
-function PostEditor({setPostUnsaved}) {
+function PostEditor({setPostUnsaved,filter,setFilter,lastSelectedMedia,setLastSelectedMedia,postText,setPostText,postAlert}) {
 
   //Gif menu
   const [gifEl,setGifEl] = useState(null);
@@ -26,16 +26,18 @@ function PostEditor({setPostUnsaved}) {
   const handleFilterMenuOpen=(e) => setFilterEl(e.currentTarget);
   const handleFilterMenuClose=() => setFilterEl(null);
 
-  const [lastSelectedMedia,selectMedia] = useState({});
-  const [nsfw,setNsfw] = useState(false);
-  const [violent,setViolent] = useState(false);
+  // const [lastSelectedMedia,selectMedia] = useState({});
+  // const [filter,setFilter] = useState("None");
+
   
-  const [postText,setPostText] = useState('');
   //everytime there's change in postText content,change boolean for if we can just go back or need to save post
   useEffect(()=>{
   if(postText.length>0) setPostUnsaved(true);
   else setPostUnsaved(false);
   },[postText.length,setPostUnsaved]);
+
+
+  
 
   return (
     <div className='posteditor_container'>
@@ -60,7 +62,7 @@ function PostEditor({setPostUnsaved}) {
     id="upload-file"
     multiple
     type="file"
-    onChange={(e)=>{const img=URL.createObjectURL(e.target.files[0]); selectMedia(img);}}
+    onChange={(e)=>{const img=URL.createObjectURL(e.target.files[0]); setLastSelectedMedia(img);}}
     />
     <label htmlFor='upload-file'>
     <Tooltip enterTouchDelay={200} leaveTouchDelay={400} placement='bottom-end' title='Media'>
@@ -71,7 +73,7 @@ function PostEditor({setPostUnsaved}) {
     <Tooltip enterTouchDelay={200} leaveTouchDelay={400} placement='top' title='Gif' onClick={handleGifMenuOpen}> 
     <GifIcon />
     </Tooltip>
-    <EditorGifMenu anchorEl={gifEl} openBool={gifMenuOpen} onClose={handleGifMenuClose} selectGifs={selectMedia} lastSelectedMedia={lastSelectedMedia}/>
+    <EditorGifMenu anchorEl={gifEl} openBool={gifMenuOpen} onClose={handleGifMenuClose} selectGifs={setLastSelectedMedia} lastSelectedMedia={lastSelectedMedia}/>
       
 
     <Tooltip enterTouchDelay={200} leaveTouchDelay={400} placement='bottom' title='Poll'>
@@ -81,13 +83,11 @@ function PostEditor({setPostUnsaved}) {
     <Tooltip enterTouchDelay={200} leaveTouchDelay={400} placement='bottom' title='Filter' onClick={handleFilterMenuOpen}>
     <FilterAltIcon/>
     </Tooltip>
-    <EditorFilterMenu anchorEl={filterEl} openBool={filterMenuOpen} onClose={handleFilterMenuClose}
-    nsfw={nsfw} setNsfw={setNsfw} violent={violent} setViolent={setViolent}
-    />
+    <EditorFilterMenu anchorEl={filterEl} openBool={filterMenuOpen} onClose={handleFilterMenuClose} filter={filter} setFilter={setFilter}/>
 
     </div>
     </div>
-
+    <div style={{marginLeft:"10px",marginRight:"10px"}}>{postAlert}</div>
        
     </div>
   )
@@ -134,7 +134,7 @@ function EditorGifMenu({anchorEl,openBool,onClose,selectGifs,lastSelectedMedia})
   )
 }
 
-function EditorFilterMenu({nsfw,setNsfw,violent,setViolent,anchorEl,openBool,onClose}){
+function EditorFilterMenu({filter,setFilter,anchorEl,openBool,onClose}){
   
   return(
     <Menu
@@ -143,13 +143,15 @@ function EditorFilterMenu({nsfw,setNsfw,violent,setViolent,anchorEl,openBool,onC
     open={openBool}
     onClose={onClose}
     >
-    <MenuItem onClick={()=>{setNsfw(!nsfw);}} selected={nsfw}>
-    NSFW {nsfw ? <CheckIcon/> : <CloseIcon/> }
+    <MenuItem onClick={()=>{setFilter("NSFW");}} selected={filter === "NSFW"}>
+    NSFW {filter === "NSFW" ? <CheckIcon/> : <CloseIcon/> }
     </MenuItem>
-    <MenuItem onClick={()=>{setViolent(!violent);}} selected={violent}>
-    Violence {violent ? <CheckIcon/> : <CloseIcon/> }
+    <MenuItem onClick={()=>{setFilter("Violence");}} selected={filter === "Violence"}>
+    Violence {filter === "Violence" ? <CheckIcon/> : <CloseIcon/> }
     </MenuItem>
-    
+    <MenuItem onClick={()=>{setFilter("Spoiler");}} selected={filter === "Spoiler"}>
+    Spoiler {filter === "Spoiler" ? <CheckIcon/> : <CloseIcon/> }
+    </MenuItem>
     </Menu>
   )
 }
