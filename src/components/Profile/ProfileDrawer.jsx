@@ -39,7 +39,7 @@ function ProfileDrawer({anchor,open,setOpen,user,setUser}) {
     <Avatar/>
     <div className='user_i'>
     <Typography variant='body2'>{user ? user.name : 'Username'}</Typography>
-    <Typography variant='body2' className='tag'>{user ? `@${user.profile.tag}` : '@Usertag'}</Typography>
+    <Typography variant='body2' className='tag'>{user.profile ? `@${user.profile.tag}` : '@Usertag'}</Typography>
     </div>
     </div>
 
