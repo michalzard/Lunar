@@ -64,13 +64,13 @@ function UserProfile({user}) {
     </div>
     <div className='interests'>
     {
-      fetchedUser.profile ? <><LocationOnIcon/> {fetchedUser.profile.location}</> : null 
+      fetchedUser.profile.location ? <><LocationOnIcon/> {fetchedUser.profile.location}</> : null 
     }
     {
-      fetchedUser.profile ? <><LinkIcon/> {fetchedUser.profile.web}</> : null 
+      fetchedUser.profile.web ? <><LinkIcon/> {fetchedUser.profile.web}</> : null 
     }
     {
-      fetchedUser.profile ? <><CalendarMonthIcon/> {new Date(fetchedUser.profile.birthday).toUTCString().substring(0,17)}</> : null 
+      fetchedUser.profile.birthday ? <div><CalendarMonthIcon/> {new Date(fetchedUser.profile.birthday).toUTCString().substring(0,17)}</div> : null 
     }
 
     </div>
