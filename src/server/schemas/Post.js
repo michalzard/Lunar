@@ -10,8 +10,8 @@ const postSchema = new mongoose.Schema(
     content: {
       type: String,
       default: "",
-      minlength: 20,
-      maxlength: 300,
+      minlength: 10,
+      maxlength: 200,
       required: true,
     },
     media: [{ url: String }],
