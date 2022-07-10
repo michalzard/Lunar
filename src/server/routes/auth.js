@@ -17,10 +17,14 @@ auth workflow - /auth/
 router.post('/register',async (req,res)=>{
     try{
     const {email,name,password}=req.body;
-    if(name && email){
-         const duplicates=await User.find({'$or':[{name},{email}]});
-         if(duplicates.length>0) res.status(200).send({message:"Username or email already in use"});
-         else{
+    if(name && email && password){
+        //validate email as string@string.string
+        const validEmail=/\S+@\S+\.\S+/.test(email);
+        //find if there's already user with same name or email
+        const duplicates=await User.find({'$or':[{name},{email}]});
+        if(!validEmail) res.status(200).send({message:"Email is invalid"});
+        else if(duplicates.length>0) res.status(200).send({message:"Username or email already in use"});
+        else{
             const hashedPw=await bcrypt.hash(password,12);
             const registeredUser=new User({email,name,password:hashedPw});
             if(registeredUser){
@@ -31,7 +35,7 @@ router.post('/register',async (req,res)=>{
             }
          }
     }else{
-        res.status(404).send({message:"Bad Request"});
+        res.status(400).send({message:"Bad Request"});
     }
    
     }catch(err){
