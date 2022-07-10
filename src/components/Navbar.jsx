@@ -16,11 +16,13 @@ import {Routes,Route,useNavigate, useParams} from 'react-router-dom';
 import { IconButton } from '@mui/material';
 
 
-function Navbar() {
+function Navbar({isMobile}) {
   return (
     <div className='navbar'>
     <Routes>
-    <Route path='/home' element={<NavbarControls/>} />
+      {
+        isMobile ?<Route path='/home' element={<NavbarControls/>} /> : null
+      }
       
     </Routes>
 

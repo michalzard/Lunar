@@ -1,6 +1,6 @@
 import React,{useEffect, useState} from 'react'
 import "../../styles/components/Post/PostEditor.scss";
-import {TextField,Avatar,Tooltip,Divider,Menu,Typography,Button, MenuItem } from "@mui/material";
+import {TextField,Avatar,Tooltip,Divider,Menu,Typography,Button, MenuItem} from "@mui/material";
 import PhotoIcon from '@mui/icons-material/Photo';
 import GifIcon from '@mui/icons-material/Gif';
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -11,10 +11,10 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import {Grid} from '@giphy/react-components';
 import {GiphyFetch} from '@giphy/js-fetch-api';
-// import { Navigate } from 'react-router-dom';
+import { useMediaQuery } from 'react-responsive';
 
 
-function PostEditor({setPostUnsaved,filter,setFilter,lastSelectedMedia,setLastSelectedMedia,postText,setPostText,postAlert}) {
+function PostEditor({setPostUnsaved,filter,setFilter,lastSelectedMedia,setLastSelectedMedia,postText,setPostText,submitPost,postAlert}) {
 
   //Gif menu
   const [gifEl,setGifEl] = useState(null);
@@ -36,12 +36,12 @@ function PostEditor({setPostUnsaved,filter,setFilter,lastSelectedMedia,setLastSe
   else setPostUnsaved(false);
   },[postText.length,setPostUnsaved]);
 
-
-  
+  const isMobile = useMediaQuery({query:"(max-width: 770px)"});
 
   return (
     <div className='posteditor_container'>
-    <div className='editor'>
+    {isMobile ? null : <Button variant="contained" className='postButton' onClick={submitPost} >Post</Button>}
+    <div className='editor' style={{minHeight:isMobile ? "30vh" : "auto"}}>
     <div className='text'>
     <Avatar/>
     {/** focused stays false so that focus animation doesnt play */}
@@ -73,7 +73,7 @@ function PostEditor({setPostUnsaved,filter,setFilter,lastSelectedMedia,setLastSe
     <Tooltip enterTouchDelay={200} leaveTouchDelay={400} placement='top' title='Gif' onClick={handleGifMenuOpen}> 
     <GifIcon />
     </Tooltip>
-    <EditorGifMenu anchorEl={gifEl} openBool={gifMenuOpen} onClose={handleGifMenuClose} selectGifs={setLastSelectedMedia} lastSelectedMedia={lastSelectedMedia}/>
+    <EditorGifMenu isMobile={isMobile} anchorEl={gifEl} openBool={gifMenuOpen} onClose={handleGifMenuClose} selectGifs={setLastSelectedMedia} lastSelectedMedia={lastSelectedMedia}/>
       
 
     <Tooltip enterTouchDelay={200} leaveTouchDelay={400} placement='bottom' title='Poll'>
@@ -96,7 +96,7 @@ function PostEditor({setPostUnsaved,filter,setFilter,lastSelectedMedia,setLastSe
 export default PostEditor;
 
 
-function EditorGifMenu({anchorEl,openBool,onClose,selectGifs,lastSelectedMedia}){
+function EditorGifMenu({isMobile,anchorEl,openBool,onClose,selectGifs,lastSelectedMedia}){
 
   const gf=new GiphyFetch(process.env.REACT_APP_GIPHY_API_KEY);
   const fetchByTerm = (offset) => gf.search(searchTerm,{offset,limit:10});
@@ -119,7 +119,7 @@ function EditorGifMenu({anchorEl,openBool,onClose,selectGifs,lastSelectedMedia})
     anchorEl={anchorEl}
     open={openBool}
     onClose={onClose}
-    style={{paddingBottom:Object.entries(lastSelectedMedia).length>0 ? '10vh' : '30vh'}}
+    style={{paddingBottom:Object.entries(lastSelectedMedia).length>0 ? "10vh" : "30vh",width:"50vw"}}
     >
     <div className='gifsearch'>
     <TextField placeholder='Search gifs...' fullWidth onChange={onSearchChange} className='searchfield'/>    
@@ -127,7 +127,7 @@ function EditorGifMenu({anchorEl,openBool,onClose,selectGifs,lastSelectedMedia})
     </div>
     <Typography variant='overline'>{showSearches ? `Search results for "${currentSearch}"` : 'Trending'}</Typography>
     
-    <Grid width={menuWidth} columns={3} fetchGifs={fetchByTerm} 
+    <Grid width={isMobile ? menuWidth : 500} columns={3} fetchGifs={fetchByTerm} className="grid"
      key={showSearches ? currentSearch : 'trending'} noLink onGifClick={(gif,e)=>{e.preventDefault(); selectGifs(gif); onClose();}}/>
        
     </Menu>
@@ -135,7 +135,6 @@ function EditorGifMenu({anchorEl,openBool,onClose,selectGifs,lastSelectedMedia})
 }
 
 function EditorFilterMenu({filter,setFilter,anchorEl,openBool,onClose}){
-  
   return(
     <Menu
     id='filter-menu'

@@ -7,7 +7,8 @@ import axios from "axios";
 import {BrowserRouter,Routes,Route, Navigate} from 'react-router-dom';
 import Navbar from "./components/Navbar";
 import { Alert } from "@mui/material";
-// import {BrowserRouter,Route} from 'react-router-dom';
+import {useMediaQuery} from "react-responsive";
+
 
 function App() {
   //used for logic shared between header and post elements
@@ -30,6 +31,7 @@ function App() {
   },[]);
   
   const [postAlert,setPostAlert] = useState(null);
+
   const submitPost = async ()=>{
     axios.post(`${process.env.REACT_APP_POST_ROUTE}/create`,{
       author:localStorage.getItem("sessionID"),
@@ -39,30 +41,32 @@ function App() {
   }).then(data=>{
     const {message} = data.data;
     if(message)setPostAlert(<Alert color="success" onClose={() => {setPostAlert(null)}}>{message} </Alert>)
-    setTimeout(()=>{setPostAlert(null)},5000);
+    setTimeout(()=>{setPostAlert(null)},10000);
   })
   .catch(err=>{
     if(err) setPostAlert(<Alert color="error" onClose={() => {setPostAlert(null)}}>Unable to submit Post. (Invalid Input) </Alert>)
-    setTimeout(()=>{setPostAlert(null)},5000);
+    setTimeout(()=>{setPostAlert(null)},10000);
   })
 }
 
+const isMobile = useMediaQuery({query:"(max-width: 770px)"});
+const isTablet = useMediaQuery({query:"(max-width: 1200px)"});
 
   return (
     <div className="App">
     <BrowserRouter>
-    <Header setUser={setUser} user={user}  isPostUnsaved={isPostUnsaved} submitPost={submitPost}/>
+    <Header isMobile={isMobile} setUser={setUser} user={user}  isPostUnsaved={isPostUnsaved} submitPost={submitPost}/>
     <Routes>
     
-    <Route path='login' element={Object.keys(user).length === 0 ? <Login setUser={setUser}/> : <Navigate to='/home'/>} />
+    <Route path='login' element={Object.keys(user).length === 0 ? <Login setUser={setUser} isMobile={isMobile} /> : <Navigate to='/home'/>} />
     <Route path='/' element={Object.keys(user).length === 0 ? <Navigate to='/login'/> : null }/>
 
     </Routes>
-    <Content user={user} setPostUnsaved={setPostUnsaved} postAlert={postAlert}
+    <Content user={user} setPostUnsaved={setPostUnsaved} postAlert={postAlert} isMobile={isMobile} submitPost={submitPost}
     filter={filter} setFilter={setFilter} lastSelectedMedia={lastSelectedMedia} setLastSelectedMedia={setLastSelectedMedia} postText={postText} setPostText={setPostText}
     />
 
-    <Navbar />
+    <Navbar isMobile={isMobile} />
     </BrowserRouter>
   
     </div>

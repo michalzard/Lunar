@@ -1,37 +1,119 @@
-@import '../Theme.scss';
+@import "../Theme.scss";
 
-.content {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-
-    ._content {
-        flex-grow: 1;
-    }
+$fabsize: 50;
+@mixin sidebar {
+  display: flex;
+  flex-direction: column;
+  //   align-items: flex-start;
+  flex: 1;
 }
 
-$fabsize:50;
-
-.fab {
+.content {
+  display: flex;
+  flex-grow: 1;
+  ._content {
     display: flex;
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    margin: 0px 40px 80px 0px;
+    flex-grow: 1;
 
-    button {
-        color: white;
-        background-color: $primary;
-        width: $fabsize+px;
-        height: $fabsize+px;
-
-        svg {
-            width: calc($fabsize/2)+'px';
-            height: calc($fabsize/2)+'px';
+    .sidebar_left {
+      @include sidebar();
+      
+      padding-left: 100px;
+      .links {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        button {
+          color: white;
         }
-    }
+        //TODO put profile overview thing at the bottom
+      }
 
-    button:hover {
-        background-color: $primary;
+      border-right: 1px solid $surface;
+      .profilebtn {
+        color: $on_surface;
+
+        display: flex;
+        align-items: center;
+        border-radius: 10px;
+        .avatar {
+          margin-right: 5px;
+        }
+        .more {
+          margin-left: 10px; //more
+        }
+        .user_info {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-left: 5px;
+          pointer-events: none;
+          :last-child {
+            color: lightgray;
+          }
+        }
+      }
     }
+    main {
+      flex: 1; //streches out main content container to sides
+      .posts {
+        padding: 10px 10px 0px 10px;
+      }
+    }
+    .sidebar_right {
+      @include sidebar();
+      padding-right: 100px;
+      border-left: 1px solid $surface;
+    }
+  }
+}
+//mobile only
+//------------------------------
+.fab {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin: 0px 40px 80px 0px;
+
+  button {
+    color: white;
+    background-color: $primary;
+    width: $fabsize + px;
+    height: $fabsize + px;
+
+    svg {
+      width: calc($fabsize/2) + "px";
+      height: calc($fabsize/2) + "px";
+    }
+  }
+
+  button:hover {
+    background-color: $primary;
+  }
+}
+//--------------------------------
+
+//right panel
+.searchbar {
+  display: flex;
+  align-items: center;
+  background-color: $surface;
+  margin: 0px 10px 0px 10px;
+  border-radius: 5px;
+  input {
+    color: white;
+  }
+  svg {
+    color: white;
+  }
+}
+.trends {
+  display: flex;
+  color: white;
+  background-color: $surface;
+  padding: 15px;
+  margin: 30px 10px 0px 10px;
+  border-radius: 5px;
+  min-height: 300px;
 }

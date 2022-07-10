@@ -3,16 +3,17 @@
 .posteditor_container {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
+
+  .postButton {
+    align-self: flex-end;
+    background-color: $primary !important;
+    width: 80px;
+  }
 
   .editor {
     background-color: $surface;
     color: $on_surface;
-    min-height: 30vh;
-    margin: 10px;
     margin-top: 20px; //make space between top div and editor's div
-    border-radius: 10px;
 
     .MuiAvatar-root {
       margin: 10px;
@@ -46,13 +47,13 @@
     }
   }
 
-  padding-bottom: 200px;
+  // padding-bottom: 200px;
 }
 .selectedMedia {
-  object-fit: contain;
-  width: 100%;
-  height: 150px;
-  margin-top: 10px;
+    object-fit: contain;
+    width: 100%;
+    height: 150px;
+    margin-top: 5px;
 }
 
 //GIF MENU
@@ -60,6 +61,7 @@
 #gif-menu {
   // padding-bottom: 10vh; done dynamically trough js
   height: 30vh;
+
   .gifsearch {
     display: flex;
     align-items: center;

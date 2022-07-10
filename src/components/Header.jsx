@@ -3,28 +3,27 @@ import "../styles/components/Header.scss";
 import { Avatar,Button,TextField,Typography } from '@mui/material';
 import ProfileDrawer from './Profile/ProfileDrawer';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import SearchIcon from '@mui/icons-material/Search';
+// import SearchIcon from '@mui/icons-material/Search';
 import DiscardDialog from './Post/DiscardDialog';
-import {Routes,Route,useNavigate,useParams, Navigate} from 'react-router-dom';
+import {Routes,Route,useNavigate,useParams} from 'react-router-dom';
 
-
-function Header({isPostUnsaved,user,setUser,submitPost}) {
+function Header({isMobile,isPostUnsaved,user,setUser,submitPost}) {
   const [opened,setOpen] = useState(false);
   const [discardOpen,setDiscardOpen] = useState(false);
-  const navigate=useNavigate();
 
   const capitalize=(word)=>{return word.charAt(0).toUpperCase() + word.substring(1,14) + (word.length>14 ? '...' : '')};
   
+
   return (
     //LOCALHOST:3000/nameoftheheader 
 
-    <div className='header'>  
+    <div className='header' style={{justifyContent:isMobile ? null : "center"}}>  
 
     <Routes>
 
     <Route path='/home' element={
     <>
-    <Avatar alt='User Avatar' onClick={()=>{setOpen(true);}}/> 
+    {isMobile ? <Avatar alt='User Avatar' onClick={()=>{setOpen(true);}}/> : null } 
     <Typography variant='h5' color='white'>Home feed</Typography>
     </> }/>
 
@@ -90,23 +89,30 @@ function Header({isPostUnsaved,user,setUser,submitPost}) {
 
     </Routes>
 
-
   {/* ANY POPUPS OR DIALOGS TRIGGERED BY BUTTONS/ACTION FROM HEADER WILL BE HERE */}
-    <ProfileDrawer
-    anchor='left' 
-    open={opened}
-    setOpen={setOpen}
-    // setDisplay={setDisplay}
-    user={user}
-    setUser={setUser}
-    />
+    {
+      isMobile ? 
+      <>
+      <ProfileDrawer
+      anchor='left' 
+      open={opened}
+      setOpen={setOpen}
+      // setDisplay={setDisplay}
+      user={user}
+      setUser={setUser}
+      />
+  
+      <DiscardDialog
+      open={discardOpen}
+      handleClose={()=>{setDiscardOpen(false)}}
+      onDiscard={()=>{setDiscardOpen(false);}}
+      onSave={()=>{setDiscardOpen(false);console.log('saved to drafts');}} //TODO DRAFTS VIEW
+      />
+      </>
+      : null
+    }
+   
 
-    <DiscardDialog
-    open={discardOpen}
-    handleClose={()=>{setDiscardOpen(false)}}
-    onDiscard={()=>{setDiscardOpen(false);}}
-    onSave={()=>{setDiscardOpen(false);console.log('saved to drafts');}} //TODO DRAFTS VIEW
-    />
     </div>
   )
 }

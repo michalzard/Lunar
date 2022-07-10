@@ -1,48 +1,64 @@
-@import '../Theme.scss';
+@import "../Theme.scss";
 
 .login_page {
+  color: $on_background;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  h4 {
+    margin-left: 20px;
+  }
+  p {
+    text-align: center;
+    color: $secondary;
+    margin-top: 10px;
+  }
+
+  .MuiTextField-root > div {
     color: $on_background;
+    margin-bottom: 5px;
+  }
+
+  .fields {
     display: flex;
-    width: 100vw;
-    height: 100vh;
     flex-direction: column;
-    justify-content: center;
+    align-items: center;
+    margin: 10px;
+  }
 
-    h4{
-        margin-left: 20px;
+  .btns {
+    display: flex;
+    flex-direction: column;
+    
+    margin: 10px;
+    button {
+      color: white;
+    }
+    .MuiButton-contained {
+      background-color: $primary;
     }
 
-    p{
-        text-align: center;
-        color: $secondary;
-        margin-top:10px;
-    }
+    .register {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 1em;
 
-    .MuiTextField-root>div {
-        color: $on_background;
+      button {
+        margin-left: 10px;
+      }
+      //reg text
+      span {
+        color: $primary;
+        margin-left: 15px;
+        font-weight: 500;
+        padding-bottom:2px;
+        
+        font-family: Roboto;
+      }
     }
-
-    .fields {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 10px;
-    }
-
-    .btns {
-        display: flex;
-        flex-direction: column;
-        margin:10px;
-        button {
-            color:white;
-        }
-        .MuiButton-contained {
-            background-color: $primary;
-        }
-        //reg text
-        span{
-            color:$primary;
-            margin-left:5px;
-        }
-    }
+  }
 }
