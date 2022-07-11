@@ -3,7 +3,6 @@ import {Typography,TextField,Button} from '@mui/material';
 import '../styles/components/Login.scss';
 import axios from 'axios';
 
-
 function Login({setUser,isMobile}) {
   const [display,setDisplay]=useState("Login");
   const [name,setName]=useState("");
@@ -19,18 +18,18 @@ function Login({setUser,isMobile}) {
     //shorthand for name,password ~ name:name...
     axios.post(`${process.env.REACT_APP_AUTH_ROUTE}/login`,{name,password})
     .then(data=>{
-      const {sessionID} = data.data;
-      //saves sessionID to localstorage so next time you refresh you'll be requesting using sessionID
-      //persisting user state
-      if(sessionID) {
+      const {sessionID,message} = data.data;
+    //saves sessionID to localstorage so next time you refresh you'll be requesting using sessionID
+    //persisting user state
+    if(sessionID) {
         localStorage.setItem('sessionID',sessionID);//saves id 
         axios.get(`${process.env.REACT_APP_USER_ROUTE}/session?id=${sessionID}`).then(data=>{
           const{user}=data.data;
           if(user)setUser(user);
         });
-    }
-      
-      setName(''); setPassword('');  
+    }else setWarnings(message);
+    
+    setName(''); setPassword('');  
     })
     .catch(err=>{console.log(err);});
    

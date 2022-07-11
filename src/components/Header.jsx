@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import "../styles/components/Header.scss";
-import { Avatar,Button,TextField,Typography } from '@mui/material';
+import { Avatar,Button,TextField,Typography,Snackbar, Alert } from '@mui/material';
 import ProfileDrawer from './Profile/ProfileDrawer';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 // import SearchIcon from '@mui/icons-material/Search';
@@ -10,21 +10,27 @@ import {Routes,Route,useNavigate,useParams} from 'react-router-dom';
 function Header({isMobile,isPostUnsaved,user,setUser,submitPost}) {
   const [opened,setOpen] = useState(false);
   const [discardOpen,setDiscardOpen] = useState(false);
-
   const capitalize=(word)=>{return word.charAt(0).toUpperCase() + word.substring(1,14) + (word.length>14 ? '...' : '')};
   
+  const [snackbarOpen,setSnackBarOpen] = useState(false);
+  const profileAlertClose=()=>{
+    setSnackBarOpen(false);
+  }
+  const profileAlertOpen=()=>{
+    setSnackBarOpen(true);
+  }
 
   return (
     //LOCALHOST:3000/nameoftheheader 
 
-    <div className='header' style={{justifyContent:isMobile ? null : "center"}}>  
+    <div className='header'>  
 
     <Routes>
 
     <Route path='/home' element={
     <>
     {isMobile ? <Avatar alt='User Avatar' onClick={()=>{setOpen(true);}}/> : null } 
-    <Typography variant='h5' color='white'>Home feed</Typography>
+    <Typography variant='h5' color='white' style={{marginLeft:"5px"}}>Home feed</Typography>
     </> }/>
 
     <Route path='/u/:name' element={
@@ -40,7 +46,8 @@ function Header({isMobile,isPostUnsaved,user,setUser,submitPost}) {
     <HeaderWithBackArrow justify='space-between' elements={<>
     <Typography variant='h5' color='white'>Profile Edit</Typography>
     <div className='edit_btn'>
-    <Button variant='contained'>Save</Button>
+    <Button variant='contained' onClick={profileAlertOpen}>Save</Button>
+   
     </div></>
     } location={`/u/${user.name}`} />
     }/>
@@ -58,17 +65,6 @@ function Header({isMobile,isPostUnsaved,user,setUser,submitPost}) {
     location={'/home'}
     />
     }/>
-
-    {
-      /**
-    <span onClick={()=>{navigate(`/home`)}}><ArrowBackIcon/></span>
-    <Typography variant='h5' color='white'>Create post</Typography>
-    <div className='post_btn'>
-    <Button variant='text'>Drafts</Button>
-    <Button variant='contained'>Post</Button>
-    </div>
-       */
-    }
 
     {
 
@@ -111,24 +107,20 @@ function Header({isMobile,isPostUnsaved,user,setUser,submitPost}) {
       </>
       : null
     }
-   
+    <Snackbar
+    open={snackbarOpen}
+    autoHideDuration={50000}
+    onClose={profileAlertClose}
+    anchorOrigin={{vertical:"bottom",horizontal:"right"}}
+    > 
+    <Alert onClose={profileAlertClose} severity="success">Profile changes were saved.</Alert>
+    </Snackbar>
 
     </div>
   )
 }
 
-/**
- * 
- * <HeaderWithBackArrow elements={
-    <div className='container'>
-    <Typography variant='h5' color='white'>Profile Edit</Typography>
-    <div className='edit_btn'>
-    <Button variant='contained'>Save</Button>
-    </div>
-    </div>
-    } location={`/u/${user.name}`} />
-    }/>
- */
+
 function HeaderWithBackArrow({location,elements,flexDirection,justify}){
   const navigate=useNavigate();
   const {name}=useParams();
