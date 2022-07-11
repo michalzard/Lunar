@@ -1,0 +1,53 @@
+@import "../../Theme.scss";
+
+.post_container {
+  border: 1px solid red;
+  
+  .user_action {
+    display: flex;
+    align-items: center;
+    margin:3px;
+    color: lightgray;
+    padding-left: 40px;
+    
+    svg {
+      width: 20px;
+      padding-right:3px;
+    }
+  }
+  .author_info {
+    display: flex;
+    align-items: center;
+    color: $on_surface;
+    padding: 0px 10px 15px 10px;
+    // padding-bottom: 15px;
+    .avatar {
+      margin-left: 10px;
+    }
+    .author {
+      display: flex;
+      align-items: center;
+      padding: 0px 5px 15px 5px;
+      
+      .tag {
+        padding-left: 2px;
+        color: lightgray;
+      }
+    }
+    .timeAgo {
+      color: lightgray;
+      padding-bottom: 15px;
+      flex:1;
+    }
+    .action{
+        display: flex;
+        padding-bottom: 15px;
+        cursor: pointer;
+    }
+  }
+
+  .interaction{
+    display:flex;
+  }
+
+}
