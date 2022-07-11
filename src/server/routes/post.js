@@ -7,12 +7,13 @@ const router = express.Router();
 //check first if requester is logged in before serving
 // post create , get update delete
 
-router.get("/", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const { author } = req.body;
     const foundSession = await mongoose.connection.db
       .collection("sessions")
       .findOne({ _id: author });
+      console.log(author,foundSession);
     if (foundSession) {
       const { user_id } = foundSession.session;
       const relatedPosts = await Post.find({ author: user_id }).populate(
