@@ -1,6 +1,6 @@
 import "./styles/App.scss";
 import { useEffect, useState } from "react";
-import Header from "./components/Header";
+// import Header from "./components/Header";
 import Content from "./components/Content";
 import Login from "./components/Login";
 import axios from "axios";
@@ -32,7 +32,7 @@ function App() {
   
   const [postAlert,setPostAlert] = useState(null);
 
-  const submitPost = async ()=>{
+  const submitPost =()=>{
     axios.post(`${process.env.REACT_APP_POST_ROUTE}/create`,{
       author:localStorage.getItem("sessionID"),
       content:postText,
@@ -44,25 +44,24 @@ function App() {
     setTimeout(()=>{setPostAlert(null)},10000);
   })
   .catch(err=>{
-    if(err) setPostAlert(<Alert color="error" onClose={() => {setPostAlert(null)}}>Unable to submit Post. (Invalid Input) </Alert>)
+    if(err) setPostAlert(<Alert color="error" onClose={() => {setPostAlert(null)}}>Unable to submit Post. (Check your input) </Alert>)
     setTimeout(()=>{setPostAlert(null)},10000);
   })
 }
 
-const isMobile = useMediaQuery({query:"(max-width: 770px)"});
-const isTablet = useMediaQuery({query:"(max-width: 1200px)"});
+const isMobile = useMediaQuery({query:"(max-width: 1200px)"});
+// const isTablet = useMediaQuery({query:"(max-width: 1200px)"});
 
   return (
     <div className="App">
     <BrowserRouter>
-    <Header isMobile={isMobile} setUser={setUser} user={user}  isPostUnsaved={isPostUnsaved} submitPost={submitPost}/>
     <Routes>
     
     <Route path='login' element={Object.keys(user).length === 0 ? <Login setUser={setUser} isMobile={isMobile} /> : <Navigate to='/home'/>} />
     <Route path='/' element={Object.keys(user).length === 0 ? <Navigate to='/login'/> : null }/>
 
     </Routes>
-    <Content user={user} setPostUnsaved={setPostUnsaved} postAlert={postAlert} isMobile={isMobile} submitPost={submitPost}
+    <Content user={user} setUser={setUser} isPostUnsaved={isPostUnsaved} setPostUnsaved={setPostUnsaved} postAlert={postAlert} isMobile={isMobile} submitPost={submitPost}
     filter={filter} setFilter={setFilter} lastSelectedMedia={lastSelectedMedia} setLastSelectedMedia={setLastSelectedMedia} postText={postText} setPostText={setPostText}
     />
 
