@@ -8,13 +8,11 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-
 import {Grid} from '@giphy/react-components';
 import {GiphyFetch} from '@giphy/js-fetch-api';
-import { useMediaQuery } from 'react-responsive';
 
 
-function PostEditor({setPostUnsaved,filter,setFilter,lastSelectedMedia,setLastSelectedMedia,postText,setPostText,submitPost,postAlert}) {
+function PostEditor({isMobile,setPostUnsaved,filter,setFilter,lastSelectedMedia,setLastSelectedMedia,postText,setPostText,submitPost,postAlert}) {
 
   //Gif menu
   const [gifEl,setGifEl] = useState(null);
@@ -36,7 +34,7 @@ function PostEditor({setPostUnsaved,filter,setFilter,lastSelectedMedia,setLastSe
   else setPostUnsaved(false);
   },[postText.length,setPostUnsaved]);
 
-  const isMobile = useMediaQuery({query:"(max-width: 770px)"});
+  // const isMobile = useMediaQuery({query:"(max-width: 770px)"});
 
   return (
     <div className='posteditor_container'>
