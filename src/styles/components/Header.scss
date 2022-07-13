@@ -1,65 +1,73 @@
-@import '../Theme.scss';
+@import "../Theme.scss";
 
 .header {
-    position: sticky;
-    top: 0;
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  padding-bottom: 0px;
+  background-color: $background;
+
+  z-index: 10;
+  b {
+    background-color: $background;
+  }
+  h5 {
+    font-weight: bold;
+    margin-left: 20px;
+  }
+
+  svg {
+    color: $on_background;
+  }
+
+  .info > span {
     display: flex;
+    flex-direction: column;
+    color: $on_surface;
+    margin-left: 20px;
+  }
+
+  .container {
+    display: flex;
+    width: 100%;
+    // justify-content: space-between; // will be manually assigned on specific component
+
+    .name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .edit_btn {
+      button {
+        background-color: $primary;
+      }
+    }
+  }
+  .column {
+    flex-direction: column;
+  }
+  .searchbar {
+    width: 100%;
+    input {
+      color: white;
+    }
+  }
+
+  .post_btn {
+    display: flex;
+    justify-content: flex-end;
     align-items: center;
-    padding: 15px;
-    padding-bottom: 0px;
 
-    h5 {
-        font-weight: bold;
-        margin-left: 20px;
+    button {
+      color: $primary;
     }
 
-    svg {
-        color: $on_background;
+    button:last-child {
+      background-color: $primary;
+      color: $on_background;
+      margin-left: 5px;
     }
-
-    .info>span {
-        display: flex;
-        flex-direction: column;
-        color: $on_surface;
-        margin-left: 20px;
-    }
-
-    .container{
-        display: flex;
-        width: 100%;
-        // justify-content: space-between; // will be manually assigned on specific component
-
-        .name{
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;        
-        }
-        .edit_btn{    
-            button{background-color: $primary;}
-        }
-    }
-    .column{flex-direction:column;}
-    .searchbar {
-        width: 100%;
-        input {
-            color: white;
-        }
-    }
-
-    .post_btn {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-
-        button {
-            color: $primary;
-        }
-
-        button:last-child {
-            background-color: $primary;
-            color: $on_background;
-            margin-left: 5px;
-        }
-    }
+  }
 }
-
