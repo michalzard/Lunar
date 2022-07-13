@@ -1,53 +1,65 @@
 @import "../../Theme.scss";
 
 .post_container {
-  border: 1px solid red;
-  
-  .user_action {
-    display: flex;
-    align-items: center;
-    margin:3px;
-    color: lightgray;
-    padding-left: 40px;
-    
-    svg {
-      width: 20px;
-      padding-right:3px;
-    }
+  display: flex;
+  padding: 10px;
+  font-family: Roboto;
+  .avatar {
+    padding: 5px;
+    padding-top: 20px;
   }
-  .author_info {
+
+  .main {
     display: flex;
-    align-items: center;
-    color: $on_surface;
-    padding: 0px 10px 15px 10px;
-    // padding-bottom: 15px;
-    .avatar {
-      margin-left: 10px;
+    flex-direction: column;
+    flex: 1;
+    .user_action {
+      display: flex;
+      align-items: center;
+      color: lightgray;
+
+      .icon {
+        $iconsize: 14px;
+        width: $iconsize;
+        height: $iconsize;
+      }
+      .action {
+        font-size: 11px;
+        margin-left: 3px;
+      }
     }
     .author {
       display: flex;
       align-items: center;
-      padding: 0px 5px 15px 5px;
-      
-      .tag {
-        padding-left: 2px;
+
+      .tagAndTime {
         color: lightgray;
       }
     }
-    .timeAgo {
-      color: lightgray;
-      padding-bottom: 15px;
-      flex:1;
-    }
-    .action{
-        display: flex;
-        padding-bottom: 15px;
+    .interaction {
+      display: flex;
+      color: gray;
+      svg {
+        $iconsize: 20px;
+        width: $iconsize;
+        height: $iconsize;
+      }
+      div {
         cursor: pointer;
+        margin-top:2px;
+        margin-right: 5px;
+      }
     }
   }
 
-  .interaction{
-    display:flex;
+  .right {
+    .more {
+      color: gray;
+      cursor: pointer;
+    }
   }
+}
 
+.preview-container{
+  display:flex;
 }
