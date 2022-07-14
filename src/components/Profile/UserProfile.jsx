@@ -1,15 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import "../../styles/components/Profile/UserProfile.scss";
 import {Avatar,Typography,Button} from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import LinkIcon from '@mui/icons-material/Link';
-import InterestsIcon from '@mui/icons-material/Interests';
+// import InterestsIcon from '@mui/icons-material/Interests';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { useNavigate , useParams } from 'react-router-dom';
 import axios from 'axios';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import PostContainer from '../Post/PostContainer';
+
 
 function UserProfile({isMobile,user}) {
   const {name}= useParams();
@@ -35,7 +36,7 @@ function UserProfile({isMobile,user}) {
       setLoading(false);
     })
   }  
-  },[user]);
+  },[user,name]);
 
   const [posts,setPosts]=useState([]);
 
@@ -58,6 +59,7 @@ function UserProfile({isMobile,user}) {
       case "Likes" :
       
       break;
+      default: break;
     }
    
   },[filter])
@@ -115,7 +117,7 @@ function UserProfile({isMobile,user}) {
     <span onClick={()=>{setFilter('Likes')}}>Likes</span>
     </Typography>
     </div>
-    <div className='content'>
+    <div className='profile_content'>
     {
     // TODO : STYLIZE POSTS
     posts.length > 0  ? posts.map((post,i)=>{
