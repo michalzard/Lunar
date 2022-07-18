@@ -1,4 +1,4 @@
-import { Avatar, Backdrop, TextField, Button, Typography } from '@mui/material';
+import { Avatar, Backdrop, TextField, Button, Typography, Menu, MenuItem, Snackbar, Alert, Slide } from '@mui/material';
 import React,{useEffect, useState} from 'react'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import ModeCommentIcon from '@mui/icons-material/ModeComment';
@@ -9,6 +9,11 @@ import IosShareIcon from '@mui/icons-material/IosShare';
 import '../../styles/components/Post/PostContainer.scss';
 import CloseIcon from '@mui/icons-material/Close';
 import DefaultImage from "../../assets/lunarsystem.jpg";
+//
+import LinkIcon from '@mui/icons-material/Link';
+import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
+import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
+
 //TODO: 
 // make ... dropdown  - follow,bookmark,mute,block,report
 // share button  - dropdown menu with (copy link to post,bookmark)
@@ -25,6 +30,8 @@ function PostContainer({isMobile,post}) {
   const [liked,setLiked]=useState(false);
   const [likeCount,setLikeCount]=useState(0);
 
+  
+  const [shareMenuAnchor,setShareMenuAnchor] = useState(null);
 
   return (
     <div className='post_container'>
@@ -62,7 +69,8 @@ function PostContainer({isMobile,post}) {
     <RepeatIcon style={{color:reposted ? "greenyellow" : null}} />
     <Typography className='likeCount' component="span">{repostCount > 0 ? repostCount : null}</Typography></div>
 
-    <div className='share'><IosShareIcon/></div>
+    <div className='share'><IosShareIcon onClick={(e)=>{setShareMenuAnchor(e.currentTarget);}}/></div>
+    <ShareMenu anchor={shareMenuAnchor} setShareMenuAnchor={setShareMenuAnchor}/>
     </div>
 
     </div>
@@ -202,5 +210,47 @@ function PostComment({comment,liked,setLiked,reposted,setReposted}){
   <MoreHorizIcon className="more"/>
   </div>
   </div>
+  )
+}
+
+
+function ShareMenu({anchor,setShareMenuAnchor}){
+  const onClose=()=>{
+    setShareMenuAnchor(null);
+  }
+  const [bookmarked,setBookmarked] = useState(false); 
+
+  const copyURLtoClipboard=()=>{
+    window.navigator.clipboard.writeText(window.location.href);
+  }
+
+  const [alertOpen,setAlertOpen] = useState(false);
+  const closeAlert=()=>{
+    setAlertOpen(false);
+  }
+  return (
+    <Menu
+    open={Boolean(anchor)}
+    anchorEl={anchor}
+    onClose={onClose}
+    id="ShareMenu"
+    >
+    <MenuItem onClick={()=>{copyURLtoClipboard();setAlertOpen(true);}}><LinkIcon/> Copy Link</MenuItem>
+    <MenuItem onClick={()=>{bookmarked ? setBookmarked(false) : setBookmarked(true);}}>
+    {
+      bookmarked ? <BookmarkAddedIcon style={{color:"greenyellow"}}/> 
+      :  <BookmarkAddIcon/>   
+    }
+    Add to Bookmark</MenuItem>
+    <Snackbar
+    anchorOrigin={{vertical:"bottom",horizontal:"right"}}
+    open={alertOpen}
+    autoHideDuration={3000}
+    onClose={closeAlert}
+    TransitionComponent={Slide}
+    >
+      <Alert color="success">Post's URL Copied</Alert>
+    </Snackbar>
+    </Menu>
   )
 }

@@ -132,11 +132,17 @@
     }
   }
 
-  .comment_section{
-    display:flex;
+  .comment_section {
+    display: flex;
     flex-direction: column;
     overflow-y: auto;
     height: calc(100% - 220px);
   }
+}
 
+#ShareMenu {
+  margin:0px 5px 0px 5px;
+  svg {
+    margin-right: 5px;
+  }
 }
