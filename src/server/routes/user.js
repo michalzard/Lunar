@@ -30,8 +30,8 @@ router.get("/session", async (req, res) => {
       });
       if (userByID)
         res.status(200).send({ message: "User found", user: userByID });
-      else res.status(200).send({ message: "User cannot be found" });
-    } else res.status(200).send({ message: "Session expired!" });
+      else res.status(404).send({ message: "User cannot be found" });
+    } else res.status(401).send({ message: "Session expired!" });
   } catch (err) {
     console.log(err);
   }
@@ -47,7 +47,7 @@ router.get("/:name", async (req, res) => {
     );
     if (foundUser)
       res.status(200).send({ message: "User found", user: foundUser });
-    else res.status(200).send({ message: "User not found" });
+    else res.status(404).send({ message: "User not found" });
   } catch (err) {
     console.log(err);
   }
