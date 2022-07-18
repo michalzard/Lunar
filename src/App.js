@@ -49,7 +49,7 @@ function App() {
   })
 }
 
-const isMobile = useMediaQuery({query:"(max-width: 1200px)"});
+const isMobile = useMediaQuery({query:"(max-width: 800px)"});
 // const isTablet = useMediaQuery({query:"(max-width: 1200px)"});
 
   return (
