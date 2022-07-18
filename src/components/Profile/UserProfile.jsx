@@ -122,7 +122,7 @@ function UserProfile({isMobile,user}) {
     // TODO : STYLIZE POSTS
     posts.length > 0  ? posts.map((post,i)=>{
       return (
-       <PostContainer key={i} post={post}/>
+       <PostContainer key={i} isMobile={isMobile} post={post}/>
       )
     }) 
     : "There are no posts"
