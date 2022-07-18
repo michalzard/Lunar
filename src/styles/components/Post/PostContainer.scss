@@ -2,13 +2,19 @@
 
 .post_container {
   display: flex;
-  padding: 10px;
+  padding: 20px 10px 20px 10px;
+
   font-family: Roboto;
   .avatar {
     padding: 5px;
     padding-top: 20px;
+    padding-right: 10px;
   }
-
+  .comment_avatar {
+    padding: 5px;
+    padding-top: 10px;
+    padding-right: 10px;
+  }
   .main {
     display: flex;
     flex-direction: column;
@@ -17,7 +23,10 @@
       display: flex;
       align-items: center;
       color: lightgray;
-
+      //a container used to hold icon with user action so that it can be spaced out in mobile view because there's close icon on top right
+      .a {
+        display: flex;
+      }
       .icon {
         $iconsize: 14px;
         width: $iconsize;
@@ -31,7 +40,9 @@
     .author {
       display: flex;
       align-items: center;
-
+      .name {
+        font-weight: 500;
+      }
       .tagAndTime {
         color: lightgray;
       }
@@ -50,6 +61,21 @@
         margin-right: 5px;
       }
     }
+    .comment_interaction {
+      display: flex;
+      align-items: center;
+      color: gray;
+      svg {
+        $iconsize: 20px;
+        width: $iconsize;
+        height: $iconsize;
+      }
+      div {
+        cursor: pointer;
+        margin-top: 10px;
+        margin-right: 25px;
+      }
+    }
   }
 
   .right {
@@ -65,15 +91,26 @@
     height: 100%;
     flex: 1;
     z-index: 10;
+    //TODO: CENTER IMAGE,KEEP IMG RATIO
+    img {
+      width: 100%;
+      height: 100%;
+
+      max-width: 80vw;
+      max-height: 90vh;
+      object-fit: scale-down;
+      z-index: 1;
+    }
     .closeIcon {
       z-index: 3;
+      cursor: pointer;
     }
   }
   .comments_preview_container {
     background-color: $surface;
     // width: 400px;//desktop only
     height: 100%;
-    width: 400px;
+    // width: 400px;//400px on desktop,fullscreen on mobile
   }
   .comment_divider {
     display: flex;
@@ -81,19 +118,25 @@
     border-top: 1px solid gray;
     margin: 10px;
   }
-  .comment_section {
-    .reply_input {
-      margin: 5px;
-      width: 95%;
-      label {
-        color: lightgray;
-      }
-      input {
-        color: white;
-      }
-      button {
-        color: white;
-      }
+  .reply_input {
+    margin: 5px;
+    width: 95%;
+    label {
+      color: lightgray;
+    }
+    input {
+      color: white;
+    }
+    button {
+      color: white;
     }
   }
+
+  .comment_section{
+    display:flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: calc(100% - 220px);
+  }
+
 }
