@@ -1,8 +1,11 @@
 @import "../../Theme.scss";
 
+$post_border : 1px solid rgba(225, 225, 225,.1);
 .post_container {
   display: flex;
   padding: 20px 10px 20px 10px;
+  
+  border-bottom:$post_border;
 
   font-family: Roboto;
   .avatar {
@@ -141,8 +144,43 @@
 }
 
 #ShareMenu {
-  margin:0px 5px 0px 5px;
+  margin: 0px 5px 0px 5px;
   svg {
     margin-right: 5px;
+  }
+}
+
+#ActionMenu {
+  svg {
+    margin-right: 10px;
+  }
+}
+
+#ReportMenu {
+  h5 {
+    margin: 10px 20px 0px 20px;
+  }
+  div[role="radiogroup"] {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 10px 20px 20px;
+    .Mui-checked{
+      svg{color:$secondary};
+    }
+  }
+  .title{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    svg{
+      margin:10px 20px 0px 0px;
+      color:gray;
+      cursor: pointer;
+    }
+  }
+  button {
+    background-color: $primary;
   }
 }
