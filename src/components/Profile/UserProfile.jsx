@@ -34,6 +34,8 @@ function UserProfile({isMobile,user}) {
       if(!user) setProfileNotFound(true);
       else setFetchedUser(user);
       setLoading(false);
+    }).catch(err=>{
+      if(err) {setProfileNotFound(true);setLoading(false);}
     })
   }  
   },[user,name]);
@@ -41,12 +43,12 @@ function UserProfile({isMobile,user}) {
   const [posts,setPosts]=useState([]);
 
   useEffect(()=>{
+    
     switch(filter){
       case "Posts" :
-      axios.post(`${process.env.REACT_APP_POST_ROUTE}`,{author:localStorage.getItem("sessionID")})
+      axios.get(`${process.env.REACT_APP_POST_ROUTE}/all?author=${name}`)
       .then(data=>{
-        const {message,posts} = data.data;
-        console.log(message);
+        const {posts} = data.data;
         if(posts) setPosts(posts);
       })
       break;
@@ -62,7 +64,7 @@ function UserProfile({isMobile,user}) {
       default: break;
     }
    
-  },[filter])
+  },[name,filter])
 
   return (
     
