@@ -7,23 +7,21 @@ const router = express.Router();
 //check first if requester is logged in before serving
 // post create , get update delete
 
-router.post("/", async (req, res) => {
+router.get("/all", async (req, res) => {
   try {
-    const { author } = req.body;
-    const foundSession = await mongoose.connection.db
-      .collection("sessions")
-      .findOne({ _id: author });
-      console.log(author,foundSession);
-    if (foundSession) {
-      const { user_id } = foundSession.session;
-      const relatedPosts = await Post.find({ author: user_id }).populate(
-        "author",
-        { _id: 0, email: 0, password: 0 }
-      );
-      res.status(200).send({ message: "Posts found!", posts: relatedPosts });
-    } else {
-      res.status(401).send({ message: `Session invalid or expired!` });
-    }
+    const { author } = req.query; //expecting author name
+      if(author){
+      await Post.find({}).populate("author",{password:0,email:0}).exec(
+        (err,posts)=>{
+          if(err) throw Error(err.message);
+          const filteredPosts= posts.filter((post)=>post.author.name === author);
+
+          res.status(200).send({message:`${author} posts`,posts:filteredPosts});
+        }
+      );}
+      else{
+        res.status(404).send({message:"Unable to load posts!"});
+      }
   } catch (err) {
     console.log(err);
   }
@@ -32,9 +30,7 @@ router.post("/", async (req, res) => {
 router.post("/create", async (req, res) => {
   try {
     const { author, content, media, tag } = req.body;
-    const foundSession = await mongoose.connection.db
-      .collection("sessions")
-      .findOne({ _id: author });
+    const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: author });
     if (foundSession) {
       const { user_id } = foundSession.session;
       const user = await User.findById(user_id);
