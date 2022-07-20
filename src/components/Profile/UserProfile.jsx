@@ -10,7 +10,7 @@ import { useNavigate , useParams } from 'react-router-dom';
 import axios from 'axios';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import PostContainer from '../Post/PostContainer';
-
+import NoteIcon from '@mui/icons-material/Note';
 
 function UserProfile({isMobile,user}) {
   const {name}= useParams();
@@ -21,9 +21,14 @@ function UserProfile({isMobile,user}) {
   const highlightColor='#bb86fc';
 
   const navigate=useNavigate();
+
+
   //Everytime name changes in url params this fetches profile info to see if there's existing profile
   useEffect(()=>{
-  if(user.name===name) {
+  //if not logged in back to login page
+  if(!localStorage.getItem("sessionID")) navigate("/login");
+  //if looking up your own profile,avoid fetching for no reason
+  if(user.displayName===name) {
   setFetchedUser(user);
   setProfileNotFound(false);
   setLoading(false);
@@ -38,12 +43,11 @@ function UserProfile({isMobile,user}) {
       if(err) {setProfileNotFound(true);setLoading(false);}
     })
   }  
-  },[user,name]);
+  },[user,name,navigate]);
 
   const [posts,setPosts]=useState([]);
 
   useEffect(()=>{
-    
     switch(filter){
       case "Posts" :
       axios.get(`${process.env.REACT_APP_POST_ROUTE}/all?author=${name}`)
@@ -80,13 +84,13 @@ function UserProfile({isMobile,user}) {
     <div className='user_info'>
     <div className='photo'>
     <Avatar/>
-    { user.name === name ? <Button variant='outlined' onClick={()=>{navigate(`/u/${fetchedUser.name}/edit`)}}>Edit profile</Button> : null }
+    { user.name === name ? <Button variant='outlined' onClick={()=>{navigate(`/u/${fetchedUser.displayName}/edit`)}}>Edit profile</Button> : null }
     </div>
     <div className='info'>
     <div className='user_name'>
     
-    <Typography variant='body1' className='name'>{fetchedUser ? fetchedUser.name : 'Username'}</Typography> 
-    <Typography variant='caption' className='tag'>{fetchedUser ? `@${fetchedUser.name}` : '@Usertag'}</Typography>
+    <Typography variant='body1' className='name'>{fetchedUser ? fetchedUser.displayName : 'Username'}</Typography> 
+    <Typography variant='caption' className='tag'>{fetchedUser ? `@${fetchedUser.tag}` : '@Usertag'}</Typography>
     </div>
     </div>
     <div className='description'>
@@ -94,13 +98,13 @@ function UserProfile({isMobile,user}) {
     </div>
     <div className='interests'>
     {
-      fetchedUser.profile.location ? <><LocationOnIcon/> {fetchedUser.profile.location}</> : null 
+      fetchedUser.profile.location ? <Typography><LocationOnIcon/> {fetchedUser.profile.location}</Typography> : null 
     }
     {
-      fetchedUser.profile.web ? <><LinkIcon/> {fetchedUser.profile.web}</> : null 
+      fetchedUser.profile.web ? <Typography><LinkIcon/> {fetchedUser.profile.web}</Typography> : null 
     }
     {
-      fetchedUser.profile.birthday ? <div><CalendarMonthIcon/> {new Date(fetchedUser.profile.birthday).toUTCString().substring(0,17)}</div> : null 
+      fetchedUser.profile.birthday ? <Typography><CalendarMonthIcon/> {new Date(fetchedUser.profile.birthday).toUTCString().substring(0,17)}</Typography> : null 
     }
 
     </div>
@@ -124,10 +128,10 @@ function UserProfile({isMobile,user}) {
     // TODO : STYLIZE POSTS
     posts.length > 0  ? posts.map((post,i)=>{
       return (
-       <PostContainer key={i} isMobile={isMobile} post={post}/>
+       <PostContainer key={i} isMobile={isMobile} user={user} post={post}/>
       )
     }) 
-    : "There are no posts"
+    : <NoPosts name={user.displayName}/>
     }
     </div>
     </>
@@ -148,5 +152,14 @@ function ProfileNotFound({name}){
   )
 }
 
+
+function NoPosts({name}){
+  return(
+    <div className='no_posts'>
+    <NoteIcon/> 
+    <Typography variant="subtitle1">{name} hasn't posted yet.</Typography>
+    </div>
+  )
+}
 
 export default UserProfile;

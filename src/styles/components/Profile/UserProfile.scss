@@ -72,5 +72,13 @@ $size: 60px;
     margin-left: 5px;
     font-size: 20px;
   }
-  
+}
+.no_posts{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  padding:50px;
+  svg{
+    margin-right:5px;
+  }
 }
