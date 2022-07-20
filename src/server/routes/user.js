@@ -23,13 +23,8 @@ router.get("/session", async (req, res) => {
       .findOne({ _id: id });
     if (foundSession) {
       const { user_id } = foundSession.session;
-      const userByID = await User.findById(user_id, {
-        password: 0,
-        __v: 0,
-        _id: 0,
-      });
-      if (userByID)
-        res.status(200).send({ message: "User found", user: userByID });
+      const userByID = await User.findById(user_id, { password: 0, __v: 0});
+      if (userByID) res.status(200).send({ message: "User found", user: userByID });
       else res.status(404).send({ message: "User cannot be found" });
     } else res.status(401).send({ message: "Session expired!" });
   } catch (err) {
@@ -43,7 +38,7 @@ router.get("/:name", async (req, res) => {
     if (!name) res.status(404).send({ message: "Bad Request" });
     const foundUser = await User.findOne(
       { name },
-      { password: 0, __id: 0, __v: 0, _id: 0 }
+      { password: 0, __v: 0 }
     );
     if (foundUser)
       res.status(200).send({ message: "User found", user: foundUser });
