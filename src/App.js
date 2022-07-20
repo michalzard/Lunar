@@ -18,16 +18,25 @@ function App() {
   const [postText,setPostText] = useState('');
 
   const [user,setUser] = useState({});
+
   //run once on app loads
   useEffect(()=>{
     const sessionID=localStorage.getItem('sessionID');
     //if sessionID exists lookup if there's active session then return user data
     //if not route endpoint returns that session is expired and you need to login
-    if(sessionID) axios.get(`${process.env.REACT_APP_USER_ROUTE}/session?id=${sessionID}`).then(data=>{
+    if(sessionID){ axios.get(`${process.env.REACT_APP_USER_ROUTE}/session?id=${sessionID}`).then(data=>{
     const{user}=data.data; 
-    if(user) setUser(user);
+    if(user) {
+    setUser(user);
+    }
     else localStorage.removeItem('sessionID');
-    });
+    }).catch(err=>{if(err){
+      //received 401,not authorized so remove sessionID from localstorage and 
+      localStorage.removeItem('sessionID');
+      setUser({});
+      console.log("DIDNT FIND SESSION,GO BACK TO LOGIN")
+    }});
+  }
   },[]);
   
   const [postAlert,setPostAlert] = useState(null);
@@ -56,11 +65,11 @@ const isMobile = useMediaQuery({query:"(max-width: 800px)"});
     <div className="App">
     <BrowserRouter>
     <Routes>
-    
-    <Route path='login' element={Object.keys(user).length === 0 ? <Login setUser={setUser} isMobile={isMobile} /> : <Navigate to='/home'/>} />
-    <Route path='/' element={Object.keys(user).length === 0 ? <Navigate to='/login'/> : null }/>
 
+    <Route path='/' element={Object.keys(user).length === 0 ? <Navigate to='/login'/> : null }/>
+    <Route path='login' element={Object.keys(user).length === 0 ? <Login setUser={setUser} isMobile={isMobile} /> : <Navigate to='/home'/>} />
     </Routes>
+
     <Content user={user} setUser={setUser} isPostUnsaved={isPostUnsaved} setPostUnsaved={setPostUnsaved} postAlert={postAlert} isMobile={isMobile} submitPost={submitPost}
     filter={filter} setFilter={setFilter} lastSelectedMedia={lastSelectedMedia} setLastSelectedMedia={setLastSelectedMedia} postText={postText} setPostText={setPostText}
     />
