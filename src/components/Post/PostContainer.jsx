@@ -1,5 +1,5 @@
 import { Avatar, Backdrop, TextField, Button, Typography, Menu, MenuItem, Snackbar, Alert, Slide } from '@mui/material';
-import React,{ useState} from 'react'
+import React,{ useEffect, useState} from 'react'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import ModeCommentIcon from '@mui/icons-material/ModeComment';
 import RepeatIcon from '@mui/icons-material/Repeat';
@@ -15,8 +15,9 @@ import ActionMenu from './ActionMenu';
 import LinkIcon from '@mui/icons-material/Link';
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
+import axios from 'axios';
 
-function PostContainer({isMobile,post}) {
+function PostContainer({isMobile,user,post}) {
 
   const [previewOpen,setPreviewOpen] = useState(false);
 
@@ -30,6 +31,89 @@ function PostContainer({isMobile,post}) {
   
   const [shareMenuAnchor,setShareMenuAnchor] = useState(null);
   const [actionMenuAnchor,setActionMenuAnchor] = useState(null);
+
+  //on page/post load
+  useEffect(()=>{
+
+  setLiked(post.likes.includes(user._id) ?  true : false);
+  setLikeCount(post.likeCount);
+  setReposted(post.reposts.includes(user._id) ?  true : false);
+  setRepostCount(post.repostCount);
+  setCommentCount(post.comments ? post.comments.length : 0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[user._id]);
+  
+
+  const submitLike=(action)=>{
+    //patch request to /post/update
+    switch(action){
+      case "add": 
+      axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
+        sessionID:localStorage.getItem("sessionID"),
+        postID:post._id,
+        like:1,
+      }).then(data=>{
+        const {updatedLikes,updatedCount} = data.data;
+        post.likes=updatedLikes;
+        setLikeCount(updatedCount);
+        setLiked(true);
+        
+      }).catch(err=>{
+        console.log(err);
+      });
+      break;
+      case "remove": 
+      axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
+        sessionID:localStorage.getItem("sessionID"),
+        postID:post._id,
+        like:-1,
+      }).then(data=>{
+        const {updatedLikes,updatedCount} = data.data;
+        post.likes=updatedLikes;
+        setLiked(false);
+        setLikeCount(updatedCount);
+      }).catch(err=>{
+        console.log(err);
+      });
+      break;
+      default : break;
+    }
+  }
+  const submitRepost=(action)=>{
+    //patch request to /post/update
+    switch(action){
+      case "add": 
+      axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
+        sessionID:localStorage.getItem("sessionID"),
+        postID:post._id,
+        repost:1,
+      }).then(data=>{
+        const {updatedReposts,updatedCount} = data.data;
+        post.reposts=updatedReposts;
+        setRepostCount(updatedCount);
+        setReposted(true);
+        
+      }).catch(err=>{
+        console.log(err);
+      });
+      break;
+      case "remove": 
+      axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
+        sessionID:localStorage.getItem("sessionID"),
+        postID:post._id,
+        repost:-1,
+      }).then(data=>{
+        const {updatedReposts,updatedCount} = data.data;
+        post.reposts=updatedReposts;
+        setRepostCount(updatedCount);
+        setReposted(false);
+      }).catch(err=>{
+        console.log(err);
+      });
+      break;
+      default : break;
+    }
+  }
 
   return (
     <div className='post_container'>
@@ -48,10 +132,10 @@ function PostContainer({isMobile,post}) {
     <div className='author'>
     {post ?
     <>
-    <Typography className='name'>{post.author.name}</Typography>
+    <Typography className='name'>{post.author.displayName}</Typography>
     <div className='tagAndTime'>
-    <Typography variant="caption" className='tag'>@{post.author.name}</Typography>
-    <Typography variant="caption" className="timeAgo"> ~ 7m</Typography></div>
+    <Typography variant="caption" className='tag'>@{post.author.tag}</Typography>
+    <Typography variant="caption" className="timeAgo"> ~ {new Date(post.createdAt).toUTCString().substring(0,16)}</Typography></div>
     </> 
     : null} 
     
@@ -63,9 +147,9 @@ function PostContainer({isMobile,post}) {
     <div className='interaction'>
     <div className='comments'><ModeCommentIcon onClick={()=>{setPreviewOpen(true);}}/>
     <Typography className='commentCount' component="span">{commentCount > 0 ? commentCount : null}</Typography></div>
-    <div className='likes' onClick={()=>{setLiked(!liked);setLikeCount(liked ? likeCount-1 : likeCount+1);}}>{liked ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
+    <div className='likes' onClick={()=>{liked ? submitLike("remove") : submitLike("add");}}>{liked ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
     <Typography className='likeCount' component="span">{likeCount > 0 ? likeCount : null}</Typography></div>
-    <div className='reposts' onClick={()=>{setReposted(!reposted);setRepostCount(reposted ? repostCount-1 : repostCount+1);}}>
+    <div className='reposts' onClick={()=>{reposted ? submitRepost("remove") : submitRepost("add");}}>
     <RepeatIcon style={{color:reposted ? "greenyellow" : null}} />
     <Typography className='likeCount' component="span">{repostCount > 0 ? repostCount : null}</Typography></div>
 
@@ -79,8 +163,9 @@ function PostContainer({isMobile,post}) {
     <div className='right'>
     <MoreHorizIcon className="more" onClick={(e)=>{setActionMenuAnchor(e.currentTarget);}}/>
     </div>
-    <PostPreview isMobile={isMobile} post={post}  open={previewOpen} reposted={reposted} liked={liked} 
-    setOpen={setPreviewOpen} setLiked={setLiked} setReposted={setReposted} setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor}
+    <PostPreview isMobile={isMobile} post={post}  open={previewOpen} reposted={reposted} liked={liked} likeCount={likeCount} repostCount={repostCount} user={user}
+    setOpen={setPreviewOpen} setLiked={setLiked} setReposted={setReposted} setLikeCount={setLikeCount} setRepostCount={setRepostCount}
+    setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor}
     />
     
     </div>
@@ -93,13 +178,18 @@ export default PostContainer;
  * (Desktop Only) For Image,Have preview with backdrop that show image,comment section on the right
  * (Mobile Only) For All Media, have Post on top and comment section right below it
  */
-function PostPreview({isMobile,post,open,setOpen,reposted,setReposted,liked,setLiked,setShareMenuAnchor,setActionMenuAnchor}){
+function PostPreview({isMobile,post,user,open,setOpen,reposted,setReposted,liked,setLiked,likeCount,repostCount,setLikeCount,setRepostCount,setShareMenuAnchor,setActionMenuAnchor}){
   const fakeCommentArray=[
     "Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow",
   ]
-  
+  // const [commentCount,setCommentCount]=useState(0);
+  // const [reposted,setReposted]=useState(false);
+  // const [repostCount,setRepostCount]=useState(0);
+  // const [liked,setLiked]=useState(false);
+  // const [likeCount,setLikeCount]=useState(0);
+
+
   return(
-    <>
     <Backdrop className='preview-container' open={open} style={{zIndex:10,backgroundColor:"rgba(0,0,0,.7)",backdropFilter:"blur(4px)"}}>
     {
       //mobile doesnt have media preview instead display media at the top as post preview
@@ -135,10 +225,10 @@ function PostPreview({isMobile,post,open,setOpen,reposted,setReposted,liked,setL
 
     <div className='author'>
     {post ? <>
-    <Typography className='name'>{post.author.name}</Typography>
+    <Typography className='name'>{post.author.displayName}</Typography>
     <div className='tagAndTime'>
-    <Typography variant="caption" className='tag'>@{post.author.name}</Typography>
-    <Typography variant="caption" className="timeAgo"> ~ 7m</Typography></div>
+    <Typography variant="caption" className='tag'>@{post.author.displayName}</Typography>
+    <Typography variant="caption" className="timeAgo"> ~ {new Date(post.createdAt).toUTCString().substring(0,16)}</Typography></div>
     </> : null} 
     
     </div>
@@ -146,9 +236,12 @@ function PostPreview({isMobile,post,open,setOpen,reposted,setReposted,liked,setL
     
     {/* TODO: CSS animation */}
     <div className='interaction'>
-    <div className='likes' onClick={()=>{setLiked(!liked);}}>{liked ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
-    <span className='likeCount'></span></div>
-    <div className='reposts' onClick={()=>{setReposted(!reposted);}}> <RepeatIcon style={{color:reposted ? "greenyellow" : null}} /><span className='repostCount'></span></div>
+
+    <div className='likes' onClick={()=>{setLiked(!liked);setLikeCount(liked ? likeCount-1 : likeCount+1);}}>{liked ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
+    <Typography className='likeCount' component="span">{likeCount > 0 ? likeCount : null}</Typography></div>
+    <div className='reposts' onClick={()=>{setReposted(!reposted);setRepostCount(reposted ? repostCount-1 : repostCount+1);}}>
+    <RepeatIcon style={{color:reposted ? "greenyellow" : null}} />
+    <Typography className='likeCount' component="span">{repostCount > 0 ? repostCount : null}</Typography></div>
     <div className='share' onClick={(e)=>{setShareMenuAnchor(e.currentTarget);}}><IosShareIcon/></div>
     </div>
     </div>
@@ -162,7 +255,8 @@ function PostPreview({isMobile,post,open,setOpen,reposted,setReposted,liked,setL
 
       {
         fakeCommentArray.map((comment,i)=>{
-          return <PostComment key={i} comment={post} liked={liked} setLiked={setLiked} reposted={reposted} setReposted={setReposted} setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor}/>
+          return <PostComment key={i} comment={post} liked={liked} reposted={reposted} likeCount={likeCount} repostCount={repostCount}
+          setLiked={setLiked} setReposted={setReposted} setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor}/>
         })
       }
 
@@ -170,7 +264,6 @@ function PostPreview({isMobile,post,open,setOpen,reposted,setReposted,liked,setL
     </div>
 
     </Backdrop>
-    </>
   )
 }
 
@@ -189,9 +282,9 @@ function PostComment({comment,liked,setLiked,reposted,setReposted,setShareMenuAn
 
   <div className='author'>
   {comment ? <>
-  <Typography className='name'>{comment.author.name}</Typography>
+  <Typography className='name'>{comment.author.displayName}</Typography>
   <div className='tagAndTime'>
-  <Typography variant="caption" className='tag'>@{comment.author.name}</Typography>
+  <Typography variant="caption" className='tag'>@{comment.author.displayName}</Typography>
   <Typography variant="caption" className="timeAgo"> ~ 7m</Typography></div>
   </> : null} 
   

@@ -3,7 +3,7 @@
 $post_border : 1px solid rgba(225, 225, 225,.1);
 .post_container {
   display: flex;
-  padding: 20px 10px 20px 10px;
+  padding: 20px 10px 10px 10px;
   
   border-bottom:$post_border;
 
@@ -52,7 +52,9 @@ $post_border : 1px solid rgba(225, 225, 225,.1);
     }
     .interaction {
       display: flex;
+      
       color: gray;
+      margin-top:10px;
       svg {
         $iconsize: 20px;
         width: $iconsize;
@@ -60,9 +62,9 @@ $post_border : 1px solid rgba(225, 225, 225,.1);
       }
       div {
         cursor: pointer;
-        margin-top: 2px;
         margin-right: 5px;
       }
+      
     }
     .comment_interaction {
       display: flex;
