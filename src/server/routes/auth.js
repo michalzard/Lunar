@@ -21,12 +21,12 @@ router.post('/register',async (req,res)=>{
         //validate email as string@string.string
         const validEmail=/\S+@\S+\.\S+/.test(email);
         //find if there's already user with same name or email
-        const duplicates=await User.find({'$or':[{name},{email}]});
+        const duplicates=await User.find({'$or':[{displayName:name},{email}]});
         if(!validEmail) res.status(200).send({message:"Email is invalid"});
         else if(duplicates.length>0) res.status(200).send({message:"Username or email already in use"});
         else{
             const hashedPw=await bcrypt.hash(password,12);
-            const registeredUser=new User({email,name,password:hashedPw});
+            const registeredUser=new User({email,displayName:name,tag:name,password:hashedPw});
             if(registeredUser){
             await registeredUser.save();
             req.session.user_id=registeredUser._id;
