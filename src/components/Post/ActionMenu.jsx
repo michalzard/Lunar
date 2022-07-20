@@ -40,7 +40,7 @@ function ActionMenu({isMobile,anchor,setActionMenuAnchor,author}){
       //if REQUEST FULLFILLED CHANGE STATE
       setMuted(!muted);
       closeMenu();
-      setAlertMessage(muted ? `${author.name} has been unmuted` : `${author.name} has been muted`);
+      setAlertMessage(muted ? `${author.displayName} has been unmuted` : `${author.displayName} has been muted`);
       setAlertOpen(true);
     }
     const handleBlock=()=>{
@@ -48,7 +48,7 @@ function ActionMenu({isMobile,anchor,setActionMenuAnchor,author}){
       //if REQUEST FULLFILLED CHANGE STATE
       setBlocked(!blocked);
       closeMenu();
-      setAlertMessage( blocked ? `${author.name} has been unblocked` : `${author.name} has been blocked`);
+      setAlertMessage( blocked ? `${author.displayName} has been unblocked` : `${author.displayName} has been blocked`);
       setAlertOpen(true);
     }
   
@@ -64,14 +64,14 @@ function ActionMenu({isMobile,anchor,setActionMenuAnchor,author}){
   
       <MenuItem className="userMute" onClick={handleMute}>
       {muted ? <VolumeOffIcon/> :<VolumeMuteIcon/>} 
-      {muted ? `Unmute @${author.name}` : `Mute @${author.name}`}
+      {muted ? `Unmute @${author.displayName}` : `Mute @${author.displayName}`}
       </MenuItem>
   
       <MenuItem className="userBlock" onClick={handleBlock}>
       {blocked ? <DndOffIcon/> : <DndIcon/>}
-      {blocked ? `Unblock @${author.name}` : `Block @${author.name}`} 
+      {blocked ? `Unblock @${author.displayName}` : `Block @${author.displayName}`} 
       </MenuItem>
-      <MenuItem className="userReport" onClick={(e)=>{setReasonsAnchor(e.currentTarget);closeMenu();}}><FlagIcon/>Report @{author.name}</MenuItem>
+      <MenuItem className="userReport" onClick={(e)=>{setReasonsAnchor(e.currentTarget);closeMenu();}}><FlagIcon/>Report @{author.displayName}</MenuItem>
       </Menu>
       {/* BOTTOM RIGHT ALERT THAT SHOWS IF YOU MADE ACTION AGAINST PROFILE */}
       <Snackbar
