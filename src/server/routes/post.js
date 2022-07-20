@@ -10,12 +10,11 @@ const router = express.Router();
 router.get("/all", async (req, res) => {
   try {
     const { author } = req.query; //expecting author name
-      if(author){
-      await Post.find({}).populate("author",{password:0,email:0}).exec(
+    if(author && author !== "undefined"){
+        await Post.find({}).populate("author",{password:0,email:0}).exec(
         (err,posts)=>{
-          if(err) throw Error(err.message);
-          const filteredPosts= posts.filter((post)=>post.author.name === author);
-
+          if(err) console.log(err.message);
+          const filteredPosts= posts.filter((post)=>{return post.author.displayName === author});
           res.status(200).send({message:`${author} posts`,posts:filteredPosts});
         }
       );}
@@ -53,17 +52,12 @@ router.post("/create", async (req, res) => {
 router.post("/delete", async (req, res) => {
   try {
     const { author, postID } = req.body;
-    const foundSession = await mongoose.connection.db
-      .collection("sessions")
-      .findOne({ _id: author });
+    const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: author });
     if (foundSession && postID) {
       const selectedPost = await Post.findByIdAndDelete(postID);
-      if (selectedPost)
-        res.status(200).send({ message: "Post deleted!", post: selectedPost });
-      else
-        res
-          .status(404)
-          .send({ message: `Post ${postID} has been already deleted!` });
+      if (selectedPost) res.status(200).send({ message: "Post deleted!", post: selectedPost });
+      else res.status(404).send({ message: `Post ${postID} has been already deleted!` });
+
     } else {
       res.status(401).send({ message: `Session invalid or expired!` });
     }
@@ -71,5 +65,60 @@ router.post("/delete", async (req, res) => {
     console.log(err);
   }
 });
+
+//Updates likes/reposts
+router.patch("/update",async (req,res)=>{
+  //sessionID to check if request comes from logged in user
+  //like and repost are expected to be +1 or -1
+  try{
+  const {sessionID,postID,like,repost} = req.body;
+  const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: sessionID });
+  //if author logged in update target post
+  
+  if(foundSession && mongoose.isValidObjectId(postID)){
+    const {user_id} = foundSession.session;
+    //add Like
+    const postToUpdate=await Post.findById(postID);
+    //@TODO: REFACTOR TO MAKE IT CLEANER
+    if(like && !repost){
+    if(like === 1) {
+      const postUpdate = postToUpdate.addLike(user_id);
+      if(postUpdate)res.status(200).send({message:"Like Added",updatedLikes:postUpdate.likes,updatedCount:postUpdate.count});
+      else res.status(401).send({message:"Bad Request"});
+    }else if(like === -1){
+      const postUpdate = postToUpdate.removeLike(user_id);
+      if(postUpdate)res.status(200).send({message:"Like Removed",updatedLikes:postUpdate.likes,updatedCount:postUpdate.count});
+      else res.status(401).send({message:"Bad Request"});
+    }}
+    
+    else if(repost && !like){
+      if(repost === 1) {
+        const postUpdate = postToUpdate.addRepost(user_id);
+        if(postUpdate)res.status(200).send({message:"Repost Added",updatedReposts:postUpdate.reposts,updatedCount:postUpdate.count});
+        else res.status(401).send({message:"Bad Request"});
+      }else if(repost === -1){
+        const postUpdate = postToUpdate.removeRepost(user_id);
+        if(postUpdate)res.status(200).send({message:"Repost Removed",updatedReposts:postUpdate.reposts,updatedCount:postUpdate.count});
+        else res.status(401).send({message:"Bad Request"});
+      }
+    }
+    else{
+      res.status(401).send({message:"Bad Request"});
+    }
+  }
+}catch(err){
+  console.log(err);
+}
+
+})
+
+
+
+
+router.post("/newComment",(req,res)=>{
+  //handle creating new comment
+})
+
+
 
 module.exports = router;
