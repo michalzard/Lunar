@@ -34,8 +34,10 @@ function UserProfile({isMobile,user}) {
   setLoading(false);
   }
   else{
+    console.log(name);
     axios.get(`${process.env.REACT_APP_USER_ROUTE}/${name}`).then((data)=>{
       const {user} = data.data;
+      console.log(data.data);
       if(!user) setProfileNotFound(true);
       else setFetchedUser(user);
       setLoading(false);
@@ -84,7 +86,7 @@ function UserProfile({isMobile,user}) {
     <div className='user_info'>
     <div className='photo'>
     <Avatar/>
-    { user.name === name ? <Button variant='outlined' onClick={()=>{navigate(`/u/${fetchedUser.displayName}/edit`)}}>Edit profile</Button> : null }
+    { user.name === name ? <Button variant='outlined' onClick={()=>{navigate(`/u/${fetchedUser.tag}/edit`)}}>Edit profile</Button> : null }
     </div>
     <div className='info'>
     <div className='user_name'>
@@ -131,7 +133,7 @@ function UserProfile({isMobile,user}) {
        <PostContainer key={i} isMobile={isMobile} user={user} post={post}/>
       )
     }) 
-    : <NoPosts name={user.displayName}/>
+    : <NoPosts name={name}/>
     }
     </div>
     </>

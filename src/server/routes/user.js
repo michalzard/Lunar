@@ -37,7 +37,7 @@ router.get("/:name", async (req, res) => {
   try {
     if (!name) res.status(404).send({ message: "Bad Request" });
     const foundUser = await User.findOne(
-      { name },
+      { displayName:name },
       { password: 0, __v: 0 }
     );
     if (foundUser)

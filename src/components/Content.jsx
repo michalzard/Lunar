@@ -39,7 +39,7 @@ function Content({isMobile,isPostUnsaved,setPostUnsaved,user,setUser,filter,setF
                     <Button variant="text" color="info" size="large" startIcon={<HomeIcon />} onClick={()=>{navigate("/home")}}>Home</Button>
                     <Button variant="text" color="info" size="large" startIcon={<NotifsActive />} onClick={()=>{navigate("/notifications")}}>Notifications</Button>
                     <Button variant="text" color="info" size="large" startIcon={<BookmarkIcon />} onClick={()=>{navigate("/bookmarks")}}>Bookmarks</Button>
-                    <Button variant="text" color="info" size="large" startIcon={<PersonIcon />} onClick={()=>{navigate(`/u/${user.name}`)}}>Profile</Button>
+                    <Button variant="text" color="info" size="large" startIcon={<PersonIcon />} onClick={()=>{navigate(`/u/${user.tag}`)}}>Profile</Button>
                     <ProfileButton user={user}/>
                   </div>
                 </div>
@@ -104,8 +104,8 @@ const ProfileButton = ({ user }) => {
     <div className="profilebtn">
       <div className="avatar"><Avatar /></div>
       <div className="user_info">
-        <Typography> {user ? capitalize(user.name) : null}</Typography>
-        <Typography variant="caption">{user ? `@${capitalize(user.name)}` : null}</Typography>
+        <Typography> {user ? capitalize(user.displayName) : null}</Typography>
+        <Typography variant="caption">{user ? `@${capitalize(user.tag)}` : null}</Typography>
       </div>
       <div className="more"><MoreHorizIcon/></div>
     </div>
