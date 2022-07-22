@@ -1,21 +1,22 @@
 @import "../../Theme.scss";
 
-$post_border : 1px solid rgba(225, 225, 225,.1);
+$post_border: 1px solid rgba(225, 225, 225, 0.1);
+
+@mixin interaction_actions {
+  display: flex;
+  align-items: center;
+}
+
 .post_container {
   display: flex;
   padding: 20px 10px 10px 10px;
-  
-  border-bottom:$post_border;
+
+  border-bottom: $post_border;
 
   font-family: Roboto;
   .avatar {
     padding: 5px;
     padding-top: 20px;
-    padding-right: 10px;
-  }
-  .comment_avatar {
-    padding: 5px;
-    padding-top: 10px;
     padding-right: 10px;
   }
   .main {
@@ -25,13 +26,15 @@ $post_border : 1px solid rgba(225, 225, 225,.1);
     .user_action {
       display: flex;
       align-items: center;
+      
       color: lightgray;
       //a container used to hold icon with user action so that it can be spaced out in mobile view because there's close icon on top right
       .a {
         display: flex;
+        align-items: center;
       }
       .icon {
-        $iconsize: 14px;
+        $iconsize: 20px;
         width: $iconsize;
         height: $iconsize;
       }
@@ -39,10 +42,22 @@ $post_border : 1px solid rgba(225, 225, 225,.1);
         font-size: 11px;
         margin-left: 3px;
       }
+      .reply_action {
+        font-size: 14px;
+        margin-left: 3px;
+        a{
+          color:$secondary;
+          // cur
+        }
+      }
     }
     .author {
       display: flex;
       align-items: center;
+      a{
+        text-decoration: none;
+        color:$on_surface;
+      }
       .name {
         font-weight: 500;
       }
@@ -52,9 +67,19 @@ $post_border : 1px solid rgba(225, 225, 225,.1);
     }
     .interaction {
       display: flex;
-      
+      align-items: center;
       color: gray;
-      margin-top:10px;
+      margin-top: 10px;
+      .comments {
+        @include interaction_actions;
+      }
+      .likes {
+        @include interaction_actions;
+      }
+      .reposts {
+        @include interaction_actions;
+      }
+
       svg {
         $iconsize: 20px;
         width: $iconsize;
@@ -64,7 +89,6 @@ $post_border : 1px solid rgba(225, 225, 225,.1);
         cursor: pointer;
         margin-right: 5px;
       }
-      
     }
     .comment_interaction {
       display: flex;
@@ -109,6 +133,9 @@ $post_border : 1px solid rgba(225, 225, 225,.1);
     .closeIcon {
       z-index: 3;
       cursor: pointer;
+      svg{
+        font-size:30px;
+      }
     }
   }
   .comments_preview_container {
@@ -117,12 +144,12 @@ $post_border : 1px solid rgba(225, 225, 225,.1);
     height: 100%;
     // width: 400px;//400px on desktop,fullscreen on mobile
   }
-  .comment_divider {
-    display: flex;
-    width: 95%;
-    border-top: 1px solid gray;
-    margin: 10px;
-  }
+  // .comment_divider {
+  //   display: flex;
+  //   width: 95%;
+  //   border-top: 1px solid gray;
+  //   margin: 10px;
+  // }
   .reply_input {
     margin: 5px;
     width: 95%;
@@ -141,7 +168,10 @@ $post_border : 1px solid rgba(225, 225, 225,.1);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    height: calc(100% - 220px);
+    @media (max-width:800px) {
+      height: calc(100% - 200px);//Mobile Only
+    }
+    height: calc(100% - 180px);//Desktop Only
   }
 }
 
@@ -168,21 +198,38 @@ $post_border : 1px solid rgba(225, 225, 225,.1);
     align-items: center;
     justify-content: space-between;
     padding: 20px 10px 20px 20px;
-    .Mui-checked{
-      svg{color:$secondary};
+    .Mui-checked {
+      svg {
+        color: $secondary;
+      }
     }
   }
-  .title{
-    display:flex;
+  .title {
+    display: flex;
     justify-content: space-between;
     align-items: center;
-    svg{
-      margin:10px 20px 0px 0px;
-      color:gray;
+    svg {
+      margin: 10px 20px 0px 0px;
+      color: gray;
       cursor: pointer;
     }
   }
   button {
     background-color: $primary;
   }
+}
+
+.no_comments {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  svg {
+    margin-right: 10px;
+  }
+}
+
+.mobile_close{
+  align-self:flex-end;
+  margin-right:10px;
 }

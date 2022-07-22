@@ -16,6 +16,10 @@ import LinkIcon from '@mui/icons-material/Link';
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
 import axios from 'axios';
+import ForumIcon from '@mui/icons-material/Forum';
+import Time from "time-ago";
+import ReplyAllIcon from '@mui/icons-material/ReplyAll';
+
 
 function PostContainer({isMobile,user,post}) {
 
@@ -27,14 +31,12 @@ function PostContainer({isMobile,user,post}) {
   const [repostCount,setRepostCount]=useState(0);
   const [liked,setLiked]=useState(false);
   const [likeCount,setLikeCount]=useState(0);
-
-  
+  //anchor
   const [shareMenuAnchor,setShareMenuAnchor] = useState(null);
   const [actionMenuAnchor,setActionMenuAnchor] = useState(null);
 
   //on page/post load
   useEffect(()=>{
-
   setLiked(post.likes.includes(user._id) ?  true : false);
   setLikeCount(post.likeCount);
   setReposted(post.reposts.includes(user._id) ?  true : false);
@@ -121,13 +123,13 @@ function PostContainer({isMobile,user,post}) {
     <div className='avatar'>
     <Avatar src={post ? post.author.photoURL : ""}/>
     </div>
-    
+
     <div className='main'>
     
-    <div className='user_action'>
+    {/* <div className='user_action'>
     <FavoriteIcon className="icon"/>
     <Typography variant="caption" className='action'>Giri liked</Typography>
-    </div>
+    </div> */}
 
     <div className='author'>
     {post ?
@@ -135,7 +137,7 @@ function PostContainer({isMobile,user,post}) {
     <Typography className='name'>{post.author.displayName}</Typography>
     <div className='tagAndTime'>
     <Typography variant="caption" className='tag'>@{post.author.tag}</Typography>
-    <Typography variant="caption" className="timeAgo"> ~ {new Date(post.createdAt).toUTCString().substring(0,16)}</Typography></div>
+    <Typography variant="caption" className="timeAgo"> ~ {Time.ago(new Date(post.createdAt).getTime(),"mini-now")}</Typography></div>
     </> 
     : null} 
     
@@ -151,7 +153,7 @@ function PostContainer({isMobile,user,post}) {
     <Typography className='likeCount' component="span">{likeCount > 0 ? likeCount : null}</Typography></div>
     <div className='reposts' onClick={()=>{reposted ? submitRepost("remove") : submitRepost("add");}}>
     <RepeatIcon style={{color:reposted ? "greenyellow" : null}} />
-    <Typography className='likeCount' component="span">{repostCount > 0 ? repostCount : null}</Typography></div>
+    <Typography variant="caption" className='likeCount' component="span">{repostCount > 0 ? repostCount : null}</Typography></div>
 
     <div className='share' onClick={(e)=>{setShareMenuAnchor(e.currentTarget);}}><IosShareIcon/></div>
     <ShareMenu anchor={shareMenuAnchor} setShareMenuAnchor={setShareMenuAnchor}/>
@@ -164,8 +166,8 @@ function PostContainer({isMobile,user,post}) {
     <MoreHorizIcon className="more" onClick={(e)=>{setActionMenuAnchor(e.currentTarget);}}/>
     </div>
     <PostPreview isMobile={isMobile} post={post}  open={previewOpen} reposted={reposted} liked={liked} likeCount={likeCount} repostCount={repostCount} user={user}
-    setOpen={setPreviewOpen} setLiked={setLiked} setReposted={setReposted} setLikeCount={setLikeCount} setRepostCount={setRepostCount}
-    setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor}
+    setOpen={setPreviewOpen} setLiked={setLiked} setReposted={setReposted} setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor} 
+    submitLike={submitLike} submitRepost={submitRepost}
     />
     
     </div>
@@ -178,16 +180,33 @@ export default PostContainer;
  * (Desktop Only) For Image,Have preview with backdrop that show image,comment section on the right
  * (Mobile Only) For All Media, have Post on top and comment section right below it
  */
-function PostPreview({isMobile,post,user,open,setOpen,reposted,setReposted,liked,setLiked,likeCount,repostCount,setLikeCount,setRepostCount,setShareMenuAnchor,setActionMenuAnchor}){
-  const fakeCommentArray=[
-    "Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow","Wow",
-  ]
-  // const [commentCount,setCommentCount]=useState(0);
-  // const [reposted,setReposted]=useState(false);
-  // const [repostCount,setRepostCount]=useState(0);
-  // const [liked,setLiked]=useState(false);
-  // const [likeCount,setLikeCount]=useState(0);
+function PostPreview({isMobile,post,submitLike,submitRepost,open,setOpen,reposted,setReposted,liked,setLiked,likeCount,repostCount,setShareMenuAnchor,setActionMenuAnchor}){
 
+  const [comments,setComments]=useState([]);
+  const [replyText,setReplyText] = useState("");
+  const onReplyTextChange=(e)=>{
+    setReplyText(e.target.value);
+  }
+  const submitReply=()=>{
+    if(replyText.length > 0){
+    axios.post(`${process.env.REACT_APP_POST_ROUTE}/reply`,{
+      sessionID:localStorage.getItem("sessionID"),
+      postID:post._id,
+      comment:replyText
+    }).then(data=>{
+      const {reply} = data.data;
+      //add reply to the "beggining"
+      setComments(old=>[reply,...old]);
+    })
+    .catch(err=>{
+      console.log(err);
+    })
+  }
+  }
+
+  useEffect(()=>{
+    setComments(post.comments.reverse());
+  },[post.comments])
 
   return(
     <Backdrop className='preview-container' open={open} style={{zIndex:10,backgroundColor:"rgba(0,0,0,.7)",backdropFilter:"blur(4px)"}}>
@@ -204,31 +223,26 @@ function PostPreview({isMobile,post,user,open,setOpen,reposted,setReposted,liked
         
     <div className='comments_preview_container' style={{width:isMobile? "100%" : "400px"}}>
     <div className='post_container'>
-      {/* Actions - User liked, User reposted */}
-    <div className='avatar'>
-    <Avatar src={post ? post.author.photoURL : ""}/>
-    </div>
     
+      {/* Actions - User liked, User reposted */}
+
+    <div className='avatar'>
+    <a href={`/u/${post.author.displayName}`}>
+    <Avatar src={post ? post.author.photoURL : ""}/>
+    </a>
+    </div>
     <div className='main'>
     
-    <div className='user_action' style={{justifyContent:isMobile ? "space-between" : null}}>
-    <div className='a'> 
-    {/** a container used to hold icon with user action so that it can be spaced out in mobile view,
-     * because there's close icon on top right */}
-    <FavoriteIcon className="icon"/>
-    <Typography variant="caption" className='action'>Giri liked</Typography>
-    </div>
     {
-    isMobile ? <CloseIcon onClick={()=>{setOpen(false);}}/> : null
+    isMobile ? <CloseIcon className="mobile_close" onClick={()=>{setOpen(false);}}/> : null
     }
-    </div>
-
+    
     <div className='author'>
     {post ? <>
-    <Typography className='name'>{post.author.displayName}</Typography>
+    <Typography className='name'><a href={`/u/${post.author.displayName}`}>{post.author.displayName}</a></Typography>
     <div className='tagAndTime'>
     <Typography variant="caption" className='tag'>@{post.author.displayName}</Typography>
-    <Typography variant="caption" className="timeAgo"> ~ {new Date(post.createdAt).toUTCString().substring(0,16)}</Typography></div>
+    <Typography variant="caption" className="timeAgo"> ~ {Time.ago(new Date(post.createdAt).getTime(),"mini-now")}</Typography></div>
     </> : null} 
     
     </div>
@@ -236,28 +250,24 @@ function PostPreview({isMobile,post,user,open,setOpen,reposted,setReposted,liked
     
     {/* TODO: CSS animation */}
     <div className='interaction'>
-
-    <div className='likes' onClick={()=>{setLiked(!liked);setLikeCount(liked ? likeCount-1 : likeCount+1);}}>{liked ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
+    <div className='likes' onClick={()=>{liked ? submitLike("remove") : submitLike("add");}}>{liked ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
     <Typography className='likeCount' component="span">{likeCount > 0 ? likeCount : null}</Typography></div>
-    <div className='reposts' onClick={()=>{setReposted(!reposted);setRepostCount(reposted ? repostCount-1 : repostCount+1);}}>
+    <div className='reposts' onClick={()=>{reposted ? submitRepost("remove") : submitRepost("add");}}>
     <RepeatIcon style={{color:reposted ? "greenyellow" : null}} />
     <Typography className='likeCount' component="span">{repostCount > 0 ? repostCount : null}</Typography></div>
     <div className='share' onClick={(e)=>{setShareMenuAnchor(e.currentTarget);}}><IosShareIcon/></div>
     </div>
     </div>
     </div>
-
-    <span className='comment_divider'/>
     
-    <TextField className="reply_input"  label={`Reply to ${post.author ? post.author.name : null}`}
-    InputProps={{endAdornment:<Button variant="contained">Reply</Button>}}/>
+    <TextField className="reply_input" id="reply_input" onChange={onReplyTextChange}
+    label={`Reply to ${post.author ? post.author.displayName : null}`} InputProps={{endAdornment:<Button onClick={()=>{submitReply();}} variant="contained">Reply</Button>}}/>
     <section className='comment_section' id="comment_section">
-
       {
-        fakeCommentArray.map((comment,i)=>{
-          return <PostComment key={i} comment={post} liked={liked} reposted={reposted} likeCount={likeCount} repostCount={repostCount}
-          setLiked={setLiked} setReposted={setReposted} setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor}/>
+        comments.length > 0 ? comments.map((comment,i)=>{
+        return <PostComment isMobile={isMobile} key={i} comment={comment} setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor}/>
         })
+      : <NoComments/>
       }
 
     </section>
@@ -268,24 +278,30 @@ function PostPreview({isMobile,post,user,open,setOpen,reposted,setReposted,liked
 }
 
 
-function PostComment({comment,liked,setLiked,reposted,setReposted,setShareMenuAnchor,setActionMenuAnchor}){
-  
+function PostComment({comment,isMobile,setShareMenuAnchor,setActionMenuAnchor}){
   return(
-    <div className='post_container'>
-    {/* Actions - User liked, User reposted */}
-  <div className='comment_avatar'>
-  <Avatar src={comment ? comment.author.photoURL : ""}/>
+    
+  <div className='post_container'>
+  {/* Actions - User liked, User reposted */}
+
+  <div className='avatar'>
+  <a href={`/u/${comment.author.displayName}`}><Avatar src={comment ? comment.author.profile.photoURL : ""}/></a>
   </div>
   
   <div className='main'>
-
+  <div className='user_action' style={{justifyContent:isMobile ? "space-between" : null}}>
+  <div className='a'> 
+  <ReplyAllIcon className="icon reply"/>
+  <Typography className='reply_action'>Replying to <a href={`/u/${comment.replyTo.displayName}`}>{comment.replyTo ? comment.replyTo.displayName : null}</a></Typography>
+  </div>
+  </div> 
 
   <div className='author'>
   {comment ? <>
-  <Typography className='name'>{comment.author.displayName}</Typography>
+  <Typography className='name'><a href={`/u/${comment.author.displayName}`}>{comment.author.displayName}</a></Typography>
   <div className='tagAndTime'>
   <Typography variant="caption" className='tag'>@{comment.author.displayName}</Typography>
-  <Typography variant="caption" className="timeAgo"> ~ 7m</Typography></div>
+  <Typography variant="caption" className="timeAgo"> ~ {Time.ago(new Date(comment.createdAt).getTime(),"mini-now")}</Typography></div>
   </> : null} 
   
   
@@ -294,9 +310,9 @@ function PostComment({comment,liked,setLiked,reposted,setReposted,setShareMenuAn
   
   
   <div className='comment_interaction'>
-  <div className='likes' onClick={()=>{setLiked(!liked);}}>{liked ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
+  <div className='likes' onClick={()=>{/**setLiked(!liked);*/}}>{false ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
   <span className='likeCount'></span></div>
-  <div className='reposts' onClick={()=>{setReposted(!reposted);}}> <RepeatIcon style={{color:reposted ? "greenyellow" : null}} /><span className='repostCount'></span></div>
+  <div className='reposts' onClick={()=>{/**setReposted(!reposted);*/}}> <RepeatIcon style={{color:false ? "greenyellow" : null}} /><span className='repostCount'></span></div>
   <div className='share' onClick={(e)=>{setShareMenuAnchor(e.currentTarget);}}><IosShareIcon/></div>
   </div>
 
@@ -308,6 +324,13 @@ function PostComment({comment,liked,setLiked,reposted,setReposted,setShareMenuAn
   )
 }
 
+function NoComments(){
+  return(
+    <div className='no_comments'>
+    <ForumIcon/> <Typography variant="subtitle2">No comments yet.<br/>Be first to share your thoughts</Typography>
+    </div>
+  )
+}
 
 
 
