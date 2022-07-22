@@ -58,7 +58,8 @@ const userSchema = new mongoose.Schema(
           default: 0,
         },
       },
-      blocked: [{ type: mongoose.Types.ObjectId, ref: "User", default: [] }],
+      blockedBy: [{ type: mongoose.Types.ObjectId, ref: "User", default: [] }],
+      
       // muted: [{ type: mongoose.Types.ObjectId, ref: "User", default: [] }],
       bookmarks: [
         { type: mongoose.Types.ObjectId, ref: "Bookmark", default: [] },
@@ -67,5 +68,14 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+userSchema.methods.block=async function(requesterId){
+  if(mongoose.isValidObjectId(requesterId)){
+    console.log(`Valid userId ${requesterId}`);
+    this.profile.blockedBy.push(requesterId);
+    this.save();
+    return this;
+  }else return null;
+}
 
 module.exports = mongoose.model("User", userSchema);

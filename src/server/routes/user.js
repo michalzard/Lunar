@@ -57,9 +57,7 @@ router.patch("/update", async (req, res) => {
 
   try {
     if (!id) res.status(404).send({ message: "Bad Request" });
-    const foundSession = await mongoose.connection.db
-      .collection("sessions")
-      .findOne({ _id: id });
+    const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: id });
     if (foundSession) {
       const { user_id } = foundSession.session;
       const updateData = {
@@ -88,5 +86,28 @@ router.patch("/update", async (req, res) => {
     console.log(err);
   }
 });
+
+router.post('/block',async (req,res)=>{
+  //author is sessionID of user that is requesting to block another user
+  const {requesterId,blockId} = req.body;
+
+  const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: requesterId });
+  console.log(requesterId);
+  if(foundSession){
+    const {user_id} = foundSession.session;
+    const userToBlock = await User.findById(blockId);
+    if(userToBlock){
+      const blockedUser=userToBlock.block(user_id);
+      if(blockedUser)res.status(200).send({message:"User blocked",user:blockedUser});
+      else res.status(404).send({message:"Unable to block user"});
+    }
+  }else{
+    res.status(400).send({message:"Bad Request"});
+  }
+
+})
+
+//TODO: unblock
+
 
 module.exports = router;

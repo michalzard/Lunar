@@ -10,18 +10,18 @@ const postSchema = new mongoose.Schema(
     content: {
       type: String,
       default: "",
-      minlength:1,
+      minlength: 1,
       maxlength: 200,
       required: true,
-      trim:true,
+      trim: true,
     },
-    media: [{ url: String }],
+    media: {type:String, default:""},
     tag: {
       type: String,
       enum: ["Spoiler", "NSFW", "Violence", "None"],
       default: "None",
     },
-    comments:[{type:mongoose.Schema.Types.ObjectId, ref:"Comment"}],
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     likeCount: {
       type: Number,
@@ -32,6 +32,7 @@ const postSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    pinned: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
@@ -39,13 +40,14 @@ const postSchema = new mongoose.Schema(
 postSchema.methods.addLike = function (userId) {
   if (mongoose.isValidObjectId(userId)) {
     //if already in like array,return
-    if (this.likes.includes(userId)) return {likes:this.likes,count:this.likeCount};
+    if (this.likes.includes(userId))
+      return { likes: this.likes, count: this.likeCount };
     //if isnt in array,add it and return
     else {
       this.likes.push(userId);
       this.likeCount++;
       this.save();
-      return {likes:this.likes,count:this.likeCount};
+      return { likes: this.likes, count: this.likeCount };
     }
   } else return null;
 };
@@ -57,23 +59,24 @@ postSchema.methods.removeLike = function (userId) {
       this.likes.splice(userIndex, 1);
       this.likeCount--;
       this.save();
-      return {likes:this.likes,count:this.likeCount};
+      return { likes: this.likes, count: this.likeCount };
     }
     //if isnt in array,return
-    else return {likes:this.likes,count:this.likeCount};
+    else return { likes: this.likes, count: this.likeCount };
   } else return null;
 };
 
 postSchema.methods.addRepost = function (userId) {
   if (mongoose.isValidObjectId(userId)) {
     //if already in like array,return
-    if (this.reposts.includes(userId)) return {reposts:this.reposts,count:this.repostCount};
+    if (this.reposts.includes(userId))
+      return { reposts: this.reposts, count: this.repostCount };
     //if isnt in array,add it and return
     else {
       this.reposts.push(userId);
       this.repostCount++;
       this.save();
-      return {reposts:this.reposts,count:this.repostCount};
+      return { reposts: this.reposts, count: this.repostCount };
     }
   } else return null;
 };
@@ -86,12 +89,11 @@ postSchema.methods.removeRepost = function (userId) {
       this.reposts.splice(userIndex, 1);
       this.repostCount--;
       this.save();
-      return {reposts:this.reposts,count:this.repostCount};
+      return { reposts: this.reposts, count: this.repostCount };
     }
     //if isnt in array,return
-    else return {reposts:this.reposts,count:this.repostCount};
+    else return { reposts: this.reposts, count: this.repostCount };
   } else return null;
 };
-
 
 module.exports = mongoose.model("Post", postSchema);

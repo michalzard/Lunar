@@ -60,8 +60,9 @@ router.post("/delete", async (req, res) => {
     const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: author });
     if (foundSession && postID) {
       const selectedPost = await Post.findByIdAndDelete(postID);
-      if (selectedPost) res.status(200).send({ message: "Post deleted!", post: selectedPost });
-      else res.status(404).send({ message: `Post ${postID} has been already deleted!` });
+      console.log(selectedPost);
+      if (selectedPost) res.status(200).send({ message: "Post deleted!" });
+      else res.status(200).send({ message: `Post ${postID} has been already deleted!` });
 
     } else {
       res.status(401).send({ message: `Session invalid or expired!` });
@@ -77,6 +78,7 @@ router.patch("/update",async (req,res)=>{
   //like and repost are expected to be +1 or -1
   try{
   const {sessionID,postID,like,repost} = req.body;
+
   const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: sessionID });
   //if author logged in update target post
   
@@ -161,6 +163,62 @@ router.post("/reply", async(req,res)=>{
 
 })
 
+
+router.patch("/pin",async (req,res)=>{
+  try{
+    const {author,postID} = req.body;
+
+    if(!author) res.status(400).send({message:"Bad Request"});
+    const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: author });
+    if(foundSession){
+      const {user_id} = foundSession.session;
+      if(mongoose.isValidObjectId(user_id) && mongoose.isValidObjectId(postID)){
+      const allPosts=await Post.find({});
+      let pinnedPost=null;
+      console.log(allPosts.length);
+      for(let i=0;allPosts.length-1;i++){
+        const post=allPosts[i];
+       
+        if(!post) break;
+        
+        if(post._id.toString() === postID && !post.pinned) {
+          post.pinned = true;
+          pinnedPost=true;
+          post.save();  
+        }
+        else {
+          post.pinned = false;
+          pinnedPost=false;
+          post.save();
+        } 
+        
+      }
+      
+      console.log(postID);
+
+      if(pinnedPost){
+        res.status(200).send({message:"Post was pinned"});
+      } 
+      else res.status(404).send({message:"Unable to find post"});
+      
+      }else{
+        //user id invalid
+        res.status(400).send({message:"Bad Request"});
+      }
+      
+    }else res.status(401).send({message:"Unauthorized"});
+
+  }catch(err){
+    console.log(err);
+  }
+})
+
+
+
+
+/**
+ * Update Specific comment 
+ */
 
 
 module.exports = router;

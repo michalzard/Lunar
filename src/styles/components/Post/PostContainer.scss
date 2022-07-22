@@ -39,7 +39,7 @@ $post_border: 1px solid rgba(225, 225, 225, 0.1);
         height: $iconsize;
       }
       .action {
-        font-size: 11px;
+        font-size: 13px;
         margin-left: 3px;
       }
       .reply_action {
@@ -182,11 +182,6 @@ $post_border: 1px solid rgba(225, 225, 225, 0.1);
   }
 }
 
-#ActionMenu {
-  svg {
-    margin-right: 10px;
-  }
-}
 
 #ReportMenu {
   h5 {
@@ -232,4 +227,30 @@ $post_border: 1px solid rgba(225, 225, 225, 0.1);
 .mobile_close{
   align-self:flex-end;
   margin-right:10px;
+}
+
+.user_blocked{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding:30px;
+  .info{
+    display:flex;
+    align-items: center;
+    svg{
+      margin-right:5px;
+      color:red;
+    }
+  }
+  $button-color:hsl(0, 100%, 40%);
+  $button-highlight:hsl(0, 100%, 65%);
+  button{
+    width: 50%;
+    margin:10px;
+    border-color:$button-color;
+    color:$button-color;
+  }
+  .MuiButton-outlined:hover{
+    border:1px solid $button-highlight;
+  }
 }

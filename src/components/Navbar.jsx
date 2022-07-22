@@ -18,16 +18,17 @@ import { IconButton } from '@mui/material';
 
 function Navbar({isMobile}) {
   return (
-    <div className='navbar'>
-    <Routes>
-      {
-        isMobile ?<Route path='/home' element={<NavbarControls/>} /> : null
-      }
-      
-    </Routes>
-
-     
-    </div>
+    <>
+    {
+      isMobile ? <><div className='navbar'>
+      <Routes>
+         <Route path='/home' element={<NavbarControls/>} /> 
+      </Routes>
+      </div>
+      </>
+      : null
+    }
+    </>
   )
 }
 

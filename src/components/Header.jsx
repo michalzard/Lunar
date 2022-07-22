@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import "../styles/components/Header.scss";
 import { Avatar,Button,TextField,Typography,Snackbar, Alert } from '@mui/material';
 import ProfileDrawer from './Profile/ProfileDrawer';
@@ -18,7 +18,7 @@ function Header({isMobile,isPostUnsaved,user,setUser,submitPost}) {
   }
   const profileAlertOpen=()=>{
     setSnackBarOpen(true);
-  }
+  } 
 
   return (
     //LOCALHOST:3000/nameoftheheader 
@@ -34,10 +34,8 @@ function Header({isMobile,isPostUnsaved,user,setUser,submitPost}) {
     </> }/>
 
     <Route path='/u/:name' element={
-    <HeaderWithBackArrow flexDirection='column' elements={
-    <div className='info'>
-    <Typography variant='caption'> 0 Posts </Typography>
-    </div>    
+    <HeaderWithBackArrow flexDirection='column' elements={<></>
+    // <div className='info'><Typography variant="caption">({user.tag})</Typography></div>    
     } location={'/home'}/>
     }/>
 

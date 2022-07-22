@@ -11,6 +11,8 @@ import axios from 'axios';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import PostContainer from '../Post/PostContainer';
 import NoteIcon from '@mui/icons-material/Note';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+
 
 function UserProfile({isMobile,user}) {
   const {name}= useParams();
@@ -22,7 +24,8 @@ function UserProfile({isMobile,user}) {
 
   const navigate=useNavigate();
 
-
+  const [blocked,setBlocked] = useState(false);
+  
   //Everytime name changes in url params this fetches profile info to see if there's existing profile
   useEffect(()=>{
   //if not logged in back to login page
@@ -34,18 +37,26 @@ function UserProfile({isMobile,user}) {
   setLoading(false);
   }
   else{
-    console.log(name);
     axios.get(`${process.env.REACT_APP_USER_ROUTE}/${name}`).then((data)=>{
       const {user} = data.data;
-      console.log(data.data);
       if(!user) setProfileNotFound(true);
-      else setFetchedUser(user);
+      else {
+      setFetchedUser(user);    
+      }
       setLoading(false);
     }).catch(err=>{
       if(err) {setProfileNotFound(true);setLoading(false);}
     })
   }  
   },[user,name,navigate]);
+
+  useEffect(()=>{
+    //if fetchedUser changes,check if he's bloced or not
+    if(fetchedUser.profile){
+    if(fetchedUser.profile.blockedBy.includes(user._id)) setBlocked(true);
+    else setBlocked(false);
+    }        
+  },[fetchedUser]);
 
   const [posts,setPosts]=useState([]);
 
@@ -55,7 +66,7 @@ function UserProfile({isMobile,user}) {
       axios.get(`${process.env.REACT_APP_POST_ROUTE}/all?author=${name}`)
       .then(data=>{
         const {posts} = data.data;
-        if(posts) setPosts(posts);
+        if(posts) setPosts(posts.reverse());
       })
       break;
       case "Replies" :
@@ -125,16 +136,28 @@ function UserProfile({isMobile,user}) {
     <span onClick={()=>{setFilter('Likes')}}>Likes</span>
     </Typography>
     </div>
-    <div className='profile_content'>
+    <div className='profile_content' id="profile_content">
     {
-    // TODO : STYLIZE POSTS
+    posts.length > 0 ? posts.map((post,i)=>{return post.pinned ? 
+    <PostContainer key={i} isMobile={isMobile} user={user}  setPosts={setPosts} post={post}/> : null})
+    : null
+    }
+  {
+    blocked ? <UserBlocked/> 
+    : 
+    <>
+    {
+
     posts.length > 0  ? posts.map((post,i)=>{
-      return (
-       <PostContainer key={i} isMobile={isMobile} user={user} post={post}/>
-      )
+    return (
+    !post.pinned ? <PostContainer key={i} isMobile={isMobile} user={user}  setPosts={setPosts} post={post}/> : null
+    )
     }) 
     : <NoPosts name={name}/>
     }
+    </>
+  }
+    
     </div>
     </>
     }
@@ -160,6 +183,15 @@ function NoPosts({name}){
     <div className='no_posts'>
     <NoteIcon/> 
     <Typography variant="subtitle1">{name} hasn't posted yet.</Typography>
+    </div>
+  )
+}
+
+function UserBlocked({}){
+  return(
+    <div className='user_blocked'>
+    <div className='info'><RemoveCircleOutlineIcon/> <Typography variant="subtitle1">This user is blocked</Typography></div>
+    <Button variant="outlined">Unblock</Button>
     </div>
   )
 }

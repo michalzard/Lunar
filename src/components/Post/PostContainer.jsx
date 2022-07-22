@@ -19,9 +19,13 @@ import axios from 'axios';
 import ForumIcon from '@mui/icons-material/Forum';
 import Time from "time-ago";
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
+import PushPinIcon from '@mui/icons-material/PushPin';
 
 
-function PostContainer({isMobile,user,post}) {
+/**
+ * TODO : REFACTOR POST REVIEW AND COMMENT 
+ */
+function PostContainer({isMobile,user,post,setPosts}) {
 
   const [previewOpen,setPreviewOpen] = useState(false);
 
@@ -43,7 +47,7 @@ function PostContainer({isMobile,user,post}) {
   setRepostCount(post.repostCount);
   setCommentCount(post.comments ? post.comments.length : 0);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[user._id]);
+},[user._id]);
   
 
   const submitLike=(action)=>{
@@ -126,10 +130,18 @@ function PostContainer({isMobile,user,post}) {
 
     <div className='main'>
     
-    {/* <div className='user_action'>
-    <FavoriteIcon className="icon"/>
-    <Typography variant="caption" className='action'>Giri liked</Typography>
-    </div> */}
+    <div className='user_action'>
+    {/* <FavoriteIcon className="icon"/>
+    <Typography variant="caption" className='action'>Giri liked</Typography> */}
+    {
+      post.pinned ?
+      <>
+      <PushPinIcon className="icon"/>
+      <Typography className='action'>Pinned</Typography>
+      </>
+      : null
+    }
+    </div> 
 
     <div className='author'>
     {post ?
@@ -140,8 +152,8 @@ function PostContainer({isMobile,user,post}) {
     <Typography variant="caption" className="timeAgo"> ~ {Time.ago(new Date(post.createdAt).getTime(),"mini-now")}</Typography></div>
     </> 
     : null} 
-    
-    
+    {/* {post ? <span>{post.pinned ? "Pinned" : "X"}</span>: null} */}
+
     </div>
     {post ? <Typography>{post.content}</Typography> : null}
     
@@ -153,11 +165,11 @@ function PostContainer({isMobile,user,post}) {
     <Typography className='likeCount' component="span">{likeCount > 0 ? likeCount : null}</Typography></div>
     <div className='reposts' onClick={()=>{reposted ? submitRepost("remove") : submitRepost("add");}}>
     <RepeatIcon style={{color:reposted ? "greenyellow" : null}} />
-    <Typography variant="caption" className='likeCount' component="span">{repostCount > 0 ? repostCount : null}</Typography></div>
+    <Typography className='likeCount' component="span">{repostCount > 0 ? repostCount : null}</Typography></div>
 
     <div className='share' onClick={(e)=>{setShareMenuAnchor(e.currentTarget);}}><IosShareIcon/></div>
     <ShareMenu anchor={shareMenuAnchor} setShareMenuAnchor={setShareMenuAnchor}/>
-    <ActionMenu isMobile={isMobile} anchor={actionMenuAnchor} setActionMenuAnchor={setActionMenuAnchor} author={post.author}/>
+    <ActionMenu isMobile={isMobile} anchor={actionMenuAnchor} setActionMenuAnchor={setActionMenuAnchor} user={user} setPosts={setPosts} post={post}/>
     </div>
 
     </div>
@@ -167,7 +179,7 @@ function PostContainer({isMobile,user,post}) {
     </div>
     <PostPreview isMobile={isMobile} post={post}  open={previewOpen} reposted={reposted} liked={liked} likeCount={likeCount} repostCount={repostCount} user={user}
     setOpen={setPreviewOpen} setLiked={setLiked} setReposted={setReposted} setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor} 
-    submitLike={submitLike} submitRepost={submitRepost}
+    submitLike={submitLike} submitRepost={submitRepost} 
     />
     
     </div>
@@ -180,7 +192,7 @@ export default PostContainer;
  * (Desktop Only) For Image,Have preview with backdrop that show image,comment section on the right
  * (Mobile Only) For All Media, have Post on top and comment section right below it
  */
-function PostPreview({isMobile,post,submitLike,submitRepost,open,setOpen,reposted,setReposted,liked,setLiked,likeCount,repostCount,setShareMenuAnchor,setActionMenuAnchor}){
+function PostPreview({isMobile,user,post,submitLike,submitRepost,open,setOpen,reposted,setReposted,liked,setLiked,likeCount,repostCount,setShareMenuAnchor,setActionMenuAnchor}){
 
   const [comments,setComments]=useState([]);
   const [replyText,setReplyText] = useState("");
@@ -188,6 +200,7 @@ function PostPreview({isMobile,post,submitLike,submitRepost,open,setOpen,reposte
     setReplyText(e.target.value);
   }
   const submitReply=()=>{
+    
     if(replyText.length > 0){
     axios.post(`${process.env.REACT_APP_POST_ROUTE}/reply`,{
       sessionID:localStorage.getItem("sessionID"),
@@ -197,10 +210,13 @@ function PostPreview({isMobile,post,submitLike,submitRepost,open,setOpen,reposte
       const {reply} = data.data;
       //add reply to the "beggining"
       setComments(old=>[reply,...old]);
+      setReplyText("");
+      console.log(replyText);
+
     })
     .catch(err=>{
       console.log(err);
-    })
+    });
   }
   }
 
@@ -260,12 +276,12 @@ function PostPreview({isMobile,post,submitLike,submitRepost,open,setOpen,reposte
     </div>
     </div>
     
-    <TextField className="reply_input" id="reply_input" onChange={onReplyTextChange}
+    <TextField className="reply_input" id="reply_input" onChange={onReplyTextChange} value={replyText}
     label={`Reply to ${post.author ? post.author.displayName : null}`} InputProps={{endAdornment:<Button onClick={()=>{submitReply();}} variant="contained">Reply</Button>}}/>
     <section className='comment_section' id="comment_section">
       {
         comments.length > 0 ? comments.map((comment,i)=>{
-        return <PostComment isMobile={isMobile} key={i} comment={comment} setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor}/>
+        return <PostComment isMobile={isMobile} key={i} user={user} comment={comment} setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor}/>
         })
       : <NoComments/>
       }
@@ -278,7 +294,91 @@ function PostPreview({isMobile,post,submitLike,submitRepost,open,setOpen,reposte
 }
 
 
-function PostComment({comment,isMobile,setShareMenuAnchor,setActionMenuAnchor}){
+function PostComment({comment,user,isMobile,setShareMenuAnchor,setActionMenuAnchor}){
+    //buttons
+    const [reposted,setReposted]=useState(false);
+    const [repostCount,setRepostCount]=useState(0);
+    const [liked,setLiked]=useState(false);
+    const [likeCount,setLikeCount]=useState(0);
+    //on page/post load
+    useEffect(()=>{
+      setLiked(comment.likes.includes(user._id) ?  true : false);
+      setLikeCount(comment.likeCount);
+      setReposted(comment.reposts.includes(user._id) ?  true : false);
+      setRepostCount(comment.repostCount);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[comment]);
+    // const submitLike=(action)=>{
+    //   //patch request to /post/update
+    //   switch(action){
+    //     case "add": 
+    //     axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
+    //       sessionID:localStorage.getItem("sessionID"),
+    //       commentID:comment._id,
+    //       like:1,
+    //     }).then(data=>{
+    //       const {updatedLikes,updatedCount} = data.data;
+    //       comment.likes=updatedLikes;
+    //       setLikeCount(updatedCount);
+    //       setLiked(true);
+          
+    //     }).catch(err=>{
+    //       console.log(err);
+    //     });
+    //     break;
+    //     case "remove": 
+    //     axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
+    //       sessionID:localStorage.getItem("sessionID"),
+    //       commentID:comment._id,
+    //       like:-1,
+    //     }).then(data=>{
+    //       const {updatedLikes,updatedCount} = data.data;
+    //       comment.likes=updatedLikes;
+    //       setLiked(false);
+    //       setLikeCount(updatedCount);
+    //     }).catch(err=>{
+    //       console.log(err);
+    //     });
+    //     break;
+    //     default : break;
+    //   }
+    // }
+    // const submitRepost=(action)=>{
+    //   //patch request to /post/update
+    //   switch(action){
+    //     case "add": 
+    //     axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
+    //       sessionID:localStorage.getItem("sessionID"),
+    //       commentID:comment._id,
+    //       repost:1,
+    //     }).then(data=>{
+    //       const {updatedReposts,updatedCount} = data.data;
+    //       comment.reposts=updatedReposts;
+    //       setRepostCount(updatedCount);
+    //       setReposted(true);
+          
+    //     }).catch(err=>{
+    //       console.log(err);
+    //     });
+    //     break;
+    //     case "remove": 
+    //     axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
+    //       sessionID:localStorage.getItem("sessionID"),
+    //       commentID:post._id,
+    //       repost:-1,
+    //     }).then(data=>{
+    //       const {updatedReposts,updatedCount} = data.data;
+    //       post.reposts=updatedReposts;
+    //       setRepostCount(updatedCount);
+    //       setReposted(false);
+    //     }).catch(err=>{
+    //       console.log(err);
+    //     });
+    //     break;
+    //     default : break;
+    //   }
+    // }
+
   return(
     
   <div className='post_container'>
@@ -310,9 +410,10 @@ function PostComment({comment,isMobile,setShareMenuAnchor,setActionMenuAnchor}){
   
   
   <div className='comment_interaction'>
-  <div className='likes' onClick={()=>{/**setLiked(!liked);*/}}>{false ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
-  <span className='likeCount'></span></div>
-  <div className='reposts' onClick={()=>{/**setReposted(!reposted);*/}}> <RepeatIcon style={{color:false ? "greenyellow" : null}} /><span className='repostCount'></span></div>
+  <div className='likes' onClick={()=>{/**setLiked(!liked);*/}}>{liked ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
+  <span className='likeCount'>{likeCount > 0 ? likeCount : null}</span></div>
+  <div className='reposts' onClick={()=>{/**setReposted(!reposted);*/}}> <RepeatIcon style={{color:reposted ? "greenyellow" : null}} />
+  <span className='repostCount'>{repostCount > 0 ? repostCount : null}</span></div>
   <div className='share' onClick={(e)=>{setShareMenuAnchor(e.currentTarget);}}><IosShareIcon/></div>
   </div>
 
