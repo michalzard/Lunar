@@ -10,9 +10,10 @@ const postSchema = new mongoose.Schema(
     content: {
       type: String,
       default: "",
-      minlength: 10,
+      minlength:1,
       maxlength: 200,
       required: true,
+      trim:true,
     },
     media: [{ url: String }],
     tag: {
@@ -20,7 +21,7 @@ const postSchema = new mongoose.Schema(
       enum: ["Spoiler", "NSFW", "Violence", "None"],
       default: "None",
     },
-    comment:[{type:mongoose.Schema.Types.ObjectId, ref:"Comment"}],
+    comments:[{type:mongoose.Schema.Types.ObjectId, ref:"Comment"}],
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     likeCount: {
       type: Number,
