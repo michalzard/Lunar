@@ -18,6 +18,7 @@ function App() {
   const [postText,setPostText] = useState('');
 
   const [user,setUser] = useState({});
+  
 
   //run once on app loads
   useEffect(()=>{
@@ -45,7 +46,7 @@ function App() {
     axios.post(`${process.env.REACT_APP_POST_ROUTE}/create`,{
       author:localStorage.getItem("sessionID"),
       content:postText,
-      media:lastSelectedMedia ? lastSelectedMedia : null,
+      media:"",//todo:string url media 
       tag:filter,
   }).then(data=>{
     const {message} = data.data;
