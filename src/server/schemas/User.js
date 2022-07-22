@@ -58,6 +58,8 @@ const userSchema = new mongoose.Schema(
           default: 0,
         },
       },
+      blocked: [{ type: mongoose.Types.ObjectId, ref: "User", default: [] }],
+      // muted: [{ type: mongoose.Types.ObjectId, ref: "User", default: [] }],
       bookmarks: [
         { type: mongoose.Types.ObjectId, ref: "Bookmark", default: [] },
       ],
