@@ -47,29 +47,26 @@ try{
 const {name,password}=req.body;
 const userQuery=await User.find({displayName:name});
 const foundUser=userQuery[0];
-console.log(name,foundUser);
-if(foundUser){
-req.session.user_id=userQuery._id;
-req.session.save();
-const validatedPw=await bcrypt.compare(password,foundUser.password,(err,match)=>{
-    if(err)throw (err)
-    if(match){
-    mongoose.connection.db.collection("sessions").findOne({'session.user_id':foundUser._id}).then(data=>{
-    if(data._id !== req.sessionID) req.session.destroy(); // remove extra session created due to request
-    const {_id} = data;
-    res.status(200).send({message:"Login successful",sessionID:_id});    
-    })
-    } else res.status(200).send({message:"Username or password you entered is incorrect"});    
-});
-console.log(validatedPw);
-console.log(password,userQuery.password);
 
-            
-}else res.send({message:"Username or password you entered is incorrect"});
+if(foundUser){
+req.session.user_id=foundUser._id;
+req.session.save();
+const validatedPw=await bcrypt.compare(password,foundUser.password);
+const foundSession=await mongoose.connection.db.collection("sessions").findOne({_id:req.sessionID});
+
+if(foundSession){
+const {_id}  = foundSession;
+if(_id !== req.sessionID) req.session.destroy();
+if(validatedPw) res.status(200).send({message:"Login successful",sessionID:_id});
+else res.status(200).send({message:"Username or password you entered is incorrect"});  
+
+}
+}else res.status(200).send({message:"Username or password you entered is incorrect"});  
 }catch(err){
-    console.log(err.message);
+    console.log(err);
 }
 });
+
 
 router.post('/logout',async (req,res)=>{
 try{
