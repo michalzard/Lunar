@@ -13,7 +13,6 @@ auth workflow - /auth/
 /session - checks db for existing session object if not found do nothing else log user in
 */
 
-//TODO: ADD handling for email duplicate
 router.post('/register',async (req,res)=>{
     try{
     const {email,name,password}=req.body;
@@ -25,7 +24,7 @@ router.post('/register',async (req,res)=>{
         if(!validEmail) res.status(200).send({message:"Email is invalid"});
         else if(duplicates.length>0) res.status(200).send({message:"Username or email already in use"});
         else{
-            const hashedPw=await bcrypt.hash(password,12);
+            const hashedPw=await bcrypt.hashSync(password,12);
             const registeredUser=new User({email,displayName:name,tag:name,password:hashedPw});
             if(registeredUser){
             await registeredUser.save();
@@ -46,19 +45,26 @@ router.post('/register',async (req,res)=>{
 router.post('/login',async(req,res)=>{
 try{
 const {name,password}=req.body;
-const foundUser=await User.findOne({name});
-
+const userQuery=await User.find({displayName:name});
+const foundUser=userQuery[0];
+console.log(name,foundUser);
 if(foundUser){
-req.session.user_id=foundUser._id;
+req.session.user_id=userQuery._id;
 req.session.save();
-const validatedPw=await bcrypt.compare(password,foundUser.password);
-mongoose.connection.db.collection("sessions").findOne({'session.user_id':foundUser._id}).then(data=>{
-if(data._id !== req.sessionID) req.session.destroy(); // remove extra session created due to request
-const {_id} = data;
-if(validatedPw) res.status(200).send({message:"Login successful",sessionID:_id});
-else res.status(200).send({message:"Username or password you entered is incorrect"});    
+const validatedPw=await bcrypt.compare(password,foundUser.password,(err,match)=>{
+    if(err)throw (err)
+    if(match){
+    mongoose.connection.db.collection("sessions").findOne({'session.user_id':foundUser._id}).then(data=>{
+    if(data._id !== req.sessionID) req.session.destroy(); // remove extra session created due to request
+    const {_id} = data;
+    res.status(200).send({message:"Login successful",sessionID:_id});    
+    })
+    } else res.status(200).send({message:"Username or password you entered is incorrect"});    
+});
+console.log(validatedPw);
+console.log(password,userQuery.password);
 
-});            
+            
 }else res.send({message:"Username or password you entered is incorrect"});
 }catch(err){
     console.log(err.message);
