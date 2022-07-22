@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const User = require("../schemas/User");
 const Post = require("../schemas/Post");
+const Comment = require("../schemas/Comment");
 const router = express.Router();
 
 //check first if requester is logged in before serving
@@ -11,7 +12,11 @@ router.get("/all", async (req, res) => {
   try {
     const { author } = req.query; //expecting author name
     if(author && author !== "undefined"){
-        await Post.find({}).populate("author",{password:0,email:0}).exec(
+        await Post.find({}).populate("author",{password:0,email:0}).populate("comments")
+        //populate comments array to get author object,reply object
+        .populate({ path:"comments", populate:{ path:"author", model:"User"} })
+        .populate({ path:"comments", populate:{ path:"replyTo", model:"User"} })
+        .exec(
         (err,posts)=>{
           if(err) console.log(err.message);
           const filteredPosts= posts.filter((post)=>{return post.author.displayName === author});
@@ -115,8 +120,45 @@ router.patch("/update",async (req,res)=>{
 
 
 
-router.post("/newComment",(req,res)=>{
-  //handle creating new comment
+//handle creating new comment
+router.post("/reply", async(req,res)=>{
+    //using sessionID again for user validation
+    try{
+    const {sessionID,postID,comment} = req.body;
+    if(!sessionID) res.status(400).send({message:"Bad Request"});
+    const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: sessionID });
+    if(foundSession){
+      const {user_id} = foundSession.session;
+      if(mongoose.isValidObjectId(user_id) && mongoose.isValidObjectId(postID)){
+      const post=await Post.findById(postID);
+      
+      const newReply=await new Comment({
+          author:user_id,
+          content:comment,
+          replyTo:post.author,
+        });
+      if(post && newReply){
+        post.comments.push(newReply._id);
+        post.save();
+        newReply.save();
+        const excludeOptions = {password:0,email:0};
+        const result=await newReply.populate("author",excludeOptions);
+        await result.populate("replyTo",excludeOptions);
+      res.status(200).send({message:"Reply successfully created",reply:result});
+    
+      }else res.status(400).send({message:"Unable to create reply"});
+     
+      
+      }else{
+        //user id invalid
+        res.status(400).send({message:"Bad Request"});
+      }
+      
+    }else res.status(401).send({message:"Unauthorized"});
+  }catch(err){
+    console.log(err);
+  }
+
 })
 
 
