@@ -70,12 +70,20 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.methods.block=async function(requesterId){
-  if(mongoose.isValidObjectId(requesterId)){
-    console.log(`Valid userId ${requesterId}`);
+  if(mongoose.isValidObjectId(requesterId) && !this.profile.blockedBy.includes(requesterId)){
     this.profile.blockedBy.push(requesterId);
     this.save();
-    return this;
-  }else return null;
+    return this.profile.blockedBy;
+  }else return this.profile.blockedBy;
 }
-
+userSchema.methods.unBlock=async function(requesterId){
+  if(mongoose.isValidObjectId(requesterId) && this.profile.blockedBy.includes(requesterId)){
+    if(this.profile.blockedBy.includes(requesterId)){
+      const unblockID=this.profile.blockedBy.indexOf(requesterId);
+      this.profile.blockedBy.splice(unblockID,1);
+    }
+    this.save();
+    return this.profile.blockedBy;
+  }else return this.profile.blockedBy;
+}
 module.exports = mongoose.model("User", userSchema);

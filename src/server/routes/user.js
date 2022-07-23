@@ -92,13 +92,13 @@ router.post('/block',async (req,res)=>{
   const {requesterId,blockId} = req.body;
 
   const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: requesterId });
-  console.log(requesterId);
   if(foundSession){
     const {user_id} = foundSession.session;
     const userToBlock = await User.findById(blockId);
     if(userToBlock){
-      const blockedUser=userToBlock.block(user_id);
-      if(blockedUser)res.status(200).send({message:"User blocked",user:blockedUser});
+      const blockedUser=await userToBlock.block(user_id);
+      console.log(blockedUser);
+      if(blockedUser)res.status(200).send({message:"User blocked",update:blockedUser});
       else res.status(404).send({message:"Unable to block user"});
     }
   }else{
@@ -108,6 +108,25 @@ router.post('/block',async (req,res)=>{
 })
 
 //TODO: unblock
+router.post('/unblock',async (req,res)=>{
+  //author is sessionID of user that is requesting to block another user
+  const {requesterId,blockId} = req.body;
+
+  const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: requesterId });
+  console.log("unblock",requesterId);
+  if(foundSession){
+    const {user_id} = foundSession.session;
+    const userToUnblock = await User.findById(blockId);
+    if(userToUnblock){
+      const unblockedUser=await userToUnblock.unBlock(user_id);
+      if(unblockedUser)res.status(200).send({message:"User unblocked",update:unblockedUser});
+      else res.status(404).send({message:"Unable to unblock user"});
+    }
+  }else{
+    res.status(400).send({message:"Bad Request"});
+  }
+
+})
 
 
 module.exports = router;
