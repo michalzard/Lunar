@@ -36,10 +36,13 @@ app.use(express.json());
 const authRoutes=require('./routes/auth');
 const userRoutes=require('./routes/user');
 const postRoutes=require('./routes/post');
+const bookmarkRoutes=require("./routes/bookmark");
 
 app.use('/auth',authRoutes);
 app.use('/u',userRoutes);
 app.use('/post',postRoutes);
+app.use('/bookmark',bookmarkRoutes);
+
 
 //You need to specificy SERVER_PORT as key:value in .env file
 app.listen(process.env.SERVER_PORT,()=>{console.log(`Web Server ~ ${process.env.SERVER_PORT}`)});
