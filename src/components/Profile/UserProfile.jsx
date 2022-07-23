@@ -44,10 +44,12 @@ function UserProfile({isMobile,user}) {
       setFetchedUser(user);    
       }
       setLoading(false);
+    
     }).catch(err=>{
       if(err) {setProfileNotFound(true);setLoading(false);}
     })
-  }  
+  } 
+
   },[user,name,navigate]);
 
   useEffect(()=>{
@@ -56,7 +58,7 @@ function UserProfile({isMobile,user}) {
     if(fetchedUser.profile.blockedBy.includes(user._id)) setBlocked(true);
     else setBlocked(false);
     }        
-  },[fetchedUser]);
+  },[fetchedUser,user._id]);
 
   const [posts,setPosts]=useState([]);
 
@@ -143,7 +145,7 @@ function UserProfile({isMobile,user}) {
     : null
     }
   {
-    blocked ? <UserBlocked/> 
+    blocked ? <UserBlocked fUser={fetchedUser} setFetchedUser={setFetchedUser}/> 
     : 
     <>
     {
@@ -187,11 +189,22 @@ function NoPosts({name}){
   )
 }
 
-function UserBlocked({}){
+function UserBlocked({fUser,setFetchedUser}){
+  const submitUnblock=()=>{
+  console.log(fUser._id);
+  axios.post(`${process.env.REACT_APP_USER_ROUTE}/unblock`,{
+    requesterId:localStorage.getItem("sessionID"),
+    blockId:fUser._id,
+  }).then(data=>{
+    const {message,update} = data.data;
+    console.log(message,update);
+    setFetchedUser(prev=>({...prev,profile:{...prev,blockedBy:update}}));
+  }).catch(err=>console.log(err));
+  }
   return(
     <div className='user_blocked'>
     <div className='info'><RemoveCircleOutlineIcon/> <Typography variant="subtitle1">This user is blocked</Typography></div>
-    <Button variant="outlined">Unblock</Button>
+    <Button variant="outlined" onClick={submitUnblock}>Unblock</Button>
     </div>
   )
 }
