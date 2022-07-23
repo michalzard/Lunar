@@ -1,7 +1,7 @@
 import { Button,Divider,Menu, TextField, Typography,Switch} from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/components/Bookmarks.scss';
-
+import axios from "axios";
 import PublicIcon from '@mui/icons-material/Public';
 import LinkOffIcon from '@mui/icons-material/LinkOff';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIos';
@@ -10,7 +10,7 @@ import QuizIcon from '@mui/icons-material/Quiz';
 
 
 function Bookmarks() {
-    const [savedLists,setSavedLists] = useState([]);
+    const [bookmarks,setBookmarks] = useState([]);
     const [menuEl,setMenuEl] = useState(null);
     const open=Boolean(menuEl);
     const closeBookMark=()=>{setMenuEl(null);}
@@ -18,14 +18,25 @@ function Bookmarks() {
     // const [selectedBookmark,selectBookmark] = useState(null);
     //TODO show list on preview onClick
 
+
+    useEffect(()=>{
+        console.log("runs once on bookmark load");
+        axios.get(`${process.env.REACT_APP_BOOKMARK_ROUTE}/all?author=${localStorage.getItem("sessionID")}`).then(data=>{
+            const {message,bookmarks} = data.data;
+            console.log(message);
+            setBookmarks(bookmarks);
+        }).catch(err=>{
+            console.log(err);
+        });
+    },[]);
     return (
     <div className='bookmarks'>
         <Button variant='text' className='createButton'onClick={(e)=>{setMenuEl(e.currentTarget)}}>Create Bookmark</Button>
         <Divider variant='middle' />
         <div className='bookmarkLists'>
         {
-            savedLists.length>0 ? savedLists.map((el,i)=>{
-                return <BookmarkPreview key={i} name={el.name} desc={el.desc} isPublic={el.isPublic}/>
+            bookmarks.length>0 ? bookmarks.map((bookmark,i)=>{
+                return <BookmarkPreview key={i} name={bookmark.title} desc={bookmark.description} isPublic={bookmark.isPublic}/>
             })
             :
             <BookmarksNotFound/>
@@ -35,7 +46,7 @@ function Bookmarks() {
         anchorEl={menuEl}
         openBool={open}
         onClose={closeBookMark}
-        setSavedLists={setSavedLists}
+        setBookmarks={setBookmarks}
         />
     </div>
   )
@@ -43,20 +54,18 @@ function Bookmarks() {
 
 export default Bookmarks;
 
-
-function BookmarkEditor({anchorEl,openBool,onClose,setSavedLists}){
-    const [name,setName] = useState('');
-    const [desc,setDesc] = useState('');
+//TODO : add
+function BookmarkEditor({anchorEl,openBool,onClose,setBookmarks}){
+    // const [name,setName] = useState('');
+    // const [desc,setDesc] = useState('');
     const [isPublic,setIsPublic] = useState(true);
 
     const maxLengthForName=20;
     const maxLengthForDescription=200;
 
     const createBookMark=()=>{
-        setSavedLists((prev)=>[...prev,{name,desc,isPublic}]);
+        // axios.post bookmark/new
     }
-
-    
 
     return(
     <Menu
@@ -70,9 +79,8 @@ function BookmarkEditor({anchorEl,openBool,onClose,setSavedLists}){
     <Button variant='contained' onClick={()=>{onClose();createBookMark();}}>Save</Button>  
     </div>
     <div className='fields'>
-    <TextField variant='outlined' onChange={(e)=>{setName(e.target.value)}} fullWidth placeholder='Bookmark name' inputProps={{maxLength:maxLengthForName}} />
-    <TextField variant='outlined' onChange={(e)=>{setDesc(e.target.value)}} maxRows={5} multiline
-     fullWidth placeholder='Bookmark description' inputProps={{maxLength:maxLengthForDescription}} />
+    <TextField variant='outlined' onChange={(e)=>{/**setName */}} fullWidth placeholder='Bookmark name' inputProps={{maxLength:maxLengthForName}} />
+    <TextField variant='outlined' onChange={(e)=>{/**setDesc */}} maxRows={5} multiline fullWidth placeholder='Bookmark description' inputProps={{maxLength:maxLengthForDescription}} />
      <div className='toggle'>
      <Typography color={isPublic ? 'gray' : null}>Private</Typography>
      <Switch checked={isPublic} value={isPublic} color='secondary' onChange={()=>{setIsPublic(!isPublic);}}/>
@@ -89,13 +97,16 @@ function BookmarkPreview({name,desc,isPublic}){
         <div className='bookmark' onClick={()=>{console.log('fetches all bookmarked posts')}}>
         <div className='info'>
         <Typography className='name'>{name ? name : null} 
-        {
-            isPublic ? <PublicIcon/> : <LinkOffIcon/>
-        }
+        
         </Typography>
         <Typography className='desc' variant='caption'>{desc ? desc : null}</Typography>
         </div>
+        <div className='icons'>
+        {
+            isPublic ? <PublicIcon className="public"/> : <LinkOffIcon className="public"/>
+        }
         <ArrowForwardIcon/>
+        </div>
         </div>
     )
 }

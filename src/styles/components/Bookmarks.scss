@@ -1,91 +1,105 @@
-@import '../Theme.scss';
+@import "../Theme.scss";
 
 .bookmarks {
-    .createButton {
-        color: red;
-        margin: 5px;
-    }
+  width: 100%;
+  height: 100%;
+  .createButton {
+    color: red;
+    margin: 5px;
+  }
 
-    hr {
-        background-color: rgb(230, 230, 230, .6);
-    }
-
-    // width: 100vw;
-    height: 100vh;
-    overflow-y:scroll;
-}
-
-.bookmarkLists {
-    padding-bottom: 50px;
+  hr {
+    background-color: rgb(230, 230, 230, 0.6);
+  }
+  overflow-y: scroll;
 }
 
 #create-lists {
-
-    .editor_header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin: 10px;
-
-        button {
-            background-color: $primary;
-        }
-    }
-
-    .fields {
-        margin: 10px;
-
-        div {
-            margin-top: 2px;
-        }
-    }
-
-    .toggle {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        margin-top: 10px !important;
-    }
-}
-
-.bookmark {
+  .editor_header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: white;
-    margin: 15px;
+    margin: 10px;
 
-    svg {
-        width: 20px;
-        height: 20px;
-        margin-left: 10px;
+    button {
+      background-color: $primary;
+    }
+  }
+
+  .fields {
+    margin: 10px;
+
+    div {
+      margin-top: 2px;
+    }
+  }
+
+  .toggle {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 10px !important;
+  }
+}
+.bookmarkLists {
+  display: flex;
+  flex-direction: column;
+}
+.bookmark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin: 15px;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+  }
+
+  .info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex:1;
+    @media (max-width: 800px) {
+      max-width: 280px;
+    }
+    max-width: 50%;
+
+    .name {
+      display: block;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
 
-    .info {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-
-        .name {
-            display: flex;
-            align-items: center;
-        }
-
-        .desc {
-            color: lightgray;
-        }
+    .desc {
+      color: lightgray;
+      display: block;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      
     }
+  }
+  .icons {
+    display: flex;
+    
+    justify-content: space-between;
+   
+  }
 }
 
 .bm_notfound {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    margin-top: 100px;
-    justify-content: center;
-    color: $on_background;
+  width: 100%;
+  display: flex;
+  margin-top: 100px;
+  justify-content: center;
+  color: $on_background;
 
-    .warning {
-        margin-left: 10px;
-    }
+  .warning {
+    margin-left: 10px;
+  }
 }
