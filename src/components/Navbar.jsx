@@ -12,7 +12,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 
 // import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 // import {Fab} from '@mui/material';
-import {Routes,Route,useNavigate, useParams} from 'react-router-dom';
+import {Routes,Route,useNavigate} from 'react-router-dom';
 import { IconButton } from '@mui/material';
 
 

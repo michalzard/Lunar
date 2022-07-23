@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "../styles/components/Content.scss";
 import { Typography, Fab, Button, Avatar, TextField } from "@mui/material";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";

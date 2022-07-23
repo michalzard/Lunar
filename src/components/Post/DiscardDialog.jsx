@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dialog,DialogContent,DialogTitle,DialogActions,Button, Typography} from '@mui/material';
+import {Dialog,DialogContent,DialogTitle,Button, Typography} from '@mui/material';
 import '../../styles/components/Post/DiscardDialog.scss';
 
 function DiscardDialog({open,handleClose,onDiscard,onSave}) {

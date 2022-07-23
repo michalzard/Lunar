@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import "../styles/components/Header.scss";
 import { Avatar,Button,TextField,Typography,Snackbar, Alert } from '@mui/material';
 import ProfileDrawer from './Profile/ProfileDrawer';
