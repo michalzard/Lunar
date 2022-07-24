@@ -24,7 +24,6 @@ function ActionMenu({isMobile,anchor,setActionMenuAnchor,user,post,setPosts}){
   
     // const [muted,setMuted]=useState(false);
     const [blocked,setBlocked]=useState(false);
-    const [pinned,setPinned]=useState(false);
     //alert
     const [alertMessage,setAlertMessage] = useState("Saved");
     const [alertOpen,setAlertOpen]=useState(false);
@@ -80,10 +79,8 @@ function ActionMenu({isMobile,anchor,setActionMenuAnchor,user,post,setPosts}){
       }).then(data=>{
         const { message } = data.data;
         if(message.includes("Post was pinned")){
-          setPinned(true);
           closeMenu();
         }else{
-          setPinned(false);
           closeMenu();
         }
         // TODO : update or rearrange posts after pinning
@@ -103,7 +100,7 @@ function ActionMenu({isMobile,anchor,setActionMenuAnchor,user,post,setPosts}){
         isYourPost() ? 
         <div>
         <MenuItem className="postDelete" onClick={handlePostDelete}><DeleteForeverIcon /> Delete</MenuItem>
-        <MenuItem className="postPin" onClick={handlePin}><PushPinIcon/> {pinned ?  "Pin to your Profile" : "Unpin from your profile"}</MenuItem>
+        <MenuItem className="postPin" onClick={handlePin}><PushPinIcon/> {post.pinned ?  "Unpin to your Profile" : "Pin from your profile"}</MenuItem>
         </div>
         :
        <div>
