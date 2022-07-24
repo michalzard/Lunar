@@ -100,7 +100,6 @@ function BookmarkPreview({name,id,desc,isPublic}){
         </Typography>
         <Typography className='desc' variant='caption'>{desc ? desc : null}</Typography>
         </div>
-        
         <div className='icons'>
         {
             isPublic ? <PublicIcon className="public"/> : <LinkOffIcon className="public"/>
@@ -122,11 +121,11 @@ function BookmarkById({isMobile,user}){
     console.log("BookmarkById onload fetch");
     axios.get(`${process.env.REACT_APP_BOOKMARK_ROUTE}/${id}?session=${localStorage.getItem("sessionID")}`).then(data=>{
         const {message,bookmark} = data.data;
-        if(message) setLoading(false);
+        if(message || bookmark) setLoading(false);
         setBookmark(bookmark);
     }).catch(err=>console.log(err));
 
-    },[id])
+    },[id]);
 
     return(
         <div className="bookmark_posts_container">
@@ -143,7 +142,7 @@ function BookmarkById({isMobile,user}){
                 {
                     bookmark ? 
                     bookmark.markedPosts ? bookmark.markedPosts.map((markedPost)=>{
-                    return <PostContainer isMobile={isMobile} user={user} post={markedPost} />})
+                    return <PostContainer isBookmark={true} key={markedPost._id} isMobile={isMobile} user={user} post={markedPost} />})
                     : <BookmarksNotFound warningTitle="There are no marked posts yet." caption="You can add to this list with bookmark on posts"/>
                     : <Typography color="red">This bookmark is private</Typography>
                 }
@@ -167,5 +166,5 @@ function BookmarksNotFound({warningTitle,caption}){
 }
 
 
-export {Bookmarks,BookmarkById};
+export {Bookmarks,BookmarkById,BookmarkPreview};
 

@@ -30,9 +30,22 @@ const bookmarkSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-bookmarkSchema.methods.addMarkedPost=function(){
+bookmarkSchema.methods.addMarkedPost=function(postId){
     //TODO
     // push post id to markedPosts array
+    if(mongoose.isValidObjectId(postId) && !this.markedPosts.includes(postId)){
+      this.markedPosts.push(postId);
+      this.save();
+      return this;
+    }else return null;
+}
+bookmarkSchema.methods.removeMarkedPost=function(postId){
+  if(mongoose.isValidObjectId(postId) && this.markedPosts.includes(postId)){
+    const index = this.markedPosts.indexOf(postId);
+    this.markedPosts.splice(index,1);
+    this.save();
+    return this;
+  }else return null;
 }
 
 module.exports = mongoose.model("Bookmark", bookmarkSchema);

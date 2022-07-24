@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const User = require("../schemas/User");
 const Bookmark = require("../schemas/Bookmark");
+const Post = require('../schemas/Post');
 
 
 //get all user profile bookmarks
@@ -41,7 +42,8 @@ router.get("/:id",async (req,res)=>{
             const {user_id} = foundSession.session;
             const foundRequester = await User.findById(user_id);
             if(foundRequester){
-                const foundBookMark = await Bookmark.findById(id).populate("author",{email:0,password:0,profile:0}).populate("markedPosts");
+                const foundBookMark = await Bookmark.findById(id).populate("author",{email:0,password:0,profile:0})//.populate("markedPosts")
+                .populate({ path:"markedPosts", populate:{ path:"author", model:"User"} })
                 
                 if(foundRequester._id.toString() === foundBookMark.author._id.toString()){
                     if(foundBookMark) res.status(200).send({message:"Found bookmark",bookmark:foundBookMark});
@@ -94,32 +96,51 @@ router.post("/new",async (req,res)=>{
 
 router.post("/markPost",async(req,res)=>{
     try{
-    const {session,postID} = req.body;
-        console.log(session,postID);
-        const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: requestID });
-        if(foundSession){
+    const {session,postID,bookmarkID,add} = req.body;
+        const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: session });
+        if(foundSession && mongoose.isValidObjectId(postID) && mongoose.isValidObjectId(bookmarkID)){
+            console.log(postID,bookmarkID);
+            const postToSave = await Post.findById(postID);
+            const bookmark = await Bookmark.findById(bookmarkID);
+            if(bookmark && postToSave){
+                if(add){
+                    const marked=bookmark.addMarkedPost(postID);
+                    console.log(marked);
+                    if(marked) res.status(200).send({message:"Post successfully marked"});
+                    else res.status(200).send({message:"Post already marked"});
+                }else{
+                    const removed=bookmark.removeMarkedPost(postID);
+                    if(removed) res.status(200).send({message:"Post successfully removed from bookmark"});
+                    else res.status(200).send({message:"Post already removed from bookmark"});
+                }
+            }else res.status(404).send({message:"Unable to find resource"});
             //grab postID and push it to bookmark markedPosts array
-        }
+        }else res.status(400).send({message:"Bad Request"});
     }catch(err){
         console.log(err);
     }
 });
 
 
-router.post("/update",async(req,res)=>{
+router.post("/:bookmarkID/update",async(req,res)=>{
     try{
+        const {bookmarkID} = req.params;
         const {requestID,title,description,isPublic} = req.body;
         const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: requestID });
         if(foundSession){
             const {user_id} = foundSession.session;
             const foundUser = await User.findById(user_id);
-    
-            if(foundUser){
-            //TODO : udpate logic for 
-            
-            }else res.status(404).send({message:"Unable to load bookmarks"});
-    
-        }else res.status(401).send({message:"Session invalid or expired!"});
+            const bookmarkToUpdate = await Bookmark.findById(bookmarkID).populate("author",{email:0,password:0});
+            if(foundUser._id.toString() === bookmarkToUpdate.author._id.toString()){
+                //TODO: FINISh this;
+                bookmarkToUpdate.title = title ? title : bookmarkToUpdate.title ;
+                bookmarkToUpdate.description = description ? description : bookmarkToUpdate.description;
+                bookmarkToUpdate.isPublic = isPublic!== null ? isPublic : bookmarkToUpdate.isPublic;
+                bookmarkToUpdate.save();
+                res.status(200).send({message:"Bookmark successfuly updated",bookmark:bookmarkToUpdate});
+            }else res.status(401).send({message:"Unauthorized"});
+                
+        }else res.status(400).send({message:"Session invalid or expired!"});
     }catch(err){
         console.log(err);
     }
