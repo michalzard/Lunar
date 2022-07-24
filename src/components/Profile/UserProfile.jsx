@@ -14,7 +14,7 @@ import NoteIcon from '@mui/icons-material/Note';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 
-function UserProfile({isMobile,user}) {
+function UserProfile({isMobile,user,bookmarkList}) {
   const {name}= useParams();
   const [isLoading,setLoading]=useState(true);
   const [profileNotFound,setProfileNotFound]=useState(false);  
@@ -141,7 +141,7 @@ function UserProfile({isMobile,user}) {
     <div className='profile_content' id="profile_content">
     {
     posts.length > 0 ? posts.map((post,i)=>{return post.pinned ? 
-    <PostContainer key={i} isMobile={isMobile} user={user}  setPosts={setPosts} post={post}/> : null})
+    <PostContainer key={i} isMobile={isMobile} user={user}  setPosts={setPosts} bookmarkList={bookmarkList} post={post}/> : null})
     : null
     }
   {
@@ -152,7 +152,7 @@ function UserProfile({isMobile,user}) {
 
     posts.length > 0  ? posts.map((post,i)=>{
     return (
-    !post.pinned ? <PostContainer key={i} isMobile={isMobile} user={user}  setPosts={setPosts} post={post}/> : null
+    !post.pinned ? <PostContainer key={i} isMobile={isMobile} user={user}  setPosts={setPosts} post={post} bookmarkList={bookmarkList}/> : null
     )
     }) 
     : <NoPosts name={name}/>
