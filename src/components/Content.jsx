@@ -1,6 +1,6 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import "../styles/components/Content.scss";
-import { Typography, Fab, Button, Avatar, TextField } from "@mui/material";
+import { Typography, Fab, Button, Avatar, TextField, Menu , MenuItem } from "@mui/material";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import Header from "./Header";
 import UserProfile from "./Profile/UserProfile";
@@ -9,8 +9,9 @@ import PostEditor from "./Post/PostEditor";
 import SettingsMenu from "./Settings/SettingsMenu";
 // import AccountInformation from './Settings/AccountInformation';
 // import Acessibility from "./Settings/Accessibility";
-import Bookmarks from "./Bookmarks";
+import {Bookmarks,BookmarkById} from "./Bookmarks";
 import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 
 //Buttons
 import HomeIcon from "@mui/icons-material/Home";
@@ -22,12 +23,23 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import SearchIcon from '@mui/icons-material/Search';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PostContainer from "./Post/PostContainer";
+
 
 
 function Content({isMobile,isPostUnsaved,setPostUnsaved,user,setUser,filter,setFilter,lastSelectedMedia,setLastSelectedMedia,postText,setPostText,submitPost,postAlert}) {
   const navigate = useNavigate();
   const {pathname} = useLocation();
-
+  //temp
+  const [posts,setPosts] = useState([]);
+  const fetchPosts=()=>{
+  axios.get(`${process.env.REACT_APP_POST_ROUTE}/all?author=${user.displayName}`).then(data=>{
+      const {posts} = data.data;
+      if(posts) setPosts(posts);
+    })
+  }
+  useEffect(()=>{if(user._id)fetchPosts();  },[user._id]);
   return (
     <div className="content">
        <div className="_content">
@@ -40,7 +52,7 @@ function Content({isMobile,isPostUnsaved,setPostUnsaved,user,setUser,filter,setF
                     <Button variant="text" color="info" size="large" startIcon={<NotifsActive />} onClick={()=>{navigate("/notifications")}}>Notifications</Button>
                     <Button variant="text" color="info" size="large" startIcon={<BookmarkIcon />} onClick={()=>{navigate("/bookmarks")}}>Bookmarks</Button>
                     <Button variant="text" color="info" size="large" startIcon={<PersonIcon />} onClick={()=>{navigate(`/u/${user.tag}`)}}>Profile</Button>
-                    <ProfileButton user={user}/>
+                    <ProfileButton user={user} setUser={setUser}/>
                   </div>
                 </div>
               }
@@ -54,7 +66,11 @@ function Content({isMobile,isPostUnsaved,setPostUnsaved,user,setUser,filter,setF
               <PostEditor submitPost={submitPost} isMobile={isMobile} setPostUnsaved={setPostUnsaved} filter={filter} setFilter={setFilter} postAlert={postAlert} lastSelectedMedia={lastSelectedMedia} setLastSelectedMedia={setLastSelectedMedia} postText={postText} setPostText={setPostText}/>
               }
               <div className="posts">
-              <Typography>Posts will be displayed here.</Typography>
+              
+              {
+                posts.length> 0 ? posts.map((post)=>{return <PostContainer key={post._id} isMobile={isMobile} user={user} post={post} setPosts={setPosts} />})
+                : <Typography>Posts will be displayed here.</Typography>
+              }
               </div>
               {isMobile ? <div className="fab" onClick={() => {navigate("/post");}}> <Fab> <HistoryEduIcon /> </Fab> </div> : null}
               </>}/>
@@ -67,11 +83,18 @@ function Content({isMobile,isPostUnsaved,setPostUnsaved,user,setUser,filter,setF
               <Route
               path="/post"
               element={
+              isMobile ?
               <PostEditor submitPost={submitPost} isMobile={isMobile} setPostUnsaved={setPostUnsaved} filter={filter} setFilter={setFilter} postAlert={postAlert} lastSelectedMedia={lastSelectedMedia} setLastSelectedMedia={setLastSelectedMedia} postText={postText} setPostText={setPostText}/>
+              : <Navigate replace to="/home"/>
               }
               />
               <Route path="/settings" element={<SettingsMenu />} />
-              <Route path="/bookmarks" element={<Bookmarks />} />
+              <Route path="/bookmarks" element={<Bookmarks />}/>
+              <Route path="/bookmarks/:id" element={<BookmarkById/>}/>
+              
+
+              {/* NO MATCH ROUTE */}
+              <Route path="*" element={<div style={{color:"white"}}>NO MATCH</div>} />
               </Routes>
               </main>
 
@@ -96,10 +119,25 @@ function Content({isMobile,isPostUnsaved,setPostUnsaved,user,setUser,filter,setF
   );
 }
 
-const ProfileButton = ({ user }) => {
+//Desktop only
+
+const ProfileButton = ({ user,setUser }) => {
   const capitalize = (name) => {
     if(name) return name.charAt(0).toUpperCase() + name.substring(1, name.length);
   };
+  
+  const [menuAnchor,setMenuAnchor] = useState(null);
+
+  const logoutRequest=()=>{
+    axios.post(`${process.env.REACT_APP_AUTH_ROUTE}/logout`,{id:localStorage.getItem('sessionID')}).then(data=>{
+    const {message}=data.data;
+    if(message.includes('User successfully logged out!')) {
+      setUser({});//remove user object since you logged out
+      if(localStorage.getItem('sessionID'))localStorage.removeItem('sessionID');
+    }
+    });
+  }
+  
   return (
     <div className="profilebtn">
       <div className="avatar"><Avatar /></div>
@@ -107,10 +145,19 @@ const ProfileButton = ({ user }) => {
         <Typography> {user ? capitalize(user.displayName) : null}</Typography>
         <Typography variant="caption">{user ? `@${capitalize(user.tag)}` : null}</Typography>
       </div>
-      <div className="more"><MoreHorizIcon/></div>
+      <div className="more" onClick={(e)=>{setMenuAnchor(e.currentTarget);}}><MoreHorizIcon/></div>
+      <Menu
+      id="LogoutMenu"
+      open={Boolean(menuAnchor)}
+      anchorEl={menuAnchor}
+      onClose={()=>{setMenuAnchor(null)}}
+      >
+        <MenuItem onClick={logoutRequest}> <LogoutIcon className="icon"/> Logout</MenuItem>
+      </Menu>
     </div>
   );
 };
+
 
 
 

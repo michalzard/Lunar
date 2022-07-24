@@ -12,19 +12,9 @@ $fabsize: 50;
   display: flex;
   flex-direction: column;
   flex: 1;
-  overflow-y:scroll;
   ._content {
     display: flex;
     flex: 1;
-
-    .posts {
-      display: flex;
-      flex-direction: column;
-      color: white; //display /home posts content
-      padding: 5px;
-      height: 100%;
-      // overflow:scroll;
-    }
     .sidebar_left {
       @include sidebar();
       align-items: flex-end;
@@ -42,32 +32,49 @@ $fabsize: 50;
       border-right: 1px solid $surface;
       .profilebtn {
         color: $on_surface;
-
         display: flex;
+        width: 100%;
         align-items: center;
         border-radius: 10px;
         .avatar {
           margin-right: 5px;
         }
-        .more {
-          margin-left: 10px; //more
-        }
         .user_info {
           display: flex;
           flex-direction: column;
           align-items: center;
-          margin-left: 5px;
-          pointer-events: none;
+          margin-left: 10px;
+          margin-right: 20px;
+
           :last-child {
             color: lightgray;
           }
+        }
+        .more {
+          //more
+          cursor: pointer;
         }
       }
     }
     main {
       flex: 1; //streches out main content container to sides
+      height: 100%;
+      // overflow-y: scroll;
       .posts {
+        display: flex;
+        flex-direction: column;
+        color: white; //display /home posts content
+        padding: 5px;
         padding: 10px 10px 0px 10px;
+        @media (max-width: 800px) {
+          height: 100vh;
+          
+        }
+        // height: 65vh;
+        @media (max-width: 800px) {
+          overflow-y: scroll;
+        }
+        
       }
     }
     .sidebar_right {
@@ -135,5 +142,12 @@ $fabsize: 50;
     svg {
       margin: 5px;
     }
+  }
+}
+
+#LogoutMenu {
+  .icon {
+    font-size: 20px; //specifies size of icon
+    margin-right: 5px;
   }
 }
