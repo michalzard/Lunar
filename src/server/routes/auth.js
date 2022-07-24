@@ -73,8 +73,9 @@ try{
     const{id}=req.body;
     const removedSession=await mongoose.connection.db.collection("sessions").findOneAndDelete({_id:id});
     req.session.destroy(err=>{if(err){console.log(err)}}); //removes old session object if it didnt expire yet
+    console.log(removedSession);
     if(removedSession.value){res.status(200).send({message:"User successfully logged out!"});}
-    else{res.status(404).send({message:"Session expired!"});}
+    else{res.status(200).send({message:"Session expired!"});}
 }catch(err){
     console.log(err.message);
 }
