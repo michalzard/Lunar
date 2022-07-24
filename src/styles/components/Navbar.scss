@@ -2,6 +2,7 @@
 
 .navbar {
     display: flex;
+    background-color: $background;
     color: $on_background;
     border-top: 3px solid $surface;
     justify-content: space-around;

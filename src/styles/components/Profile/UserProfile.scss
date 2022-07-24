@@ -8,7 +8,14 @@ $size: 60px;
   color: white;
   flex-grow: 1;
   margin-top: 10px;
-
+  height: 100%;
+  .profile_content{
+    overflow-y:scroll;
+    // @media (max-width:800px) {
+    //     height: 62vh;
+    // }
+    height: calc(75vh - 20px);
+  }
   .photo {
     display: flex;
     justify-content: space-between;
