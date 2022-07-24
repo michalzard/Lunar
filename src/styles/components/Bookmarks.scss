@@ -7,11 +7,14 @@
     color: red;
     margin: 5px;
   }
-
+  a {
+    color: white;
+    text-decoration: none;
+  }
   hr {
     background-color: rgb(230, 230, 230, 0.6);
   }
-  overflow-y: scroll;
+  // overflow-y: scroll;
 }
 
 #create-lists {
@@ -44,14 +47,18 @@
 .bookmarkLists {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  height: calc(100vh - 100px);
+  overflow-y: scroll;
 }
 .bookmark {
   display: flex;
   align-items: center;
-  justify-content: center;
   color: white;
-  margin: 15px;
-
+  margin: 20px 15px;
+  align-items: center;
+  justify-content: space-between;
+  // width: 100%;
   svg {
     width: 20px;
     height: 20px;
@@ -62,14 +69,14 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    flex:1;
+    flex: 1;
+    cursor: pointer;
     @media (max-width: 800px) {
       max-width: 280px;
     }
-    max-width: 50%;
 
     .name {
-      display: block;
+      display: inline-block;
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
@@ -81,14 +88,13 @@
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
-      
     }
   }
   .icons {
     display: flex;
-    
     justify-content: space-between;
-   
+    margin-right: 20px;
+    cursor: pointer;
   }
 }
 
@@ -101,5 +107,33 @@
 
   .warning {
     margin-left: 10px;
+  }
+}
+
+.bookmark_posts_container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    h5,
+    h6 {
+      @media (max-width: 800px) {
+        max-width: 300px;
+      }
+      max-width: 400px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  .divider {
+    border: 1px solid $on-background;
+    margin: 0px 10px;
   }
 }

@@ -1,4 +1,4 @@
-import { Button,Divider,Menu, TextField, Typography,Switch} from '@mui/material';
+import { Button,Divider,Menu, TextField, Typography,Switch , CircularProgress} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import '../styles/components/Bookmarks.scss';
 import axios from "axios";
@@ -6,7 +6,8 @@ import PublicIcon from '@mui/icons-material/Public';
 import LinkOffIcon from '@mui/icons-material/LinkOff';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIos';
 import QuizIcon from '@mui/icons-material/Quiz';
-
+import { useParams } from 'react-router-dom';
+import PostContainer from './Post/PostContainer';
 
 
 function Bookmarks() {
@@ -14,10 +15,8 @@ function Bookmarks() {
     const [menuEl,setMenuEl] = useState(null);
     const open=Boolean(menuEl);
     const closeBookMark=()=>{setMenuEl(null);}
-    
     // const [selectedBookmark,selectBookmark] = useState(null);
     //TODO show list on preview onClick
-
 
     useEffect(()=>{
         console.log("runs once on bookmark load");
@@ -36,7 +35,8 @@ function Bookmarks() {
         <div className='bookmarkLists'>
         {
             bookmarks.length>0 ? bookmarks.map((bookmark,i)=>{
-                return <BookmarkPreview key={i} name={bookmark.title} desc={bookmark.description} isPublic={bookmark.isPublic}/>
+                
+                return <BookmarkPreview key={i} id={bookmark._id} name={bookmark.title} desc={bookmark.description} isPublic={bookmark.isPublic}/>
             })
             :
             <BookmarksNotFound/>
@@ -51,8 +51,6 @@ function Bookmarks() {
     </div>
   )
 }
-
-export default Bookmarks;
 
 //TODO : add
 function BookmarkEditor({anchorEl,openBool,onClose,setBookmarks}){
@@ -92,15 +90,17 @@ function BookmarkEditor({anchorEl,openBool,onClose,setBookmarks}){
 }
 
 
-function BookmarkPreview({name,desc,isPublic}){
+function BookmarkPreview({name,id,desc,isPublic}){
     return(
-        <div className='bookmark' onClick={()=>{console.log('fetches all bookmarked posts')}}>
+        <a href={`/bookmarks/${id}`}>
+        <div className='bookmark'>
         <div className='info'>
         <Typography className='name'>{name ? name : null} 
         
         </Typography>
         <Typography className='desc' variant='caption'>{desc ? desc : null}</Typography>
         </div>
+        
         <div className='icons'>
         {
             isPublic ? <PublicIcon className="public"/> : <LinkOffIcon className="public"/>
@@ -108,14 +108,64 @@ function BookmarkPreview({name,desc,isPublic}){
         <ArrowForwardIcon/>
         </div>
         </div>
+        </a>
     )
 }
 
-function BookmarksNotFound(){
+function BookmarkById({isMobile,user}){
+    const {id} = useParams();
+    const [loading,setLoading] = useState(true);
+    const [bookmark,setBookmark] = useState([]);
+
+
+    useEffect(()=>{
+    console.log("BookmarkById onload fetch");
+    axios.get(`${process.env.REACT_APP_BOOKMARK_ROUTE}/${id}?session=${localStorage.getItem("sessionID")}`).then(data=>{
+        const {message,bookmark} = data.data;
+        if(message) setLoading(false);
+        setBookmark(bookmark);
+    }).catch(err=>console.log(err));
+
+    },[id])
+
     return(
-        <div className='bm_notfound'>
-        <QuizIcon/> <div className='warning'><Typography>There's no bookmarks yet.</Typography>
-        <Typography variant='caption'>You can create one with button on top.</Typography></div>
+        <div className="bookmark_posts_container">
+            {
+                loading ? <CircularProgress/>
+                :
+                <>
+                <div className='title'>
+                <Typography variant="h5" color="white">{bookmark ? bookmark.title : null}</Typography>
+                <Typography variant="h6" color="lightgray">{bookmark ? bookmark.description : null}</Typography>
+                </div>
+                <span className='divider'/>
+                <div className='markedPosts'>
+                {
+                    bookmark ? 
+                    bookmark.markedPosts ? bookmark.markedPosts.map((markedPost)=>{
+                    return <PostContainer isMobile={isMobile} user={user} post={markedPost} />})
+                    : <BookmarksNotFound warningTitle="There are no marked posts yet." caption="You can add to this list with bookmark on posts"/>
+                    : <Typography color="red">This bookmark is private</Typography>
+                }
+                </div>
+                
+                </>
+            }
+        
         </div>
     )
 }
+
+
+function BookmarksNotFound({warningTitle,caption}){
+    return(
+        <div className='bm_notfound'>
+        <QuizIcon/> <div className='warning'><Typography>{warningTitle ? warningTitle : "There are no bookmarks yet."}</Typography>
+        <Typography variant='caption'>{caption ? caption : "You can create one with button on top."}</Typography></div>
+        </div>
+    )
+}
+
+
+export {Bookmarks,BookmarkById};
+

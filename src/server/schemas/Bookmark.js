@@ -12,12 +12,14 @@ const bookmarkSchema = new mongoose.Schema(
       trim: true,
       minlength:1,
       maxlength:100,
+      required:true,
     },
     description: {
       type: String,
       trim: true,
       minlength:1,
       maxlength:200,
+      required:true,
     },
     isPublic: {
       type: Boolean,
