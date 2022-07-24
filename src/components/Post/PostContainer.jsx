@@ -1,4 +1,4 @@
-import { Avatar, Backdrop, TextField, Button, Typography, Menu, MenuItem, Snackbar, Alert, Slide } from '@mui/material';
+import { Avatar, Backdrop, TextField, Button, Typography, Menu, MenuItem, Snackbar, Alert, Slide,Dialog,DialogTitle,DialogContent} from '@mui/material';
 import React,{ useEffect, useState} from 'react'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import ModeCommentIcon from '@mui/icons-material/ModeComment';
@@ -20,12 +20,15 @@ import ForumIcon from '@mui/icons-material/Forum';
 import Time from "time-ago";
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
 import PushPinIcon from '@mui/icons-material/PushPin';
+// import { BookmarkPreview } from '../Bookmarks';
 
+import PublicIcon from '@mui/icons-material/Public';
+import LinkOffIcon from '@mui/icons-material/LinkOff';
 
 /**
  * TODO : REFACTOR POST REVIEW AND COMMENT 
  */
-function PostContainer({isMobile,user,post,setPosts}) {
+function PostContainer({isBookmark,isMobile,user,post,setPosts,bookmarkList}) {
 
   const [previewOpen,setPreviewOpen] = useState(false);
 
@@ -129,19 +132,17 @@ function PostContainer({isMobile,user,post,setPosts}) {
     </div>
 
     <div className='main'>
-    
+    {isBookmark ? null 
+    :
     <div className='user_action'>
     {/* <FavoriteIcon className="icon"/>
     <Typography variant="caption" className='action'>Giri liked</Typography> */}
     {
-      post.pinned ?
-      <>
-      <PushPinIcon className="icon"/>
-      <Typography className='action'>Pinned</Typography>
-      </>
-      : null
+      post.pinned ?<><PushPinIcon className="icon"/><Typography className='action'>Pinned</Typography></> : null
     }
-    </div> 
+    </div>
+    }
+     
 
     <div className='author'>
     {post ?
@@ -168,14 +169,14 @@ function PostContainer({isMobile,user,post,setPosts}) {
     <Typography className='likeCount' component="span">{repostCount > 0 ? repostCount : null}</Typography></div>
 
     <div className='share' onClick={(e)=>{setShareMenuAnchor(e.currentTarget);}}><IosShareIcon/></div>
-    <ShareMenu anchor={shareMenuAnchor} setShareMenuAnchor={setShareMenuAnchor} post={post}/>
+    <ShareMenu anchor={shareMenuAnchor} bookmarkList={bookmarkList} setShareMenuAnchor={setShareMenuAnchor} post={post}/>
     <ActionMenu isMobile={isMobile} anchor={actionMenuAnchor} setActionMenuAnchor={setActionMenuAnchor} user={user} setPosts={setPosts} post={post}/>
     </div>
 
     </div>
 
     <div className='right'>
-    <MoreHorizIcon className="more" onClick={(e)=>{setActionMenuAnchor(e.currentTarget);}}/>
+    <MoreHorizIcon className="more" onClick={(e)=>{isBookmark ? console.log("bookmarkPOPUP") : setActionMenuAnchor(e.currentTarget);}}/>
     </div>
     <PostPreview isMobile={isMobile} post={post}  open={previewOpen} reposted={reposted} liked={liked} likeCount={likeCount} repostCount={repostCount} user={user}
     setOpen={setPreviewOpen} setLiked={setLiked} setReposted={setReposted} setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor} 
@@ -435,51 +436,73 @@ function NoComments(){
 
 
 
-function ShareMenu({anchor,setShareMenuAnchor,post}){
-  // const [bookmarked,setBookmarked] = useState(false); 
-  const [alertOpen,setAlertOpen] = useState(false);
-  const closeAlert=()=>{
-    setAlertOpen(false);
-  }
-  const menuClose=()=>{
-    setShareMenuAnchor(null);
-  }
+function ShareMenu({anchor,setShareMenuAnchor,post,bookmarkList}){
   const copyURLtoClipboard=()=>{
     window.navigator.clipboard.writeText(window.location.href);
   }
 
-  const addToBookmark=()=>{
+  const [bookmarkOpen,setBookmarkOpen] = useState(false);
+  const [selectedIndex,setSelectedIndex] = useState(-1);
+  const [selectedBookmarkID,setSelectedBookmarkID] = useState(null);
+  const [alertOpen,setAlertOpen] = useState(false);
+  const [warningMessage,setWarningMessage] = useState("You need to select bookmark first!");
+  const saveToBookmark=()=>{
+    if(selectedBookmarkID){
+    setAlertOpen(false);
     axios.post(`${process.env.REACT_APP_BOOKMARK_ROUTE}/markPost`,{
       session:localStorage.getItem("sessionID"),
       postID:post._id,
+      bookmarkID:selectedBookmarkID,
+      add:true,
     }).then(data=>{
-      console.log(data.data);
+      const {message} = data.data;
+      if(message) setWarningMessage(message);
     })
     .catch(err=>console.log(err));
-
+  }else {
+    //throw error
+    setAlertOpen(true);
   }
-
+  }
+  
   return (
+    <>
     <Menu
     open={Boolean(anchor)}
     anchorEl={anchor}
-    onClose={menuClose}
+    onClose={()=>{setShareMenuAnchor(null);}}
     id="ShareMenu"
     >
     <MenuItem onClick={()=>{copyURLtoClipboard();setAlertOpen(true);}}><LinkIcon/> Copy Link</MenuItem>
-    <MenuItem onClick={addToBookmark}>
+    <MenuItem onClick={(e)=>{setBookmarkOpen(true);}}>
     <BookmarkAddIcon/> Add to Bookmark
     </MenuItem>
     <Snackbar
     anchorOrigin={{vertical:"bottom",horizontal:"right"}}
     open={alertOpen}
     autoHideDuration={3000}
-    onClose={closeAlert}
+    onClose={()=>{setAlertOpen(false);}}
     TransitionComponent={Slide}
     >
     <Alert color="success">Post's URL has been copied</Alert>
     </Snackbar>
     </Menu>
+    <Dialog onClose={()=>{setBookmarkOpen(false);}} open={bookmarkOpen} id="BookmarkMenu">
+    <DialogTitle className="title">Choose Bookmark <Button variant="contained" onClick={saveToBookmark}> Add </Button></DialogTitle>
+    
+    { alertOpen ? <Alert id='bmAlert' severity="error" onClose={()=>{setAlertOpen(false);}}> <Typography variant="subtitle2">{warningMessage ? warningMessage :""}</Typography></Alert>: null } 
+    
+    <DialogContent>
+    {
+      
+      bookmarkList ? bookmarkList.length > 0 ? bookmarkList.map((bookmark,i)=>{
+      return <div className={`bookmarkList ${selectedIndex === i ? "selected" : null}`} key={bookmark._id} onClick={()=>{setSelectedIndex(i);setSelectedBookmarkID(bookmark._id);}}> <Typography>{bookmark.title}</Typography> {bookmark.isPublic ? <PublicIcon className="public"/> : <LinkOffIcon className="public"/>} </div> }) : null
+      : null
+    }
+    </DialogContent>
+    </Dialog>
+    
+    </>
   )
 }
 

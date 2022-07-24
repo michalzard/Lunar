@@ -33,13 +33,27 @@ function Content({isMobile,isPostUnsaved,setPostUnsaved,user,setUser,filter,setF
   const {pathname} = useLocation();
   //temp
   const [posts,setPosts] = useState([]);
-  const fetchPosts=()=>{
-  axios.get(`${process.env.REACT_APP_POST_ROUTE}/all?author=${user.displayName}`).then(data=>{
+
+  useEffect(()=>{
+  if(user._id){axios.get(`${process.env.REACT_APP_POST_ROUTE}/all?author=${user.displayName}`).then(data=>{
       const {posts} = data.data;
       if(posts) setPosts(posts);
-    })
-  }
-  useEffect(()=>{if(user._id)fetchPosts();  },[user._id]);
+    })}
+   },[user._id]);
+  
+  //Bookmarks
+
+  const [bookmarkList,setBookmarkList]= useState([]);
+  useEffect(()=>{
+    console.log("runs once on bookmark load");
+    axios.get(`${process.env.REACT_APP_BOOKMARK_ROUTE}/all?author=${localStorage.getItem("sessionID")}`).then(data=>{
+        const {bookmarks} = data.data;
+        setBookmarkList(bookmarks);
+    }).catch(err=>{
+        console.log(err);
+    });
+},[]);
+
   return (
     <div className="content">
        <div className="_content">
@@ -68,7 +82,7 @@ function Content({isMobile,isPostUnsaved,setPostUnsaved,user,setUser,filter,setF
               <div className="posts">
               
               {
-                posts.length> 0 ? posts.map((post)=>{return <PostContainer key={post._id} isMobile={isMobile} user={user} post={post} setPosts={setPosts} />})
+                posts.length> 0 ? posts.map((post)=>{return <PostContainer key={post._id} bookmarkList={bookmarkList} isMobile={isMobile} user={user} post={post} setPosts={setPosts} />})
                 : <Typography>Posts will be displayed here.</Typography>
               }
               </div>
@@ -77,7 +91,7 @@ function Content({isMobile,isPostUnsaved,setPostUnsaved,user,setUser,filter,setF
               {/** REDIRECT BACK TO HOME IF NAME ISNT SPECIFIED /U/NAME */}
               <Route path="/u/" element={<Navigate replace to="/home" />} />
 
-              <Route path="/u/:name" element={<UserProfile isMobile={isMobile} user={user} />} />
+              <Route path="/u/:name" element={<UserProfile isMobile={isMobile} user={user} bookmarkList={bookmarkList}/>} />
               <Route path="/u/:name/edit" element={<ProfileEdit isMobile={isMobile} user={user} />} />
               {/* NO NEED FOR /POST,MAKE DIALOG POPUP WITH POST EDITOR (MOBILE ONLY) */}
               <Route
@@ -89,12 +103,12 @@ function Content({isMobile,isPostUnsaved,setPostUnsaved,user,setUser,filter,setF
               }
               />
               <Route path="/settings" element={<SettingsMenu />} />
-              <Route path="/bookmarks" element={<Bookmarks />}/>
-              <Route path="/bookmarks/:id" element={<BookmarkById/>}/>
+              <Route path="/bookmarks" element={<Bookmarks bookmarkList={bookmarkList} />}/>
+              <Route path="/bookmarks/:id" element={<BookmarkById isMobile={isMobile} user={user}/>}/>
               
 
               {/* NO MATCH ROUTE */}
-              <Route path="*" element={<div style={{color:"white"}}>NO MATCH</div>} />
+              {/* <Route path="*" element={user._id ? <Navigate replace to="/home"/> : <Navigate replace to="/login"/>} /> */}
               </Routes>
               </main>
 
