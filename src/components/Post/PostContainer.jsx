@@ -168,7 +168,7 @@ function PostContainer({isMobile,user,post,setPosts}) {
     <Typography className='likeCount' component="span">{repostCount > 0 ? repostCount : null}</Typography></div>
 
     <div className='share' onClick={(e)=>{setShareMenuAnchor(e.currentTarget);}}><IosShareIcon/></div>
-    <ShareMenu anchor={shareMenuAnchor} setShareMenuAnchor={setShareMenuAnchor}/>
+    <ShareMenu anchor={shareMenuAnchor} setShareMenuAnchor={setShareMenuAnchor} post={post}/>
     <ActionMenu isMobile={isMobile} anchor={actionMenuAnchor} setActionMenuAnchor={setActionMenuAnchor} user={user} setPosts={setPosts} post={post}/>
     </div>
 
@@ -435,8 +435,8 @@ function NoComments(){
 
 
 
-function ShareMenu({anchor,setShareMenuAnchor}){
-  const [bookmarked,setBookmarked] = useState(false); 
+function ShareMenu({anchor,setShareMenuAnchor,post}){
+  // const [bookmarked,setBookmarked] = useState(false); 
   const [alertOpen,setAlertOpen] = useState(false);
   const closeAlert=()=>{
     setAlertOpen(false);
@@ -448,6 +448,17 @@ function ShareMenu({anchor,setShareMenuAnchor}){
     window.navigator.clipboard.writeText(window.location.href);
   }
 
+  const addToBookmark=()=>{
+    axios.post(`${process.env.REACT_APP_BOOKMARK_ROUTE}/markPost`,{
+      session:localStorage.getItem("sessionID"),
+      postID:post._id,
+    }).then(data=>{
+      console.log(data.data);
+    })
+    .catch(err=>console.log(err));
+
+  }
+
   return (
     <Menu
     open={Boolean(anchor)}
@@ -456,9 +467,8 @@ function ShareMenu({anchor,setShareMenuAnchor}){
     id="ShareMenu"
     >
     <MenuItem onClick={()=>{copyURLtoClipboard();setAlertOpen(true);}}><LinkIcon/> Copy Link</MenuItem>
-    <MenuItem onClick={()=>{bookmarked ? setBookmarked(false) : setBookmarked(true);}}>
-    { bookmarked ? <BookmarkAddedIcon style={{color:"greenyellow"}}/> : <BookmarkAddIcon/> }
-    { bookmarked ? "Added to Bookmark":"Add to Bookmark"}
+    <MenuItem onClick={addToBookmark}>
+    <BookmarkAddIcon/> Add to Bookmark
     </MenuItem>
     <Snackbar
     anchorOrigin={{vertical:"bottom",horizontal:"right"}}

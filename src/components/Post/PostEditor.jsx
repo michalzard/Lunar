@@ -117,7 +117,7 @@ function EditorGifMenu({isMobile,anchorEl,openBool,onClose,selectGifs,lastSelect
     anchorEl={anchorEl}
     open={openBool}
     onClose={onClose}
-    style={{paddingBottom:Object.entries(lastSelectedMedia).length>0 ? "10vh" : "30vh",width:"50vw"}}
+    style={{paddingBottom:Object.entries(lastSelectedMedia).length>0 ? "10vh" : "30vh",width:isMobile ? "100vw" : "50vw"}}
     >
     <div className='gifsearch'>
     <TextField placeholder='Search gifs...' fullWidth onChange={onSearchChange} className='searchfield'/>    
