@@ -194,8 +194,6 @@ router.patch("/pin",async (req,res)=>{
         
       }
       
-      console.log(postID);
-
       if(pinnedPost){
         res.status(200).send({message:"Post was pinned"});
       } 
