@@ -41,15 +41,27 @@
         
         flex-direction: column;
         svg{color:white;margin:5px;}
+        //buttons
+        a{
+            display:flex;
+            align-items: center;
+            color:$on_surface;
+            padding:10px 5px;
+            text-decoration: none;
+        }
         p,span{
             display:flex;
             align-items: center;
             padding:5px;
             color:$on_surface;
+           
         }
-        p:last-child{
-        margin-left:15px;
-        color:$primary;
+        a:last-child{
+            margin-left:2px;
+            color:$primary;
+            svg{
+                color:$primary;
+            }
         }
     }
 }

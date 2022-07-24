@@ -6,6 +6,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import axios from 'axios';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 
 function ProfileDrawer({anchor,open,setOpen,user,setUser}) {
@@ -38,8 +39,8 @@ function ProfileDrawer({anchor,open,setOpen,user,setUser}) {
     <div className='user_info'>
     <Avatar/>
     <div className='user_i'>
-    <Typography variant='body2'>{user ? user.name : 'Username'}</Typography>
-    <Typography variant='body2' className='tag'>{user.profile ? `@${user.profile.tag}` : '@Usertag'}</Typography>
+    <Typography variant='body2'>{user ? user.displayName : 'Username'}</Typography>
+    <Typography variant='body2' className='tag'>{user ? `@${user.tag}` : '@Usertag'}</Typography>
     </div>
     </div>
 
@@ -49,11 +50,11 @@ function ProfileDrawer({anchor,open,setOpen,user,setUser}) {
     </div>
 
     <div className='action_buttons'>
-    <Link href={`/u/${user.name}`} variant='body1'><PersonIcon/> Profile</Link>
+    <Link href={`/u/${user.displayName}`} variant='body1'><PersonIcon/> Profile</Link>
     <Link href={`/bookmarks`} variant='body1'><BookmarkIcon/>Bookmarks</Link>
     <Link href={`/settings`} variant='body1' onClick={()=>{;setOpen(false);}}><SettingsIcon/>Setting</Link>
 
-    <Link href={`/login`} variant='body2'><span onClick={()=>{setOpen(false);logoutRequest();}}>Log out</span></Link>
+    <Link href={`/login`} variant='body1'onClick={()=>{setOpen(false);logoutRequest();}}><LogoutIcon/>Log out</Link>
   
     </div>
 
