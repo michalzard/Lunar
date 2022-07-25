@@ -212,6 +212,14 @@ router.patch("/pin",async (req,res)=>{
 })
 
 
+/**
+ * u / username / post / 123456 
+ * to have post specific link for preview
+ */
+
+router.get("/:id",(req,res)=>{
+  //RETURN POST BY ID WITH ALL COMMENTS
+})
 
 
 /**
