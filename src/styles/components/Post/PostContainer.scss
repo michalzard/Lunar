@@ -117,6 +117,7 @@ $post_border: 1px solid rgba(225, 225, 225, 0.1);
 }
 
 .preview-container {
+  color:$on_surface;
   .media_preview {
     height: 100%;
     flex: 1;

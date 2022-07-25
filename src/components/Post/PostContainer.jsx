@@ -176,7 +176,7 @@ function PostContainer({isBookmark,isMobile,user,post,setPosts,bookmarkList}) {
     </div>
 
     <div className='right'>
-    <MoreHorizIcon className="more" onClick={(e)=>{isBookmark ? console.log("bookmarkPOPUP") : setActionMenuAnchor(e.currentTarget);}}/>
+    {isBookmark ? null : <MoreHorizIcon className="more" onClick={(e)=>{setActionMenuAnchor(e.currentTarget);}}/>}
     </div>
     <PostPreview isMobile={isMobile} post={post}  open={previewOpen} reposted={reposted} liked={liked} likeCount={likeCount} repostCount={repostCount} user={user}
     setOpen={setPreviewOpen} setLiked={setLiked} setReposted={setReposted} setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor} 
