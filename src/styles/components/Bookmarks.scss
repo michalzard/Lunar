@@ -114,12 +114,30 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-
+  color: $on_surface;
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .exit {
+      color: $on_surface;
+      margin-left: 10px;
+      text-decoration: none;
+    }
+    .edit {
+      margin-right: 20px;
+      cursor: pointer;
+    }
+    .off {
+      color: red;
+    }
+  }
   .title {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    color: $on_surface;
 
     h5,
     h6 {

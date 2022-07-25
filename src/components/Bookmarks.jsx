@@ -8,6 +8,10 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIos';
 import QuizIcon from '@mui/icons-material/Quiz';
 import { useParams } from 'react-router-dom';
 import PostContainer from './Post/PostContainer';
+import EditIcon from '@mui/icons-material/Edit';
+import EditOffIcon from '@mui/icons-material/EditOff';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 
 
 function Bookmarks() {
@@ -115,7 +119,7 @@ function BookmarkById({isMobile,user}){
     const {id} = useParams();
     const [loading,setLoading] = useState(true);
     const [bookmark,setBookmark] = useState([]);
-
+    const [editing,setEditing] = useState(false);
 
     useEffect(()=>{
     console.log("BookmarkById onload fetch");
@@ -133,6 +137,12 @@ function BookmarkById({isMobile,user}){
                 loading ? <CircularProgress/>
                 :
                 <>
+                
+                <div className="actions"> <a href="/bookmarks" className="exit"><ArrowBackIcon/></a>
+                {/* <b>TODO</b><EditOffIcon/> */}
+                {editing ? <EditOffIcon className="edit off" /> : <EditIcon className="edit"/>}
+                </div>
+                
                 <div className='title'>
                 <Typography variant="h5" color="white">{bookmark ? bookmark.title : null}</Typography>
                 <Typography variant="h6" color="lightgray">{bookmark ? bookmark.description : null}</Typography>
