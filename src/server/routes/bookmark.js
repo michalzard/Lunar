@@ -147,5 +147,21 @@ router.post("/:bookmarkID/update",async(req,res)=>{
 });
 
 
+router.patch("/clear",async(req,res)=>{
+    try{
+        const {session,bookmarkID} = req.body;
+        const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: session });
+        if(foundSession){
+            const bookmark = await Bookmark.findById(bookmarkID);
+            if(bookmark){
+                bookmark.clearPostList();
+                res.status(200).send({message:"Success",bookmark});
+            }else res.status(404).send({message:"Unable to find specific bookmark"});
+        }else res.status(400).send({message:"Bad Request"});
+
+    }catch(err){
+        console.log(err);
+    }
+})
 
 module.exports = router;

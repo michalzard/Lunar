@@ -124,9 +124,13 @@
       margin-left: 10px;
       text-decoration: none;
     }
-    .edit {
+    .removeAllBookmarks {
       margin-right: 20px;
       cursor: pointer;
+      #clear > div{
+       background-color: red;
+        padding:20px;
+      }
     }
     .off {
       color: red;
@@ -154,4 +158,8 @@
     border: 1px solid $on-background;
     margin: 0px 10px;
   }
+}
+
+#clearBkMenu{
+  div > span{padding:10px 20px;color:lightgray;}
 }

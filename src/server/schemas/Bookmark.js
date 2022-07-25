@@ -48,4 +48,10 @@ bookmarkSchema.methods.removeMarkedPost=function(postId){
   }else return null;
 }
 
+bookmarkSchema.methods.clearPostList=function(){
+  this.markedPosts = [];
+  this.save();
+}
+
+
 module.exports = mongoose.model("Bookmark", bookmarkSchema);

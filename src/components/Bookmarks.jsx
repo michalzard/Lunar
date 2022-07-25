@@ -1,4 +1,4 @@
-import { Button,Divider,Menu, TextField, Typography,Switch , CircularProgress} from '@mui/material';
+import { Button,Divider,Menu, TextField, Typography,Switch , CircularProgress, Dialog, DialogActions, DialogTitle} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import '../styles/components/Bookmarks.scss';
 import axios from "axios";
@@ -8,11 +8,9 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIos';
 import QuizIcon from '@mui/icons-material/Quiz';
 import { useParams } from 'react-router-dom';
 import PostContainer from './Post/PostContainer';
-import EditIcon from '@mui/icons-material/Edit';
-import EditOffIcon from '@mui/icons-material/EditOff';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
-
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 function Bookmarks() {
     const [bookmarks,setBookmarks] = useState([]);
@@ -119,10 +117,9 @@ function BookmarkById({isMobile,user}){
     const {id} = useParams();
     const [loading,setLoading] = useState(true);
     const [bookmark,setBookmark] = useState([]);
-    const [editing,setEditing] = useState(false);
 
     useEffect(()=>{
-    console.log("BookmarkById onload fetch");
+    console.log("BookmarkById fetch");
     axios.get(`${process.env.REACT_APP_BOOKMARK_ROUTE}/${id}?session=${localStorage.getItem("sessionID")}`).then(data=>{
         const {message,bookmark} = data.data;
         if(message || bookmark) setLoading(false);
@@ -130,6 +127,20 @@ function BookmarkById({isMobile,user}){
     }).catch(err=>console.log(err));
 
     },[id]);
+
+    const [clearBkOpen,setClearBkOpen] = useState(false);
+
+    const clearBookmarkList=()=>{
+    if(bookmark){
+    axios.patch(`${process.env.REACT_APP_BOOKMARK_ROUTE}/clear`,{session:localStorage.getItem("sessionID"),bookmarkID:bookmark._id})
+    .then(data=>{ 
+    const {message,bookmark} = data.data;
+    console.log(data.data);
+    if(message.includes("Success")){setBookmark(bookmark); setClearBkOpen(false);}
+    })
+
+    } 
+    }
 
     return(
         <div className="bookmark_posts_container">
@@ -140,7 +151,16 @@ function BookmarkById({isMobile,user}){
                 
                 <div className="actions"> <a href="/bookmarks" className="exit"><ArrowBackIcon/></a>
                 {/* <b>TODO</b><EditOffIcon/> */}
-                {editing ? <EditOffIcon className="edit off" /> : <EditIcon className="edit"/>}
+                <MoreHorizIcon className="removeAllBookmarks" onClick={()=>setClearBkOpen(true)}/>
+                <Dialog open={clearBkOpen} id="clearBkMenu">
+                <DialogTitle variant="h6" gutterBottom>Are you sure?</DialogTitle>
+                <Typography variant="subtitle1" component="span">Are you sure you want to erase your bookmarks ?<br/>This action is irreversible</Typography>
+
+                <DialogActions>
+                <Button variant="contained" color="error" onClick={clearBookmarkList}>Delete</Button>
+                <Button variant="outlined" color="error" onClick={()=>{setClearBkOpen(false);}}>Cancel</Button>
+                </DialogActions>
+                </Dialog>
                 </div>
                 
                 <div className='title'>
