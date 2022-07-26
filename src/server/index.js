@@ -37,11 +37,13 @@ const authRoutes=require('./routes/auth');
 const userRoutes=require('./routes/user');
 const postRoutes=require('./routes/post');
 const bookmarkRoutes=require("./routes/bookmark");
+const commentRoutes=require("./routes/comment");
 
 app.use('/auth',authRoutes);
 app.use('/u',userRoutes);
 app.use('/post',postRoutes);
 app.use('/bookmark',bookmarkRoutes);
+app.use("/comment",commentRoutes);
 
 
 //You need to specificy SERVER_PORT as key:value in .env file

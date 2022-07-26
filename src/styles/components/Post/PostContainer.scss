@@ -23,7 +23,7 @@ $post_border: 1px solid rgba(225, 225, 225, 0.1);
     display: flex;
     flex-direction: column;
     flex: 1;
-    color:white;
+    color: white;
     .user_action {
       display: flex;
       align-items: center;
@@ -94,6 +94,7 @@ $post_border: 1px solid rgba(225, 225, 225, 0.1);
     .comment_interaction {
       display: flex;
       align-items: center;
+
       color: gray;
       svg {
         $iconsize: 20px;
@@ -117,7 +118,7 @@ $post_border: 1px solid rgba(225, 225, 225, 0.1);
 }
 
 .preview-container {
-  color:$on_surface;
+  color: $on_surface;
   .media_preview {
     height: 100%;
     flex: 1;
@@ -174,6 +175,15 @@ $post_border: 1px solid rgba(225, 225, 225, 0.1);
       height: calc(100% - 200px); //Mobile Only
     }
     height: calc(100% - 180px); //Desktop Only
+    .comments {
+      @include interaction_actions;
+    }
+    .likes {
+      @include interaction_actions;
+    }
+    .reposts {
+      @include interaction_actions;
+    }
   }
 }
 
@@ -256,7 +266,6 @@ $post_border: 1px solid rgba(225, 225, 225, 0.1);
   }
 }
 
-
 #BookmarkMenu {
   .title {
     display: flex;
@@ -278,20 +287,21 @@ $post_border: 1px solid rgba(225, 225, 225, 0.1);
       flex: 1;
       padding: 10px;
       cursor: pointer;
-      text-overflow:ellipsis;
-      overflow:hidden;
-      white-space:nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
   }
-  .selected{
-    background-color: rgba(187, 134, 252,.4);
+  .selected {
+    background-color: rgba(187, 134, 252, 0.4);
     border-radius: 5px;
-    transition:background-color .5s;
+    transition: background-color 0.5s;
   }
 }
 
-#bmAlert{
-  div>h6,svg:first-child{
-    color:red;
+#bmAlert {
+  div > h6,
+  svg:first-child {
+    color: red;
   }
 }

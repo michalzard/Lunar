@@ -309,76 +309,30 @@ function PostComment({comment,user,isMobile,setShareMenuAnchor,setActionMenuAnch
       setRepostCount(comment.repostCount);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },[comment]);
-    // const submitLike=(action)=>{
-    //   //patch request to /post/update
-    //   switch(action){
-    //     case "add": 
-    //     axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
-    //       sessionID:localStorage.getItem("sessionID"),
-    //       commentID:comment._id,
-    //       like:1,
-    //     }).then(data=>{
-    //       const {updatedLikes,updatedCount} = data.data;
-    //       comment.likes=updatedLikes;
-    //       setLikeCount(updatedCount);
-    //       setLiked(true);
-          
-    //     }).catch(err=>{
-    //       console.log(err);
-    //     });
-    //     break;
-    //     case "remove": 
-    //     axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
-    //       sessionID:localStorage.getItem("sessionID"),
-    //       commentID:comment._id,
-    //       like:-1,
-    //     }).then(data=>{
-    //       const {updatedLikes,updatedCount} = data.data;
-    //       comment.likes=updatedLikes;
-    //       setLiked(false);
-    //       setLikeCount(updatedCount);
-    //     }).catch(err=>{
-    //       console.log(err);
-    //     });
-    //     break;
-    //     default : break;
-    //   }
-    // }
-    // const submitRepost=(action)=>{
-    //   //patch request to /post/update
-    //   switch(action){
-    //     case "add": 
-    //     axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
-    //       sessionID:localStorage.getItem("sessionID"),
-    //       commentID:comment._id,
-    //       repost:1,
-    //     }).then(data=>{
-    //       const {updatedReposts,updatedCount} = data.data;
-    //       comment.reposts=updatedReposts;
-    //       setRepostCount(updatedCount);
-    //       setReposted(true);
-          
-    //     }).catch(err=>{
-    //       console.log(err);
-    //     });
-    //     break;
-    //     case "remove": 
-    //     axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
-    //       sessionID:localStorage.getItem("sessionID"),
-    //       commentID:post._id,
-    //       repost:-1,
-    //     }).then(data=>{
-    //       const {updatedReposts,updatedCount} = data.data;
-    //       post.reposts=updatedReposts;
-    //       setRepostCount(updatedCount);
-    //       setReposted(false);
-    //     }).catch(err=>{
-    //       console.log(err);
-    //     });
-    //     break;
-    //     default : break;
-    //   }
-    // }
+
+
+    const handleAction=(action)=>{
+    console.log("Comment update fetch");
+      
+    if(comment){
+    axios.patch(`${process.env.REACT_APP_COMMENTS_ROUTE}/${comment._id}/update`,{sessionID:localStorage.getItem("sessionID"),userID:user._id,action}).then(data=>{
+      const {result} = data.data;
+      const {likes,reposts,count} = result;
+      if(likes){
+        setLikeCount(count);
+        if(likes.includes(user._id)) setLiked(true);
+        else setLiked(false);
+      }
+      if(reposts){
+        setRepostCount(count);
+        if(reposts.includes(user._id)) setReposted(true);
+        else setReposted(false);
+      }
+
+    }).catch(err=>console.log(err));
+    }    
+  }
+
 
   return(
     
@@ -411,9 +365,9 @@ function PostComment({comment,user,isMobile,setShareMenuAnchor,setActionMenuAnch
   
   
   <div className='comment_interaction'>
-  <div className='likes' onClick={()=>{/**setLiked(!liked);*/}}>{liked ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
+  <div className='likes' onClick={()=>{handleAction(liked ? "dislike" : "like")}}>{liked ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
   <span className='likeCount'>{likeCount > 0 ? likeCount : null}</span></div>
-  <div className='reposts' onClick={()=>{/**setReposted(!reposted);*/}}> <RepeatIcon style={{color:reposted ? "greenyellow" : null}} />
+  <div className='reposts' onClick={()=>{handleAction(reposted ? "repost-remove" : "repost")}}> <RepeatIcon style={{color:reposted ? "greenyellow" : null}} />
   <span className='repostCount'>{repostCount > 0 ? repostCount : null}</span></div>
   <div className='share' onClick={(e)=>{setShareMenuAnchor(e.currentTarget);}}><IosShareIcon/></div>
   </div>
