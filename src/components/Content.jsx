@@ -26,7 +26,7 @@ import WhatshotIcon from '@mui/icons-material/Whatshot';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PostContainer from "./Post/PostContainer";
 
-
+const BASE_URI=`http://localhost:${process.env.REACT_APP_SERVER_PORT}`;
 
 function Content({isMobile,isPostUnsaved,setPostUnsaved,user,setUser,filter,setFilter,lastSelectedMedia,setLastSelectedMedia,postText,setPostText,submitPost,postAlert}) {
   const navigate = useNavigate();
@@ -35,23 +35,24 @@ function Content({isMobile,isPostUnsaved,setPostUnsaved,user,setUser,filter,setF
   const [posts,setPosts] = useState([]);
 
   useEffect(()=>{
-  if(user._id){axios.get(`${process.env.REACT_APP_POST_ROUTE}/all?author=${user.displayName}`).then(data=>{
+  if(user._id){axios.get(`${BASE_URI}/post/all?author=${user.displayName}`).then(data=>{
       const {posts} = data.data;
       if(posts) setPosts(posts);
     })}
-   },[user._id]);
+   },[user._id,user.displayName]);
   
   //Bookmarks
 
   const [bookmarkList,setBookmarkList]= useState([]);
   useEffect(()=>{
-    console.log("runs once on bookmark load");
-    axios.get(`${process.env.REACT_APP_BOOKMARK_ROUTE}/all?author=${localStorage.getItem("sessionID")}`).then(data=>{
+   if(localStorage.getItem("sessionID")){
+    axios.get(`${BASE_URI}/bookmark/all?author=${localStorage.getItem("sessionID")}`).then(data=>{
         const {bookmarks} = data.data;
         setBookmarkList(bookmarks);
     }).catch(err=>{
         console.log(err);
     });
+  }
 },[]);
 
   return (
@@ -143,7 +144,7 @@ const ProfileButton = ({ user,setUser }) => {
   const [menuAnchor,setMenuAnchor] = useState(null);
 
   const logoutRequest=()=>{
-    axios.post(`${process.env.REACT_APP_AUTH_ROUTE}/logout`,{id:localStorage.getItem('sessionID')}).then(data=>{
+    axios.post(`${BASE_URI}/auth/logout`,{id:localStorage.getItem('sessionID')}).then(data=>{
     const {message}=data.data;
     if(message.includes('User successfully logged out!')) {
       setUser({});//remove user object since you logged out

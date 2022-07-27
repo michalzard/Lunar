@@ -25,9 +25,9 @@ import PushPinIcon from '@mui/icons-material/PushPin';
 import PublicIcon from '@mui/icons-material/Public';
 import LinkOffIcon from '@mui/icons-material/LinkOff';
 
-/**
- * TODO : REFACTOR POST REVIEW AND COMMENT 
- */
+const BASE_URI=`http://localhost:${process.env.REACT_APP_SERVER_PORT}`;
+
+
 function PostContainer({isBookmark,isMobile,user,post,setPosts,bookmarkList}) {
 
   const [previewOpen,setPreviewOpen] = useState(false);
@@ -53,75 +53,30 @@ function PostContainer({isBookmark,isMobile,user,post,setPosts,bookmarkList}) {
 },[user._id]);
   
 
-  const submitLike=(action)=>{
+  const handleAction=(action)=>{
     //patch request to /post/update
-    switch(action){
-      case "add": 
-      axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
-        sessionID:localStorage.getItem("sessionID"),
-        postID:post._id,
-        like:1,
-      }).then(data=>{
-        const {updatedLikes,updatedCount} = data.data;
-        post.likes=updatedLikes;
-        setLikeCount(updatedCount);
-        setLiked(true);
-        
-      }).catch(err=>{
-        console.log(err);
-      });
-      break;
-      case "remove": 
-      axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
-        sessionID:localStorage.getItem("sessionID"),
-        postID:post._id,
-        like:-1,
-      }).then(data=>{
-        const {updatedLikes,updatedCount} = data.data;
-        post.likes=updatedLikes;
-        setLiked(false);
-        setLikeCount(updatedCount);
-      }).catch(err=>{
-        console.log(err);
-      });
-      break;
-      default : break;
-    }
+    if(action){
+    axios.patch(`${BASE_URI}/post/update`,{
+      sessionID:localStorage.getItem("sessionID"),
+      postID:post._id,
+      action,
+    }).then(data=>{
+      const {result} = data.data;
+      const {likes,reposts,count} = result;
+      if(likes){
+        setLikeCount(count);
+        if(likes.includes(user._id)) setLiked(true);
+        else setLiked(false);
+      }
+      if(reposts){
+        setRepostCount(count);
+        if(reposts.includes(user._id)) setReposted(true);
+        else setReposted(false);
+      }      
+    }).catch(err=>{
+      console.log(err);
+    });
   }
-  const submitRepost=(action)=>{
-    //patch request to /post/update
-    switch(action){
-      case "add": 
-      axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
-        sessionID:localStorage.getItem("sessionID"),
-        postID:post._id,
-        repost:1,
-      }).then(data=>{
-        const {updatedReposts,updatedCount} = data.data;
-        post.reposts=updatedReposts;
-        setRepostCount(updatedCount);
-        setReposted(true);
-        
-      }).catch(err=>{
-        console.log(err);
-      });
-      break;
-      case "remove": 
-      axios.patch(`${process.env.REACT_APP_POST_ROUTE}/update`,{
-        sessionID:localStorage.getItem("sessionID"),
-        postID:post._id,
-        repost:-1,
-      }).then(data=>{
-        const {updatedReposts,updatedCount} = data.data;
-        post.reposts=updatedReposts;
-        setRepostCount(updatedCount);
-        setReposted(false);
-      }).catch(err=>{
-        console.log(err);
-      });
-      break;
-      default : break;
-    }
   }
 
   return (
@@ -162,15 +117,15 @@ function PostContainer({isBookmark,isMobile,user,post,setPosts,bookmarkList}) {
     <div className='interaction'>
     <div className='comments'><ModeCommentIcon onClick={()=>{setPreviewOpen(true);}}/>
     <Typography className='commentCount' component="span">{commentCount > 0 ? commentCount : null}</Typography></div>
-    <div className='likes' onClick={()=>{liked ? submitLike("remove") : submitLike("add");}}>{liked ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
+    <div className='likes' onClick={()=>{handleAction(liked ? "dislike" : "like");}}>{liked ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
     <Typography className='likeCount' component="span">{likeCount > 0 ? likeCount : null}</Typography></div>
-    <div className='reposts' onClick={()=>{reposted ? submitRepost("remove") : submitRepost("add");}}>
+    <div className='reposts' onClick={()=>{handleAction(reposted ? "repost-remove" : "repost");}}>
     <RepeatIcon style={{color:reposted ? "greenyellow" : null}} />
     <Typography className='likeCount' component="span">{repostCount > 0 ? repostCount : null}</Typography></div>
 
     <div className='share' onClick={(e)=>{setShareMenuAnchor(e.currentTarget);}}><IosShareIcon/></div>
     <ShareMenu anchor={shareMenuAnchor} bookmarkList={bookmarkList} setShareMenuAnchor={setShareMenuAnchor} post={post}/>
-    <ActionMenu isMobile={isMobile} anchor={actionMenuAnchor} setActionMenuAnchor={setActionMenuAnchor} user={user} setPosts={setPosts} post={post}/>
+    <ActionMenu isComment={false} isMobile={isMobile} anchor={actionMenuAnchor} setActionMenuAnchor={setActionMenuAnchor} user={user} setPosts={setPosts} post={post}/>
     </div>
 
     </div>
@@ -180,7 +135,7 @@ function PostContainer({isBookmark,isMobile,user,post,setPosts,bookmarkList}) {
     </div>
     <PostPreview isMobile={isMobile} post={post}  open={previewOpen} reposted={reposted} liked={liked} likeCount={likeCount} repostCount={repostCount} user={user}
     setOpen={setPreviewOpen} setLiked={setLiked} setReposted={setReposted} setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor} 
-    submitLike={submitLike} submitRepost={submitRepost} 
+    actionMenuAnchor={actionMenuAnchor} handleAction={handleAction}
     />
     
     </div>
@@ -193,7 +148,7 @@ export default PostContainer;
  * (Desktop Only) For Image,Have preview with backdrop that show image,comment section on the right
  * (Mobile Only) For All Media, have Post on top and comment section right below it
  */
-function PostPreview({isMobile,user,post,submitLike,submitRepost,open,setOpen,reposted,setReposted,liked,setLiked,likeCount,repostCount,setShareMenuAnchor,setActionMenuAnchor}){
+function PostPreview({isMobile,user,post,open,setOpen,handleAction,reposted,liked,likeCount,repostCount,setShareMenuAnchor,setActionMenuAnchor,actionMenuAnchor}){
 
   const [comments,setComments]=useState([]);
   const [replyText,setReplyText] = useState("");
@@ -203,7 +158,7 @@ function PostPreview({isMobile,user,post,submitLike,submitRepost,open,setOpen,re
   const submitReply=()=>{
     
     if(replyText.length > 0){
-    axios.post(`${process.env.REACT_APP_POST_ROUTE}/reply`,{
+    axios.post(`${BASE_URI}/post/reply`,{
       sessionID:localStorage.getItem("sessionID"),
       postID:post._id,
       comment:replyText
@@ -212,7 +167,6 @@ function PostPreview({isMobile,user,post,submitLike,submitRepost,open,setOpen,re
       //add reply to the "beggining"
       setComments(old=>[reply,...old]);
       setReplyText("");
-      console.log(replyText);
 
     })
     .catch(err=>{
@@ -224,6 +178,7 @@ function PostPreview({isMobile,user,post,submitLike,submitRepost,open,setOpen,re
   useEffect(()=>{
     setComments(post.comments.reverse());
   },[post.comments])
+
 
   return(
     <Backdrop className='preview-container' open={open} style={{zIndex:10,backgroundColor:"rgba(0,0,0,.7)",backdropFilter:"blur(4px)"}}>
@@ -267,9 +222,9 @@ function PostPreview({isMobile,user,post,submitLike,submitRepost,open,setOpen,re
     
     {/* TODO: CSS animation */}
     <div className='interaction'>
-    <div className='likes' onClick={()=>{liked ? submitLike("remove") : submitLike("add");}}>{liked ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
+    <div className='likes' onClick={()=>{handleAction(liked ? "dislike" : "like");}}>{liked ? <FavoriteIcon style={{color:"red"}} /> : <FavoriteBorderIcon />}
     <Typography className='likeCount' component="span">{likeCount > 0 ? likeCount : null}</Typography></div>
-    <div className='reposts' onClick={()=>{reposted ? submitRepost("remove") : submitRepost("add");}}>
+    <div className='reposts' onClick={()=>{handleAction(reposted ? "repost-remove" : "repost");}}>
     <RepeatIcon style={{color:reposted ? "greenyellow" : null}} />
     <Typography className='likeCount' component="span">{repostCount > 0 ? repostCount : null}</Typography></div>
     <div className='share' onClick={(e)=>{setShareMenuAnchor(e.currentTarget);}}><IosShareIcon/></div>
@@ -282,7 +237,7 @@ function PostPreview({isMobile,user,post,submitLike,submitRepost,open,setOpen,re
     <section className='comment_section' id="comment_section">
       {
         comments.length > 0 ? comments.map((comment,i)=>{
-        return <PostComment isMobile={isMobile} key={i} user={user} comment={comment} setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor}/>
+        return <PostComment isMobile={isMobile} actionMenuAnchor={actionMenuAnchor} key={i} user={user} comment={comment} setPosts={setComments} setShareMenuAnchor={setShareMenuAnchor} setActionMenuAnchor={setActionMenuAnchor}/>
         })
       : <NoComments/>
       }
@@ -295,12 +250,13 @@ function PostPreview({isMobile,user,post,submitLike,submitRepost,open,setOpen,re
 }
 
 
-function PostComment({comment,user,isMobile,setShareMenuAnchor,setActionMenuAnchor}){
+function PostComment({comment,user,isMobile,setShareMenuAnchor,setPosts}){
     //buttons
     const [reposted,setReposted]=useState(false);
     const [repostCount,setRepostCount]=useState(0);
     const [liked,setLiked]=useState(false);
     const [likeCount,setLikeCount]=useState(0);
+    const [commentAnchor,setCommentAnchor]=useState(null);
     //on page/post load
     useEffect(()=>{
       setLiked(comment.likes.includes(user._id) ?  true : false);
@@ -312,10 +268,9 @@ function PostComment({comment,user,isMobile,setShareMenuAnchor,setActionMenuAnch
 
 
     const handleAction=(action)=>{
-    console.log("Comment update fetch");
       
     if(comment){
-    axios.patch(`${process.env.REACT_APP_COMMENTS_ROUTE}/${comment._id}/update`,{sessionID:localStorage.getItem("sessionID"),userID:user._id,action}).then(data=>{
+    axios.patch(`${BASE_URI}/comment/${comment._id}/update`,{sessionID:localStorage.getItem("sessionID"),userID:user._id,action}).then(data=>{
       const {result} = data.data;
       const {likes,reposts,count} = result;
       if(likes){
@@ -370,11 +325,15 @@ function PostComment({comment,user,isMobile,setShareMenuAnchor,setActionMenuAnch
   <div className='reposts' onClick={()=>{handleAction(reposted ? "repost-remove" : "repost")}}> <RepeatIcon style={{color:reposted ? "greenyellow" : null}} />
   <span className='repostCount'>{repostCount > 0 ? repostCount : null}</span></div>
   <div className='share' onClick={(e)=>{setShareMenuAnchor(e.currentTarget);}}><IosShareIcon/></div>
+
   </div>
 
   </div>
   <div className='right'>
-  <MoreHorizIcon className="more" onClick={(e)=>{setActionMenuAnchor(e.currentTarget);}}/>
+  <MoreHorizIcon className="more" onClick={(e)=>{setCommentAnchor(e.currentTarget);}}/>
+  <ActionMenu isMobile={isMobile} anchor={commentAnchor} setActionMenuAnchor={setCommentAnchor} isComment={true} 
+  user={user} setPosts={setPosts} post={comment}/>
+
   </div>
   </div>
   )
@@ -403,7 +362,7 @@ function ShareMenu({anchor,setShareMenuAnchor,post,bookmarkList}){
   const saveToBookmark=()=>{
     if(selectedBookmarkID){
     setAlertOpen(false);
-    axios.post(`${process.env.REACT_APP_BOOKMARK_ROUTE}/markPost`,{
+    axios.post(`${BASE_URI}/bookmark/markPost`,{
       session:localStorage.getItem("sessionID"),
       postID:post._id,
       bookmarkID:selectedBookmarkID,

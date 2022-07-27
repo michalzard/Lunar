@@ -8,6 +8,8 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import axios from 'axios';
 import LogoutIcon from '@mui/icons-material/Logout';
 
+const BASE_URI=`http://localhost:${process.env.REACT_APP_SERVER_PORT}`;
+
 
 function ProfileDrawer({anchor,open,setOpen,user,setUser}) {
   const onDrawerClose=()=>{
@@ -15,7 +17,7 @@ function ProfileDrawer({anchor,open,setOpen,user,setUser}) {
   }
 
   const logoutRequest=()=>{
-    axios.post(`${process.env.REACT_APP_AUTH_ROUTE}/logout`,{id:localStorage.getItem('sessionID')}).then(data=>{
+    axios.post(`${BASE_URI}/auth/logout`,{id:localStorage.getItem('sessionID')}).then(data=>{
     const {message}=data.data;
     if(message.includes('User successfully logged out!')) {
       setUser({});//remove user object since you logged out

@@ -54,9 +54,9 @@ router.post("/create", async (req, res) => {
   }
 });
 
-router.post("/delete", async (req, res) => {
+router.delete("/delete", async (req, res) => {
   try {
-    const { author, postID } = req.body;
+    const { author, postID } = req.query;
     const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: author });
     if (foundSession && postID) {
       const selectedPost = await Post.findByIdAndDelete(postID);
@@ -77,42 +77,44 @@ router.patch("/update",async (req,res)=>{
   //sessionID to check if request comes from logged in user
   //like and repost are expected to be +1 or -1
   try{
-  const {sessionID,postID,like,repost} = req.body;
+  const {sessionID,postID,action} = req.body;
 
   const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: sessionID });
+  const {user_id} = foundSession.session;
   //if author logged in update target post
   
   if(foundSession && mongoose.isValidObjectId(postID)){
-    const {user_id} = foundSession.session;
-    //add Like
-    const postToUpdate=await Post.findById(postID);
-    //@TODO: REFACTOR TO MAKE IT CLEANER
-    if(like && !repost){
-    if(like === 1) {
-      const postUpdate = postToUpdate.addLike(user_id);
-      if(postUpdate)res.status(200).send({message:"Like Added",updatedLikes:postUpdate.likes,updatedCount:postUpdate.count});
-      else res.status(401).send({message:"Bad Request"});
-    }else if(like === -1){
-      const postUpdate = postToUpdate.removeLike(user_id);
-      if(postUpdate)res.status(200).send({message:"Like Removed",updatedLikes:postUpdate.likes,updatedCount:postUpdate.count});
-      else res.status(401).send({message:"Bad Request"});
-    }}
     
-    else if(repost && !like){
-      if(repost === 1) {
-        const postUpdate = postToUpdate.addRepost(user_id);
-        if(postUpdate)res.status(200).send({message:"Repost Added",updatedReposts:postUpdate.reposts,updatedCount:postUpdate.count});
-        else res.status(401).send({message:"Bad Request"});
-      }else if(repost === -1){
-        const postUpdate = postToUpdate.removeRepost(user_id);
-        if(postUpdate)res.status(200).send({message:"Repost Removed",updatedReposts:postUpdate.reposts,updatedCount:postUpdate.count});
-        else res.status(401).send({message:"Bad Request"});
-      }
-    }
-    else{
-      res.status(401).send({message:"Bad Request"});
-    }
-  }
+    const postToUpdate=await Post.findById(postID);
+    if(postToUpdate){
+    if(user_id.toString() === postToUpdate.author._id.toString()){
+    switch(action){
+      case "like" : 
+      const liked=postToUpdate.addLike(user_id);
+      res.status(200).send({message:"Post liked",result:liked});
+      break;
+      case "dislike" : 
+      const disliked=postToUpdate.removeLike(user_id);
+      res.status(200).send({message:"Post disliked",result:disliked});
+      break;
+      case "repost" :
+      const reposted=postToUpdate.addRepost(user_id);
+      res.status(200).send({message:"Reposted",result:reposted});
+      break;
+      case "repost-remove" :
+      const removedRepost=postToUpdate.removeRepost(user_id);
+      res.status(200).send({message:"Repost removed",result:removedRepost});        
+      break;
+      default : 
+      res.status(400).send({message:"Action missing"});
+      break;
+    } 
+  //if requester isn't author of post
+  }else res.status(401).send({message:"Unauthorized"});
+  //if post under specific id doesn't exist
+  }else res.status(404).send({message:"Resource Unavailable"});
+  //if either session or postID is missing or in bad format
+  }else res.status(400).send({message:"Bad Request"});
 }catch(err){
   console.log(err);
 }

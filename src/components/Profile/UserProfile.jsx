@@ -13,6 +13,8 @@ import PostContainer from '../Post/PostContainer';
 import NoteIcon from '@mui/icons-material/Note';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
+const BASE_URI=`http://localhost:${process.env.REACT_APP_SERVER_PORT}`;
+
 
 function UserProfile({isMobile,user,bookmarkList}) {
   const {name}= useParams();
@@ -37,7 +39,7 @@ function UserProfile({isMobile,user,bookmarkList}) {
   setLoading(false);
   }
   else{
-    axios.get(`${process.env.REACT_APP_USER_ROUTE}/${name}`).then((data)=>{
+    axios.get(`${BASE_URI}/u/${name}`).then((data)=>{
       const {user} = data.data;
       if(!user) setProfileNotFound(true);
       else {
@@ -65,7 +67,7 @@ function UserProfile({isMobile,user,bookmarkList}) {
   useEffect(()=>{
     switch(filter){
       case "Posts" :
-      axios.get(`${process.env.REACT_APP_POST_ROUTE}/all?author=${name}`)
+      axios.get(`${BASE_URI}/post/all?author=${name}`)
       .then(data=>{
         const {posts} = data.data;
         if(posts) setPosts(posts.reverse());
@@ -192,12 +194,11 @@ function NoPosts({name}){
 function UserBlocked({fUser,setFetchedUser}){
   const submitUnblock=()=>{
   console.log(fUser._id);
-  axios.post(`${process.env.REACT_APP_USER_ROUTE}/unblock`,{
+  axios.post(`${BASE_URI}/u/unblock`,{
     requesterId:localStorage.getItem("sessionID"),
     blockId:fUser._id,
   }).then(data=>{
-    const {message,update} = data.data;
-    console.log(message,update);
+    const {update} = data.data;
     setFetchedUser(prev=>({...prev,profile:{...prev,blockedBy:update}}));
   }).catch(err=>console.log(err));
   }

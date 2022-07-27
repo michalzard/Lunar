@@ -3,6 +3,8 @@ import {Typography,TextField,Button} from '@mui/material';
 import '../styles/components/Login.scss';
 import axios from 'axios';
 
+const BASE_URI=`http://localhost:${process.env.REACT_APP_SERVER_PORT}`;
+
 function Login({setUser,isMobile}) {
   const [display,setDisplay]=useState("Login");
   const [name,setName]=useState("");
@@ -16,14 +18,14 @@ function Login({setUser,isMobile}) {
   const requestLogin=()=>{
     //validation logic
     //shorthand for name,password ~ name:name...
-    axios.post(`${process.env.REACT_APP_AUTH_ROUTE}/login`,{name,password})
+    axios.post(`${BASE_URI}/auth/login`,{name,password})
     .then(data=>{
       const {sessionID,message} = data.data;
     //saves sessionID to localstorage so next time you refresh you'll be requesting using sessionID
     //persisting user state
     if(sessionID) {
         localStorage.setItem('sessionID',sessionID);//saves id 
-        axios.get(`${process.env.REACT_APP_USER_ROUTE}/session?id=${sessionID}`).then(data=>{
+        axios.get(`${BASE_URI}/u/session?id=${sessionID}`).then(data=>{
           const{user}=data.data;
           if(user)setUser(user);
         });
@@ -36,7 +38,7 @@ function Login({setUser,isMobile}) {
   }
 
   const requestRegister=()=>{
-    axios.post(`${process.env.REACT_APP_AUTH_ROUTE}/register`,{name,email,password})
+    axios.post(`${BASE_URI}/auth/register`,{name,email,password})
     .then(data=>{
       const {sessionID,message} = data.data;
       if(sessionID){

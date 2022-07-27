@@ -9,6 +9,7 @@ import Navbar from "./components/Navbar";
 import { Alert } from "@mui/material";
 import {useMediaQuery} from "react-responsive";
 
+const BASE_URI=`http://localhost:${process.env.REACT_APP_SERVER_PORT}`;
 
 function App() {
   //used for logic shared between header and post elements
@@ -25,7 +26,8 @@ function App() {
     const sessionID=localStorage.getItem('sessionID');
     //if sessionID exists lookup if there's active session then return user data
     //if not route endpoint returns that session is expired and you need to login
-    if(sessionID){ axios.get(`${process.env.REACT_APP_USER_ROUTE}/session?id=${sessionID}`).then(data=>{
+    if(sessionID){ 
+    axios.get(`${BASE_URI}/u/session?id=${localStorage.getItem('sessionID')}`).then(data=>{
     const{user}=data.data; 
     if(user) {
     setUser(user);
@@ -34,8 +36,7 @@ function App() {
     }).catch(err=>{if(err){
       //received 401,not authorized so remove sessionID from localstorage and 
       localStorage.removeItem('sessionID');
-      setUser({});
-      console.log("DIDNT FIND SESSION,GO BACK TO LOGIN")
+      console.log(err);
     }});
   }
   },[]);
@@ -43,7 +44,7 @@ function App() {
   const [postAlert,setPostAlert] = useState(null);
 
   const submitPost =()=>{
-    axios.post(`${process.env.REACT_APP_POST_ROUTE}/create`,{
+    axios.post(`${BASE_URI}/post/create`,{
       author:localStorage.getItem("sessionID"),
       content:postText,
       media:"",//todo:string url media 

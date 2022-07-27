@@ -13,7 +13,9 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import "../../styles/components/Post/ActionMenu.scss";
 
-function ActionMenu({isMobile,anchor,setActionMenuAnchor,user,post,setPosts}){
+const BASE_URI=`http://localhost:${process.env.REACT_APP_SERVER_PORT}`;
+
+function ActionMenu({isMobile,isComment,anchor,setActionMenuAnchor,user,post,setPosts}){
     const closeMenu=()=>{setActionMenuAnchor(null);}
     const copyURLtoClipboard=()=>{
       window.navigator.clipboard.writeText(window.location.href);
@@ -38,14 +40,6 @@ function ActionMenu({isMobile,anchor,setActionMenuAnchor,user,post,setPosts}){
       setAlertOpen(false);
     }
     
-    // const handleMute=()=>{
-    //   //PATCH REQUEST TO ADD AUTHOR'S ID TO MUTED LIST
-    //   //if REQUEST FULLFILLED CHANGE STATE
-    //   setMuted(!muted);
-    //   closeMenu();
-    //   setAlertMessage(muted ? `${author.displayName} has been unmuted` : `${author.displayName} has been muted`);
-    //   setAlertOpen(true);
-    // }
     const handleBlock=()=>{
       //PATCH REQUEST TO ADD AUTHOR'S ID TO MUTED LIST
       //if REQUEST FULLFILLED CHANGE STATE
@@ -59,10 +53,7 @@ function ActionMenu({isMobile,anchor,setActionMenuAnchor,user,post,setPosts}){
     }
     
     const handlePostDelete=()=>{
-      axios.post(`${process.env.REACT_APP_POST_ROUTE}/delete`,{
-        author:localStorage.getItem("sessionID"),
-        postID:post._id,
-      }).then(data=>{
+      axios.delete(`${BASE_URI}/post/delete?author=${localStorage.getItem("sessionID")}&postID=${post._id}`).then(data=>{
         const {message} = data.data;
         if(message.includes("Post deleted")) {
           //remove post from react state array
@@ -70,10 +61,23 @@ function ActionMenu({isMobile,anchor,setActionMenuAnchor,user,post,setPosts}){
           closeMenu();
         }else closeMenu();
         
-      }).catch(err=>{console.log(err);})
+      }).catch(err=>{console.log(err);});
     }
+
+    const handleCommentDelete=()=>{
+      axios.delete(`${BASE_URI}/comment/${post._id}/delete?sessionID=${localStorage.getItem("sessionID")}`)
+      .then(data=>{
+        const {message} = data.data;
+        if(message.includes("Comment deleted")){
+          console.log("getting rid of comment from posts array");
+          setPosts(prev=>prev.filter((posts)=>{return posts._id !== post._id}));
+          closeMenu();
+        }
+      }).catch(err=>{console.log(err);});
+    }
+
     const handlePin=()=>{
-      axios.patch(`${process.env.REACT_APP_POST_ROUTE}/pin`,{
+      axios.patch(`${BASE_URI}/post/pin`,{
         author:localStorage.getItem("sessionID"),
         postID:post._id,
       }).then(data=>{
@@ -85,7 +89,7 @@ function ActionMenu({isMobile,anchor,setActionMenuAnchor,user,post,setPosts}){
         }
         // TODO : update or rearrange posts after pinning
       })
-      .catch(err=>{console.log(err);})
+      .catch(err=>{console.log(err);});
     }
 
     return(
@@ -99,8 +103,8 @@ function ActionMenu({isMobile,anchor,setActionMenuAnchor,user,post,setPosts}){
       {
         isYourPost() ? 
         <div>
-        <MenuItem className="postDelete" onClick={handlePostDelete}><DeleteForeverIcon /> Delete</MenuItem>
-        <MenuItem className="postPin" onClick={handlePin}><PushPinIcon/> {post.pinned ?  "Unpin to your Profile" : "Pin from your profile"}</MenuItem>
+        <MenuItem className="postDelete" onClick={isComment ? handleCommentDelete : handlePostDelete}><DeleteForeverIcon /> Delete</MenuItem>
+        {isComment ? <MenuItem className="userProfileCopy" onClick={copyURLtoClipboard}><LinkIcon/>Copy Comment's URL</MenuItem> : <MenuItem className="postPin" onClick={handlePin}><PushPinIcon/> {post.pinned ?  "Unpin to your Profile" : "Pin from your profile"}</MenuItem>}
         </div>
         :
        <div>

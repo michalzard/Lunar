@@ -20,7 +20,7 @@ app.use(session({
     secret:process.env.SESSION_SECRET,
     resave:false,
     cookie:{
-        maxAge:1000*60 * 60 * 8,//8 hours
+        maxAge:1000*60 * 60 * 24 * 7,//1 week
         httpOnly:true,
         secure:true,
     },
@@ -47,6 +47,6 @@ app.use("/comment",commentRoutes);
 
 
 //You need to specificy SERVER_PORT as key:value in .env file
-app.listen(process.env.SERVER_PORT,()=>{console.log(`Web Server ~ ${process.env.SERVER_PORT}`)});
+app.listen(process.env.REACT_APP_SERVER_PORT,()=>{console.log(`Web Server ~ ${process.env.REACT_APP_SERVER_PORT}`)});
 
 

@@ -10,7 +10,9 @@ import { useParams } from 'react-router-dom';
 import PostContainer from './Post/PostContainer';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+
+const BASE_URI=`http://localhost:${process.env.REACT_APP_SERVER_PORT}`;
+
 
 function Bookmarks() {
     const [bookmarks,setBookmarks] = useState([]);
@@ -21,14 +23,15 @@ function Bookmarks() {
     //TODO show list on preview onClick
 
     useEffect(()=>{
-        console.log("runs once on bookmark load");
-        axios.get(`${process.env.REACT_APP_BOOKMARK_ROUTE}/all?author=${localStorage.getItem("sessionID")}`).then(data=>{
+        if(localStorage.getItem("sessionID")){
+        axios.get(`${BASE_URI}/bookmark/all?author=${localStorage.getItem("sessionID")}`).then(data=>{
             const {message,bookmarks} = data.data;
             console.log(message);
             setBookmarks(bookmarks);
         }).catch(err=>{
             console.log(err);
         });
+    }
     },[]);
     return (
     <div className='bookmarks'>
@@ -65,6 +68,8 @@ function BookmarkEditor({anchorEl,openBool,onClose,setBookmarks}){
 
     const createBookMark=()=>{
         // axios.post bookmark/new
+        // `${BASE_URI}/bookmark/new`
+
     }
 
     return(
@@ -119,8 +124,7 @@ function BookmarkById({isMobile,user}){
     const [bookmark,setBookmark] = useState([]);
 
     useEffect(()=>{
-    console.log("BookmarkById fetch");
-    axios.get(`${process.env.REACT_APP_BOOKMARK_ROUTE}/${id}?session=${localStorage.getItem("sessionID")}`).then(data=>{
+    axios.get(`${BASE_URI}/bookmark/${id}?session=${localStorage.getItem("sessionID")}`).then(data=>{
         const {message,bookmark} = data.data;
         if(message || bookmark) setLoading(false);
         setBookmark(bookmark);
@@ -132,7 +136,7 @@ function BookmarkById({isMobile,user}){
 
     const clearBookmarkList=()=>{
     if(bookmark){
-    axios.patch(`${process.env.REACT_APP_BOOKMARK_ROUTE}/clear`,{session:localStorage.getItem("sessionID"),bookmarkID:bookmark._id})
+    axios.patch(`${BASE_URI}/bookmark/clear`,{session:localStorage.getItem("sessionID"),bookmarkID:bookmark._id})
     .then(data=>{ 
     const {message,bookmark} = data.data;
     console.log(data.data);

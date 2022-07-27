@@ -21,6 +21,7 @@ router.get("/session", async (req, res) => {
     const foundSession = await mongoose.connection.db
       .collection("sessions")
       .findOne({ _id: id });
+      console.log(foundSession);
     if (foundSession) {
       const { user_id } = foundSession.session;
       const userByID = await User.findById(user_id, { password: 0, __v: 0});
