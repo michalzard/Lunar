@@ -35,7 +35,7 @@ function App() {
     else localStorage.removeItem('sessionID');
     }).catch(err=>{if(err){
       //received 401,not authorized so remove sessionID from localstorage and 
-      localStorage.removeItem('sessionID');
+      // localStorage.removeItem('sessionID');
       console.log(err);
     }});
   }
@@ -44,12 +44,14 @@ function App() {
   const [postAlert,setPostAlert] = useState(null);
 
   const submitPost =()=>{
-    axios.post(`${BASE_URI}/post/create`,{
-      author:localStorage.getItem("sessionID"),
-      content:postText,
-      media:"",//todo:string url media 
-      tag:filter,
-  }).then(data=>{
+    const formData = new FormData();
+    formData.append("media",lastSelectedMedia);
+    formData.append("author",localStorage.getItem("sessionID"));
+    formData.append("tag",filter);
+    formData.append("content",postText);
+    const config = {headers:{ "Content-type":"multipart/form-data"}}
+
+    axios.post(`${BASE_URI}/post/create`,formData,config).then(data=>{
     const {message} = data.data;
     if(message)setPostAlert(<Alert color="success" onClose={() => {setPostAlert(null)}}>{message} </Alert>)
     setTimeout(()=>{setPostAlert(null)},10000);

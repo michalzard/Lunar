@@ -8,7 +8,6 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import '../../styles/components/Post/PostContainer.scss';
 import CloseIcon from '@mui/icons-material/Close';
-import DefaultImage from "../../assets/lunarsystem.jpg";
 //menus
 import ActionMenu from './ActionMenu';
 //
@@ -112,7 +111,14 @@ function PostContainer({isBookmark,isMobile,user,post,setPosts,bookmarkList}) {
 
     </div>
     {post ? <Typography>{post.content}</Typography> : null}
-    
+  
+    {
+    post.media ? 
+    post.media.endsWith("mov") || post.media.endsWith("mp4") ? <div className="media">
+    <video controls loop={true}> <source src={`${BASE_URI}/${post.media}`} type="video/mp4"/></video>
+    </div> : <div className="media"> <img src={`${BASE_URI}/${post.media}`} /></div>
+    : null
+    }
     {/* TODO: CSS animation */}
     <div className='interaction'>
     <div className='comments'><ModeCommentIcon onClick={()=>{setPreviewOpen(true);}}/>
@@ -188,7 +194,7 @@ function PostPreview({isMobile,user,post,open,setOpen,handleAction,reposted,like
       <>
       <div className='media_preview'>
       <div className='closeIcon'><CloseIcon onClick={()=>{setOpen(false)}}/></div>
-      <img src={DefaultImage} alt="Default Description"/>
+      <img src={null} alt="Default Description"/>
       </div>  
       </>
     }

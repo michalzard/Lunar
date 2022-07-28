@@ -5,6 +5,23 @@ const Post = require("../schemas/Post");
 const Comment = require("../schemas/Comment");
 const router = express.Router();
 
+const path = require("path");
+const multer = require("multer");
+const { v4: uuidv4 } = require("uuid");
+
+const storage = multer.diskStorage({
+  destination: path.resolve("src","assets"),
+  filename: function (req, file, cb) {
+    cb(null, uuidv4() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({
+  storage,
+  // limits:{fileSize:52428800} //50MB limit on uploaded images/videos
+})
+
+
 //check first if requester is logged in before serving
 // post create , get update delete
 
@@ -31,18 +48,18 @@ router.get("/all", async (req, res) => {
   }
 });
 
-router.post("/create", async (req, res) => {
+router.post("/create",upload.single("media"),async (req, res) => {
   try {
-    const { author, content, media, tag } = req.body;
+    const { author,tag,content } = req.body;
+    
     const foundSession = await mongoose.connection.db.collection("sessions").findOne({ _id: author });
     if (foundSession) {
       const { user_id } = foundSession.session;
       const user = await User.findById(user_id);
       if (user) {
-        const createdPost = new Post({ author: user._id, content, media, tag });
+        const createdPost = new Post({ author: user._id, content:content, media:req.file ? req.file.filename : "", tag:tag });
         await createdPost.save();
-        if (createdPost)
-          res.status(200).send({ message: "Successfuly created new post" });
+        if (createdPost) res.status(200).send({ message: "Successfuly created new post" });
       } else {
         res.status(404).send({ message: `Unable to find author` });
       }
@@ -50,6 +67,7 @@ router.post("/create", async (req, res) => {
       res.status(401).send({ message: `Session invalid or expired!` });
     }
   } catch (err) {
+    console.log(err);
     res.status(400).send(err.message);
   }
 });

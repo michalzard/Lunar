@@ -35,7 +35,7 @@ function PostEditor({isMobile,setPostUnsaved,filter,setFilter,lastSelectedMedia,
   },[postText.length,setPostUnsaved]);
 
   // const isMobile = useMediaQuery({query:"(max-width: 770px)"});
-
+  
   return (
     <div className='posteditor_container'>
     {isMobile ? null : <Button variant="contained" className='postButton' onClick={submitPost} >Post</Button>}
@@ -55,12 +55,12 @@ function PostEditor({isMobile,setPostUnsaved,filter,setFilter,lastSelectedMedia,
     <div className='action_btns'>
 
     <input
-    accept="image/*"
+    accept="image/*,.mov,.mp4"
     style={{ display: 'none' }}
     id="upload-file"
     multiple
     type="file"
-    onChange={(e)=>{const img=URL.createObjectURL(e.target.files[0]); setLastSelectedMedia(img);}}
+    onChange={(e)=>{setLastSelectedMedia(e.target.files[0]);}}
     />
     <label htmlFor='upload-file'>
     <Tooltip enterTouchDelay={200} leaveTouchDelay={400} placement='bottom-end' title='Media'>

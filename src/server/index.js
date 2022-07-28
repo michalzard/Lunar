@@ -4,6 +4,7 @@ const cors=require('cors');
 const session=require("express-session");
 const mongoose = require("mongoose");
 const mongoDBStore=require("connect-mongodb-session")(session);
+const path=require("path");
 require("dotenv").config();
 //connect to db before everything
 mongoose.connect(process.env.DATABASE_URI, {
@@ -29,8 +30,10 @@ app.use(session({
 }));
 
 app.use(cors());
-//cannot receive json in response body w/o this
+//enables receiving json trough req.body
 app.use(express.json());
+//enables receiving formData trough req.body
+app.use(express.urlencoded({extended:true}));
 
 //Routes
 const authRoutes=require('./routes/auth');
@@ -45,6 +48,8 @@ app.use('/post',postRoutes);
 app.use('/bookmark',bookmarkRoutes);
 app.use("/comment",commentRoutes);
 
+app.use(express.static("src/assets"));
+// console.log(path.resolve("assets"));
 
 //You need to specificy SERVER_PORT as key:value in .env file
 app.listen(process.env.REACT_APP_SERVER_PORT,()=>{console.log(`Web Server ~ ${process.env.REACT_APP_SERVER_PORT}`)});
