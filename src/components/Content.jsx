@@ -104,6 +104,7 @@ function Content({isMobile,isPostUnsaved,setPostUnsaved,user,setUser,filter,setF
               }
               />
               <Route path="/settings" element={<SettingsMenu />} />
+              <Route path="/notifications" element={<Typography variant="h6" color="white">Notifications coming soon....</Typography>} />
               <Route path="/bookmarks" element={<Bookmarks bookmarkList={bookmarkList} />}/>
               <Route path="/bookmarks/:id" element={<BookmarkById isMobile={isMobile} user={user}/>}/>
               
