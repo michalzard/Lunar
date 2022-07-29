@@ -158,7 +158,8 @@ function BookmarkById({isMobile,user}){
                 <MoreHorizIcon className="removeAllBookmarks" onClick={()=>setClearBkOpen(true)}/>
                 <Dialog open={clearBkOpen} id="clearBkMenu">
                 <DialogTitle variant="h6" gutterBottom>Are you sure?</DialogTitle>
-                <Typography variant="subtitle1" component="span">Are you sure you want to erase your bookmarks ?<br/>This action is irreversible</Typography>
+                <Typography variant="subtitle1" component="span">Are you sure you want to erase your bookmarks ?<br/>
+                <u style={{color:"red"}}><strong>This action is irreversible</strong></u></Typography>
 
                 <DialogActions>
                 <Button variant="contained" color="error" onClick={clearBookmarkList}>Delete</Button>
