@@ -24,7 +24,7 @@ function PostEditor({isMobile,setPostUnsaved,filter,setFilter,lastSelectedMedia,
   const handleFilterMenuOpen=(e) => setFilterEl(e.currentTarget);
   const handleFilterMenuClose=() => setFilterEl(null);
 
-  // const [lastSelectedMedia,selectMedia] = useState({});
+  const [mediaPreview,setMediaPreview] = useState({});
   // const [filter,setFilter] = useState("None");
 
   
@@ -47,20 +47,25 @@ function PostEditor({isMobile,setPostUnsaved,filter,setFilter,lastSelectedMedia,
     focused={false} variant='standard' minRows={4} maxRows={7} inputProps={{maxLength:200}} margin="normal" multiline fullWidth/>
     </div>
     <Divider/>
-
-    {Object.entries(lastSelectedMedia).length>0 ?
-    <img src={lastSelectedMedia.images ? lastSelectedMedia.images.original.url : lastSelectedMedia ? lastSelectedMedia : null} className='selectedMedia' alt={lastSelectedMedia.title} loading='lazy'></img> 
+    <div className='media-preview'>
+    {Object.keys(mediaPreview).length > 0 ?
+    <>
+    {mediaPreview.type.includes("mp4") || mediaPreview.type.includes("quicktime")  ? <video className='selectedMedia' src={`${mediaPreview.url}#t=0.1`} preload="auto" loop controls><source type={"video/mp4"}/></video>
+    :
+    <img src={mediaPreview.url} className='selectedMedia' alt={lastSelectedMedia.title} loading='lazy'></img> 
+    }
+    <CloseIcon className="close" onClick={()=>{setMediaPreview("")}}/>
+    </>
     : null}
+    </div>
 
     <div className='action_btns'>
-
     <input
     accept="image/*,.mov,.mp4"
     style={{ display: 'none' }}
     id="upload-file"
-    multiple
     type="file"
-    onChange={(e)=>{setLastSelectedMedia(e.target.files[0]);}}
+    onChange={(e)=>{setLastSelectedMedia(e.target.files[0]);const mediaURL=URL.createObjectURL(e.target.files[0]);setMediaPreview({type:e.target.files[0].type,url:mediaURL})}}
     />
     <label htmlFor='upload-file'>
     <Tooltip enterTouchDelay={200} leaveTouchDelay={400} placement='bottom-end' title='Media'>

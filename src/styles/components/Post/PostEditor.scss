@@ -35,7 +35,10 @@
       border-color: rgba(255, 255, 255, 0.3);
       margin: 5px;
     }
-
+    .media-preview{
+      display:flex;
+      justify-content: center;      
+    }
     //needs to be in flex to have avatar nexto textfield
     .action_btns {
       color: $on_surface;
@@ -51,11 +54,13 @@
 }
 .selectedMedia {
     object-fit: contain;
-    width: 100%;
+    max-width: 100%;
     height: 150px;
     margin-top: 5px;
 }
-
+.close{
+  cursor: pointer;
+}
 //GIF MENU
 
 #gif-menu {
