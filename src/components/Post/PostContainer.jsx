@@ -19,12 +19,12 @@ import ForumIcon from '@mui/icons-material/Forum';
 import Time from "time-ago";
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
 import PushPinIcon from '@mui/icons-material/PushPin';
-// import { BookmarkPreview } from '../Bookmarks';
-
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import PublicIcon from '@mui/icons-material/Public';
 import LinkOffIcon from '@mui/icons-material/LinkOff';
-
+import DangerousIcon from '@mui/icons-material/Dangerous';
 const BASE_URI=`http://localhost:${process.env.REACT_APP_SERVER_PORT}`;
+
 
 
 function PostContainer({isBookmark,isMobile,user,post,setPosts,bookmarkList}) {
@@ -40,7 +40,8 @@ function PostContainer({isBookmark,isMobile,user,post,setPosts,bookmarkList}) {
   //anchor
   const [shareMenuAnchor,setShareMenuAnchor] = useState(null);
   const [actionMenuAnchor,setActionMenuAnchor] = useState(null);
-
+  //filter overlay
+  const [isOverlayOpen,setIsOverlayOpen]=useState(post.tag === "Spoiler" || post.tag === "NSFW" ? true : false );
   //on page/post load
   useEffect(()=>{
   setLiked(post.likes.includes(user._id) ?  true : false);
@@ -111,14 +112,51 @@ function PostContainer({isBookmark,isMobile,user,post,setPosts,bookmarkList}) {
 
     </div>
     {post ? <Typography>{post.content}</Typography> : null}
-  
     {
     post.media ? 
-    post.media.endsWith("mov") || post.media.endsWith("mp4") ? <div className="media">
+    post.media.endsWith("mov") || post.media.endsWith("mp4") ? 
+    
+    <div className="media">
     <video controls loop={true}> <source src={`${BASE_URI}/${post.media}`} type="video/mp4"/></video>
-    </div> : <div className="media"> <img src={`${BASE_URI}/${post.media}`} /></div>
+    {
+      isOverlayOpen ? 
+      <div className="filter_overlay warning">
+      <CloseIcon className="close" onClick={()=>{setIsOverlayOpen(false);}}/>
+      <div className="header_info">
+      { post.tag ==="Spoiler" ? <WarningAmberIcon className="alert"/> : <DangerousIcon className="nsfw"/> }
+      
+      <Typography variant="h4">{post.tag}</Typography>
+      </div>
+
+      <Typography variant="subtitle1" component={"span"}>{post.tag === "Spoiler" ? "This post might contain spoilers" : "This post was flagged by author for nudity"}</Typography>
+    
+      </div>
+      : null
+    }
+    
+    </div>
+    : 
+    <div className="media">
+    <img src={`${BASE_URI}/${post.media}`} />
+    {
+       isOverlayOpen ? 
+       <div className="filter_overlay warning">
+       <CloseIcon className="close" onClick={()=>{setIsOverlayOpen(false);}}/>
+       <div className="header_info">
+       { post.tag ==="Spoiler" ? <WarningAmberIcon className="alert"/> : <DangerousIcon className="nsfw"/> }
+       
+       <Typography variant="h4">{post.tag}</Typography>
+       </div>
+ 
+       <Typography variant="subtitle1" component={"span"}>{post.tag === "Spoiler" ? "This post might contain spoilers" : "This post was flagged by author for nudity"}</Typography>
+     
+       </div>
+       : null
+    }
+    </div>
     : null
     }
+    
     {/* TODO: CSS animation */}
     <div className='interaction'>
     <div className='comments'><ModeCommentIcon onClick={()=>{setPreviewOpen(true);}}/>
@@ -193,8 +231,14 @@ function PostPreview({isMobile,user,post,open,setOpen,handleAction,reposted,like
       isMobile ? null :
       <>
       <div className='media_preview'>
-      <div className='closeIcon'><CloseIcon onClick={()=>{setOpen(false)}}/></div>
-      <img src={null} alt="Default Description"/>
+      <div className='closeIcon'><CloseIcon onClick={()=>{setOpen(false)}}/></div>      
+      {
+         post.media ? 
+         post.media.endsWith("mov") || post.media.endsWith("mp4") ? 
+         <video controls loop={true}> <source src={`${BASE_URI}/${post.media}`} type="video/mp4"/></video>
+         : <img src={`${BASE_URI}/${post.media}`} alt="Default Description"/>
+         : null
+      }
       </div>  
       </>
     }
