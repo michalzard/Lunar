@@ -18,7 +18,7 @@ const postSchema = new mongoose.Schema(
     media: {type:String, default:""},
     tag: {
       type: String,
-      enum: ["Spoiler", "NSFW", "Violence", "None"],
+      enum: ["Spoiler", "NSFW", "None"],
       default: "None",
     },
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
